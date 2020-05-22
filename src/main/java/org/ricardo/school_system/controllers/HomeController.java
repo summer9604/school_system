@@ -1,6 +1,8 @@
 package org.ricardo.school_system.controllers;
 
+import java.util.LinkedList;
 import java.util.List;
+
 import org.ricardo.school_system.assemblers.DegreeSubjectBundle;
 import org.ricardo.school_system.assemblers.SchoolInfo;
 import org.ricardo.school_system.assemblers.TeacherInfo;
@@ -13,6 +15,8 @@ import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
 import org.ricardo.school_system.services.DegreeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class HomeController {
 
 	@Autowired
@@ -34,14 +39,42 @@ public class HomeController {
 	@Autowired
 	private SchoolDao schoolDao;
 	
-	@GetMapping("/")
+	@GetMapping("/teachers")
 	public List<Teacher> getTeachers() {
 		return teacherDao.getAll();
+	}
+	
+	@GetMapping("/test")
+	public String hello() {
+		
+		List<String> sentences = new LinkedList<>();
+		
+		sentences.add("Olá");
+		sentences.add("Adeus");
+		sentences.add("Até amanhã");
+		sentences.add("SL Benfica");
+		
+		return sentences.get((int) (Math.random() * sentences.size()));
 	}
 	
 	@GetMapping("/subjects/{id}")
 	public Subject getSubject(@PathVariable("id") int id){
 		return teacherDao.getSubject(id);
+	}
+	
+	@GetMapping("/subjects")
+	public List<Subject> getSubjects(){
+		return subjectDao.getAll();
+	}
+	
+	@GetMapping("/teachers/{id}")
+	public void removeTeacher(@PathVariable("id") int id) {
+		teacherDao.delete(id);
+	}
+	
+	@GetMapping("/degrees")
+	public List<Degree> getDegrees(){
+		return degreeService.getAll();
 	}
 	
 	@PostMapping("/teachers")
@@ -56,8 +89,7 @@ public class HomeController {
 	}
 	
 	@PostMapping("/degrees")
-	public Degree addDegree(@RequestBody DegreeSubjectBundle degreeSubjectBundle) {
-		
+	public Degree addDegree(@RequestBody DegreeSubjectBundle degreeSubjectBundle) {	
 		return degreeService.addDegreeWithSubjects(degreeSubjectBundle);
 	}
 	

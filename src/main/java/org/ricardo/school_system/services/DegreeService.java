@@ -1,15 +1,11 @@
 package org.ricardo.school_system.services;
 
-import java.util.LinkedList;
 import java.util.List;
-
 import javax.transaction.Transactional;
-
 import org.ricardo.school_system.assemblers.DegreeSubjectBundle;
 import org.ricardo.school_system.daos.DegreeDao;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.entities.Degree;
-import org.ricardo.school_system.entities.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,25 +25,11 @@ public class DegreeService extends GenericService<Degree> {
 	
 	@Transactional
 	public Degree addDegreeWithSubjects(DegreeSubjectBundle degreeSubjectBundle){
-
-		System.out.println("BLABLABLABLA\n");
 		
 		Degree degree = new Degree(degreeSubjectBundle.getDegreeName());
 		
 		for(int subjectId : degreeSubjectBundle.getSubjectIds()) {
 			degree.addSubject(subjectDao.getById(subjectId));
-		}
-		
-//		for(int subjectId : degreeSubjectBundle.getSubjectIds()) {
-//			subjects.add(subjectDao.getById(subjectId));
-//		}
-//		
-//		degree.setSubjects(subjects);
-//		
-		System.out.println("Degree subjects:");
-		
-		for(Subject subject : degree.getSubjects()) {
-			System.out.println("\n" + subject + "\n");
 		}
 		
 		degreeDao.add(degree);
@@ -56,9 +38,9 @@ public class DegreeService extends GenericService<Degree> {
 	}
 
 	@Override
+	@Transactional
 	public List<Degree> getAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return degreeDao.getAll();
 	}
 
 	@Override
