@@ -16,8 +16,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "subject")
+@JsonIgnoreProperties({"degrees", "students", "teachers"})
 public class Subject {
 	
 	@Id
@@ -31,7 +34,7 @@ public class Subject {
 	@ManyToMany(fetch = FetchType.LAZY,
         	    cascade = {CascadeType.DETACH, CascadeType.MERGE,
         			       CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinTable(name = "degree-subject",
+	@JoinTable(name = "degree_subject",
                joinColumns = @JoinColumn(name = "subject_id"),
                inverseJoinColumns = @JoinColumn(name = "degree_id"))
 	private List<Degree> degrees;
@@ -61,6 +64,8 @@ public class Subject {
 	
 	public Subject(String name) {
 		this.name = name;
+		this.createdAt = LocalDate.now();
+		this.updatedAt = LocalDate.now();
 	}
 	
 	public void addDegree(Degree degree) {

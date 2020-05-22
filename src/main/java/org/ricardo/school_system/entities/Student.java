@@ -1,8 +1,7 @@
 package org.ricardo.school_system.entities;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +15,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "student")
+@JsonIgnoreProperties({"studentClass", "subjects"})
 public class Student {
 
 	@Id
@@ -33,12 +35,15 @@ public class Student {
 
 	@Column(name = "phonenumber")
 	private int phonenumber;
+	
+	@Column(name="email")
+	private String email;
 
 	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, 
 				           CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "class_id")
 	private Class studentClass;
-	
+
 	@ManyToMany(fetch = FetchType.LAZY,
     	    	cascade = { CascadeType.DETACH, CascadeType.MERGE,
     			            CascadeType.PERSIST, CascadeType.REFRESH})
@@ -48,19 +53,22 @@ public class Student {
 	private List<Subject> subjects;
 
 	@Column(name = "createdAt")
-	private Date createdAt;
+	private LocalDate createdAt;
 
 	@Column(name = "updatedAt")
-	private Date updatedAt;
+	private LocalDate updatedAt;
 
 	public Student() {
 
 	}
 
-	public Student(String name, String address, int phonenumber) {
+	public Student(String name, String address, int phonenumber, String email) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
+		this.email = email;
+		this.createdAt = LocalDate.now();
+		this.updatedAt = LocalDate.now();
 	}
 
 	public int getId() {
@@ -102,6 +110,14 @@ public class Student {
 	public void setPhonenumber(int phonenumber) {
 		this.phonenumber = phonenumber;
 	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public Class getStudentClass() {
 		return studentClass;
@@ -111,26 +127,26 @@ public class Student {
 		this.studentClass = studentClass;
 	}
 
-	public Date getCreatedAt() {
+	public LocalDate getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(LocalDate createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Date getUpdatedAt() {
+	public LocalDate getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Date updatedAt) {
+	public void setUpdatedAt(LocalDate updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
 	@Override
 	public String toString() {
 		return "Student [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
-				+ ", studentClass=" + studentClass + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", email=" + email + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-
+	
 }

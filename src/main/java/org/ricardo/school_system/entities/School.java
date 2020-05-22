@@ -16,8 +16,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="school")
+@JsonIgnoreProperties({"teachers", "classes", "degrees"})
 public class School {
 
 	@Id
@@ -33,6 +36,9 @@ public class School {
 	
 	@Column(name="phonenumber")
 	private int phonenumber;
+	
+	@Column(name="email")
+	private String email;
 	
 	@OneToMany(mappedBy = "school",
 	           cascade = {CascadeType.DETACH, CascadeType.MERGE,
@@ -62,10 +68,13 @@ public class School {
 		
 	}
 	
-	public School(String name, String address, int phonenumber) {
+	public School(String name, String address, int phonenumber, String email) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
+		this.email = email;
+		this.createdAt = LocalDate.now();
+		this.updatedAt = LocalDate.now();
 	}
 	
 	public void addClass(Class newClass, Degree degree) {
@@ -82,7 +91,6 @@ public class School {
 		if (teachers == null) teachers = new LinkedList<>();
 		
 		teachers.add(teacher);
-		teacher.setSchool(this);
 	}
 	
 	public void addDegree(Degree degree) {
@@ -90,7 +98,6 @@ public class School {
 		if (degrees == null) degrees = new LinkedList<>();
 		
 		degrees.add(degree);
-		degree.addSchool(this);
 	}
 
 	public int getId() {
@@ -125,6 +132,14 @@ public class School {
 		this.phonenumber = phonenumber;
 	}
 	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public List<Teacher> getTeachers() {
 		return teachers;
 	}
@@ -168,7 +183,7 @@ public class School {
 	@Override
 	public String toString() {
 		return "School [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", email=" + email + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-	
+
 }

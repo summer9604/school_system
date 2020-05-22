@@ -16,8 +16,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="teacher")
+@JsonIgnoreProperties({"classes", "school", "subject"})
 public class Teacher {
 
 	@Id
@@ -33,6 +36,9 @@ public class Teacher {
 
 	@Column(name="phonenumber")
 	private int phonenumber;
+	
+	@Column(name="email")
+	private String email;
 
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
                           CascadeType.PERSIST, CascadeType.REFRESH})
@@ -65,11 +71,14 @@ public class Teacher {
 		
 	}
 
-	public Teacher(String name, String address, int phonenumber, Subject subject) {
+	public Teacher(String name, String address, int phonenumber, String email, Subject subject) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
+		this.email = email;
 		this.subject = subject;
+		this.createdAt = LocalDate.now();
+		this.updatedAt = LocalDate.now();
 	}
 
 	public int getId() {
@@ -112,6 +121,14 @@ public class Teacher {
 		this.phonenumber = phonenumber;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public School getSchool() {
 		return school;
 	}
@@ -148,14 +165,11 @@ public class Teacher {
 		return retiredAt;
 	}
 
-	public void setRetiredAt(LocalDate retiredAt) {
-		this.retiredAt = retiredAt;
-	}
-
 	@Override
 	public String toString() {
 		return "Teacher [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", retiredAt=" + retiredAt + "]";
+				+ ", email=" + email + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", retiredAt="
+				+ retiredAt + "]";
 	}
 	
 }
