@@ -2,7 +2,9 @@ package org.ricardo.school_system.controllers;
 
 import java.util.LinkedList;
 import java.util.List;
-
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.ricardo.school_system.assemblers.DegreeSubjectBundle;
 import org.ricardo.school_system.assemblers.SchoolInfo;
 import org.ricardo.school_system.assemblers.TeacherInfo;
@@ -15,8 +17,9 @@ import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
 import org.ricardo.school_system.services.DegreeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,8 +43,15 @@ public class HomeController {
 	private SchoolDao schoolDao;
 	
 	@GetMapping("/teachers")
-	public List<Teacher> getTeachers() {
-		return teacherDao.getAll();
+	public ResponseEntity<List<Teacher>> getTeachers(HttpServletRequest request, HttpServletResponse response) {	
+				
+		Cookie cookie = new Cookie("name", "Pablo%20Aimar");
+		
+		cookie.setComment("esta cookie é altamente!!");
+		
+		response.addCookie(cookie);
+		
+		return new ResponseEntity<>(teacherDao.getAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/test")
@@ -63,7 +73,12 @@ public class HomeController {
 	}
 	
 	@GetMapping("/subjects")
-	public List<Subject> getSubjects(){
+	public List<Subject> getSubjects(HttpServletRequest request){
+		
+		for(Cookie cookie : request.getCookies()) {
+			System.out.println(cookie.getValue());
+		}
+				
 		return subjectDao.getAll();
 	}
 	
@@ -79,7 +94,7 @@ public class HomeController {
 	
 	@PostMapping("/teachers")
 	public Teacher addTeacher(@RequestBody TeacherInfo teacherInfo) {
-		
+				
 		Subject subject = subjectDao.getById(teacherInfo.getSubjectId());
 		
 		Teacher teacher = new Teacher(teacherInfo.getName(), teacherInfo.getAddress(), 
