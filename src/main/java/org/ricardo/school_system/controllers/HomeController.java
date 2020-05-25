@@ -1,11 +1,14 @@
 package org.ricardo.school_system.controllers;
 
-import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.ricardo.school_system.assemblers.CookieHandler;
 import org.ricardo.school_system.assemblers.DegreeSubjectBundle;
+import org.ricardo.school_system.assemblers.LoginInfo;
 import org.ricardo.school_system.assemblers.SchoolInfo;
 import org.ricardo.school_system.assemblers.TeacherInfo;
 import org.ricardo.school_system.daos.SchoolDao;
@@ -42,74 +45,126 @@ public class HomeController {
 	@Autowired
 	private SchoolDao schoolDao;
 	
+	@PostMapping("/login")
+	public ResponseEntity<Teacher> login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginInfo loginInfo){
+				
+		HttpSession session = request.getSession(false);
+				
+		if (loginInfo.getUsername().equals("Ricardo") && 
+		   (session == null || session.getAttribute("user-credentials") == null)) {
+			
+			session = request.getSession();
+			
+			Teacher teacher = teacherDao.getById(30);
+			
+			session.setAttribute("user-credentials", teacher);
+			
+			System.out.println("Session id : " + session.getId());
+			
+			return new ResponseEntity<>(teacher, HttpStatus.OK);			
+		}
+		
+		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	}
+		
 	@GetMapping("/teachers")
 	public ResponseEntity<List<Teacher>> getTeachers(HttpServletRequest request, HttpServletResponse response) {	
+		
+//		response.addCookie(new CookieHandler("name", "jose_semedo"));
+//		response.addCookie(new CookieHandler("id", "1904"));
+//		response.addCookie(new CookieHandler("token", "ctcrcfexeexnn$$%buwishwiuhswihhi.unuinn"));
 				
-		Cookie cookie = new Cookie("name", "Pablo%20Aimar");
-		
-		cookie.setComment("esta cookie é altamente!!");
-		
-		response.addCookie(cookie);
-		
-		return new ResponseEntity<>(teacherDao.getAll(), HttpStatus.OK);
+		HttpSession session = request.getSession(false);
+				
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED):
+				new ResponseEntity<>(teacherDao.getAll(), HttpStatus.OK);
 	}
 	
-	@GetMapping("/test")
-	public String hello() {
+	@GetMapping("/logout")
+	public ResponseEntity<Boolean> logout(HttpServletRequest request){
 		
-		List<String> sentences = new LinkedList<>();
+		HttpSession session = request.getSession(false);
 		
-		sentences.add("Olá");
-		sentences.add("Adeus");
-		sentences.add("Até amanhã");
-		sentences.add("SL Benfica");
+		if (session == null || session.getAttribute("user-credentials") == null) return new ResponseEntity<>(null, HttpStatus.METHOD_NOT_ALLOWED);
 		
-		return sentences.get((int) (Math.random() * sentences.size()));
+		session.invalidate();
+		
+		return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
 	}
 	
 	@GetMapping("/subjects/{id}")
-	public Subject getSubject(@PathVariable("id") int id){
-		return teacherDao.getSubject(id);
+	public ResponseEntity<Subject> getSubject(HttpServletRequest request, @PathVariable("id") int id){
+		
+		HttpSession session = request.getSession(false);
+
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED):
+				new ResponseEntity<>(teacherDao.getSubject(id), HttpStatus.OK);
 	}
 	
 	@GetMapping("/subjects")
-	public List<Subject> getSubjects(HttpServletRequest request){
+	public ResponseEntity<List<Subject>> getSubjects(HttpServletRequest request){
 		
-		for(Cookie cookie : request.getCookies()) {
-			System.out.println(cookie.getValue());
-		}
-				
-		return subjectDao.getAll();
+		HttpSession session = request.getSession(false);
+
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED):
+				new ResponseEntity<>(subjectDao.getAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/teachers/{id}")
-	public void removeTeacher(@PathVariable("id") int id) {
-		teacherDao.delete(id);
+	public ResponseEntity<String> removeTeacher(HttpServletRequest request, @PathVariable("id") int id) {
+		
+		HttpSession session = request.getSession(false);
+
+		if (session != null && session.getAttribute("user-credentials") != null) {
+			teacherDao.delete(id);	
+			return new ResponseEntity<>("Teacher with id " + id + " deleted.", HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>("Operation not completed due to no authorization.", HttpStatus.UNAUTHORIZED);
 	}
 	
 	@GetMapping("/degrees")
-	public List<Degree> getDegrees(){
-		return degreeService.getAll();
+	public ResponseEntity<List<Degree>> getDegrees(HttpServletRequest request){
+		
+		HttpSession session = request.getSession(false);
+			
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED):
+				new ResponseEntity<>(degreeService.getAll(), HttpStatus.OK);
 	}
 	
 	@PostMapping("/teachers")
-	public Teacher addTeacher(@RequestBody TeacherInfo teacherInfo) {
+	public ResponseEntity<Teacher> addTeacher(HttpServletRequest request, @RequestBody TeacherInfo teacherInfo) {
 				
+		HttpSession session = request.getSession(false);
+		
 		Subject subject = subjectDao.getById(teacherInfo.getSubjectId());
 		
 		Teacher teacher = new Teacher(teacherInfo.getName(), teacherInfo.getAddress(), 
 						              teacherInfo.getPhonenumber(), teacherInfo.getEmail(), subject);
 		
-		return teacherDao.add(teacher);
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED):
+				new ResponseEntity<>(teacherDao.add(teacher), HttpStatus.OK);
 	}
 	
 	@PostMapping("/degrees")
-	public Degree addDegree(@RequestBody DegreeSubjectBundle degreeSubjectBundle) {	
-		return degreeService.addDegreeWithSubjects(degreeSubjectBundle);
+	public ResponseEntity<Degree> addDegree(HttpServletRequest request, @RequestBody DegreeSubjectBundle degreeSubjectBundle) {	
+		
+		HttpSession session = request.getSession(false);
+
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED):
+				new ResponseEntity<>(degreeService.addDegreeWithSubjects(degreeSubjectBundle), HttpStatus.OK);
 	}
 	
 	@PostMapping("/teachers/{id}")
-	public School addSchoolToTeacher(@PathVariable("id") int id, @RequestBody SchoolInfo schoolInfo) {
+	public ResponseEntity<School> addSchoolToTeacher(HttpServletRequest request, @PathVariable("id") int id, @RequestBody SchoolInfo schoolInfo) {
+		
+		HttpSession session = request.getSession(false); //convem fazer a verificacao primeiro, assim poupa se tempo!
 		
 		Teacher teacher = teacherDao.getById(id);
 		
@@ -119,7 +174,9 @@ public class HomeController {
 		
 		teacherDao.update(teacher);
 		
-		return school;
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED):
+				new ResponseEntity<>(school, HttpStatus.OK);
 	}
 	
 }
