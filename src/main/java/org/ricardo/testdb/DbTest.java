@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 
 public class DbTest {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		
 		String jdbcUrl = "jdbc:mysql://localhost:3306/school?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
