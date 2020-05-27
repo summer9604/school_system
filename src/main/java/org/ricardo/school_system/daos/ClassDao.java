@@ -4,6 +4,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.ricardo.school_system.entities.Class;
 
 @Repository
@@ -27,9 +28,9 @@ public class ClassDao extends GenericDao<Class> {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		String query = "Select * from class";
+		Query query = session.createQuery("from Class");
 
-		return session.createSQLQuery(query).addEntity(Class.class).getResultList(); 
+		return (List<Class>) query.getResultList(); 
 	}
 
 	@Override
@@ -46,10 +47,12 @@ public class ClassDao extends GenericDao<Class> {
 	public Class getByEmail(String email) {
 		
 		Session session = sessionFactory.getCurrentSession();
-
-		String query = "Select * from class where email = '" + email + "'";
 		
-		return (Class) session.createSQLQuery(query).addEntity(Class.class).getSingleResult();
+		Query query = session.createQuery("from class where email=:email");
+
+		query.setParameter("email", email);
+		
+		return (Class) query.uniqueResult();
 	}
 
 	@Override

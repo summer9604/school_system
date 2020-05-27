@@ -1,6 +1,7 @@
 package org.ricardo.school_system.services;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import org.ricardo.school_system.assemblers.DegreeSubjectBundle;
 import org.ricardo.school_system.daos.DegreeDao;
@@ -8,6 +9,8 @@ import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.entities.Degree;
 import org.ricardo.school_system.entities.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,18 +22,47 @@ public class CourseService{
 	@Autowired
 	private SubjectDao subjectDao;
 	
-	public Degree addDegree(Degree degree) {	
-		return degreeDao.add(degree);
+	public ResponseEntity<?> addDegree(HttpServletRequest request, DegreeSubjectBundle degreeSubjectBundle) {	
+		
+		HttpSession session = request.getSession(false);
+		
+		if(session == null) return new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN);
+
+		Degree degree = new Degree(degreeSubjectBundle.getDegreeName());
+
+		for(int subjectId : degreeSubjectBundle.getSubjectIds()) {
+			degree.addSubject(subjectDao.getById(subjectId)); //Exception - degree already exists.
+		}
+
+		return new ResponseEntity<>(degreeDao.add(degree), HttpStatus.OK);
 	}
 
 	@Transactional
-	public List<Degree> getAllDegrees() {
-		return degreeDao.getAll();
+	public ResponseEntity<?> getAllDegrees(HttpServletRequest request) {
+
+		HttpSession session = request.getSession(false);
+		
+		String[] permissions = (String[]) session.getAttribute("user-permissions");
+		
+		for(String permission : permissions) {
+			if(permission.equals("STUDENT")) {
+				return (session == null || session.getAttribute("user-credentials") == null) ?
+						new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN) :
+						new ResponseEntity<>(degreeDao.getAll(), HttpStatus.OK);
+			}
+		}
+			
+		return new ResponseEntity<>("You are not authorized.", HttpStatus.UNAUTHORIZED);
 	}
 
 	@Transactional
-	public Degree getDegreeById(int id) {
-		return degreeDao.getById(id);
+	public ResponseEntity<?> getDegreeById(HttpServletRequest request, int id) {
+		
+		HttpSession session = request.getSession(false);
+
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN) :
+				new ResponseEntity<>(degreeDao.getById(id), HttpStatus.OK);
 	}
 
 	@Transactional
@@ -48,13 +80,23 @@ public class CourseService{
 	}
 	
 	@Transactional
-	public List<Subject> getAllSubjects() {
-		return subjectDao.getAll();
+	public ResponseEntity<?> getAllSubjects(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession(false);
+
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN):
+				new ResponseEntity<>(subjectDao.getAll(), HttpStatus.OK);		
 	}
 
 	@Transactional
-	public Subject getSubjectById(int id) {
-		return subjectDao.getById(id);
+	public ResponseEntity<?> getSubjectById(HttpServletRequest request, int id) {
+		
+		HttpSession session = request.getSession(false);
+
+		return (session == null || session.getAttribute("user-credentials") == null) ?
+				new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN) :
+				new ResponseEntity<>(subjectDao.getById(id), HttpStatus.OK);
 	}
 
 	@Transactional
@@ -67,17 +109,4 @@ public class CourseService{
 		return subjectDao.update(subject);
 	}
 	
-	@Transactional
-	public Degree addDegreeWithSubjects(DegreeSubjectBundle degreeSubjectBundle){
-
-		Degree degree = new Degree(degreeSubjectBundle.getDegreeName());
-
-		for(int subjectId : degreeSubjectBundle.getSubjectIds()) {
-			degree.addSubject(subjectDao.getById(subjectId));
-		}
-
-		degreeDao.add(degree);
-		
-		return degree;
-	}
 }

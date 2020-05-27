@@ -3,6 +3,7 @@ package org.ricardo.school_system.daos;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.ricardo.school_system.entities.Subject;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +28,9 @@ public class SubjectDao extends GenericDao<Subject> {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		String query = "Select * from subject";
-		
-		return session.createSQLQuery(query).addEntity(Subject.class).getResultList();
+		Query query = session.createQuery("from Subject");
+
+		return (List<Subject>) query.getResultList();
 	}
 
 	@Override
@@ -57,10 +58,12 @@ public class SubjectDao extends GenericDao<Subject> {
 	public Subject getSubjectByName(String name) {
 		
 		Session session = sessionFactory.getCurrentSession();
-				
-		String query = "Select * from subject where name = '" + name + "'";
 		
-		return (Subject) session.createSQLQuery(query).addEntity(Subject.class).getSingleResult();
+		Query query = session.createQuery("from Student where name=:name");
+		
+		query.setParameter("name", name);
+						
+		return (Subject) query.uniqueResult();
 	}
 
 	@Override

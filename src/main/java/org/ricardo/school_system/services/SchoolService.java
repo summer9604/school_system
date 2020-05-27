@@ -1,11 +1,10 @@
 package org.ricardo.school_system.services;
 
 import java.util.List;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-
-import org.ricardo.school_system.assemblers.SchoolInfo;
-import org.ricardo.school_system.assemblers.TeacherSchool;
+import org.ricardo.school_system.assemblers.SchoolForm;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.TeacherDao;
@@ -13,6 +12,8 @@ import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
 import org.ricardo.school_system.entities.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -86,7 +87,11 @@ public class SchoolService {
 	}
 	
 	@Transactional
-	public TeacherSchool addSchoolToTeacher(int teacherId, SchoolInfo schoolInfo) {
+	public ResponseEntity<?> addSchoolToTeacher(HttpServletRequest request, int teacherId, SchoolForm schoolInfo) {
+		
+		HttpSession session = request.getSession(false); 
+				
+		if (session == null) return new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN);
 		
 		Teacher teacher = teacherDao.getById(teacherId);
 		
@@ -96,7 +101,7 @@ public class SchoolService {
 		
 		teacherDao.update(teacher);
 		
-		return new TeacherSchool(teacher.getName(), school.getName());
+		return new ResponseEntity<>("Teacher '" + teacher.getName() + "' is now teaching in '" + school.getName() + "'", HttpStatus.OK);
 	}
 }
 

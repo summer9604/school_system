@@ -1,8 +1,9 @@
 package org.ricardo.school_system.daos;
 
 import java.util.List;
-import javax.transaction.Transactional;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Repository;
 public class TeacherDao extends GenericDao<Teacher> {
 
 	@Override
-	@Transactional
 	public Teacher add(Teacher teacher) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -22,18 +22,16 @@ public class TeacherDao extends GenericDao<Teacher> {
 	}
 	
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<Teacher> getAll() {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		String query = "Select * from teacher";
-		
-		return session.createSQLQuery(query).addEntity(Teacher.class).getResultList();
+		Query query = session.createQuery("from Teacher");
+
+		return (List<Teacher>) query.getResultList();
 	}
 
-	@Transactional
 	public Subject getSubject(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -44,7 +42,6 @@ public class TeacherDao extends GenericDao<Teacher> {
 	}
 	
 	@Override
-	@Transactional
 	public Teacher getById(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -53,30 +50,43 @@ public class TeacherDao extends GenericDao<Teacher> {
 	}
 
 	@Override
-	@Transactional
 	public Teacher getByEmail(String email) {
 		
 		Session session = sessionFactory.getCurrentSession();
-
-		String query = "Select * from teacher where email = '" + email + "'";
 		
-		return (Teacher) session.createSQLQuery(query).addEntity(Teacher.class).getSingleResult();
+		Query query = session.createQuery("from Teacher where email=:email");
+		
+		query.setParameter("email", email);
+
+		return (Teacher) query.uniqueResult();
+	}
+	
+	public Teacher getByEmailAndPassword(LoginForm loginInfo) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		Query query = session.createQuery("from Teacher where email=:email and password=:password");
+		
+		query.setParameter("email", loginInfo.getEmail());
+		query.setParameter("password", loginInfo.getPassword());
+		
+		return (Teacher) query.uniqueResult();
 	}
 
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<Teacher> getByName(String name) {
 		
 		Session session = sessionFactory.getCurrentSession();
-
-		String query = "Select * from teacher where name = '" + name + "'";
 		
-		return (List<Teacher>) session.createSQLQuery(query).addEntity(Teacher.class).getResultList();
+		Query query = session.createQuery("from Teacher where name=:name");
+		
+		query.setParameter("name", name);
+		
+		return (List<Teacher>) query.getResultList();
 	}
 
 	@Override
-	@Transactional
 	public void delete(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -87,7 +97,6 @@ public class TeacherDao extends GenericDao<Teacher> {
 	}
 
 	@Override
-	@Transactional
 	public Teacher update(Teacher teacher) {
 		
 		Session session = sessionFactory.getCurrentSession();

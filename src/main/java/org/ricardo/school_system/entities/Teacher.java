@@ -39,6 +39,12 @@ public class Teacher {
 	
 	@Column(name="email")
 	private String email;
+	
+	@Column(name="password")
+	private String password;
+	
+	@Column(name="teacher_role")
+	private String teacherRole;
 
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
                           CascadeType.PERSIST, CascadeType.REFRESH})
@@ -71,12 +77,14 @@ public class Teacher {
 		
 	}
 
-	public Teacher(String name, String address, int phonenumber, String email, Subject subject) {
+	public Teacher(String name, String address, int phonenumber, String email, String password, Subject subject) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
 		this.email = email;
+		this.password = password;
 		this.subject = subject;
+		this.teacherRole = "ROLE_TEACHER";
 		this.createdAt = LocalDate.now();
 		this.updatedAt = LocalDate.now();
 	}
@@ -105,6 +113,26 @@ public class Teacher {
 		this.address = address;
 	}
 	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getTeacherRole() {
+		return teacherRole;
+	}
+
+	public void setTeacherRole(String teacherRole) {
+		this.teacherRole = teacherRole;
+	}
+
+	public void setRetiredAt(LocalDate retiredAt) {
+		this.retiredAt = retiredAt;
+	}
+
 	public List<Class> getClasses() {
 		return classes;
 	}

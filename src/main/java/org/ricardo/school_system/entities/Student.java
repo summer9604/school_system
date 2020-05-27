@@ -36,17 +36,21 @@ public class Student {
 	@Column(name = "phonenumber")
 	private int phonenumber;
 	
+	@Column(name = "password")
+	private String password;
+	
 	@Column(name="email")
 	private String email;
+	
+	@Column(name="student_role")
+	private String studentRole;
 
 	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, 
 				           CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "class_id")
 	private Class studentClass;
-
-	@ManyToMany(fetch = FetchType.LAZY,
-    	    	cascade = { CascadeType.DETACH, CascadeType.MERGE,
-    			            CascadeType.PERSIST, CascadeType.REFRESH})
+	//se eu elimino o aluno, todos os resultados intermediarios tambem sao eliminados...
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL) 
 	@JoinTable(name = "student_subject",
                joinColumns = @JoinColumn(name = "student_id"),
                inverseJoinColumns = @JoinColumn(name = "subject_id"))
@@ -62,11 +66,13 @@ public class Student {
 
 	}
 
-	public Student(String name, String address, int phonenumber, String email) {
+	public Student(String name, String address, int phonenumber, String email, String password) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
 		this.email = email;
+		this.password = password;
+		this.studentRole = "ROLE_STUDENT";
 		this.createdAt = LocalDate.now();
 		this.updatedAt = LocalDate.now();
 	}
@@ -95,6 +101,14 @@ public class Student {
 		this.address = address;
 	}
 	
+	public String getStudentRole() {
+		return studentRole;
+	}
+
+	public void setStudentRole(String studentRole) {
+		this.studentRole = studentRole;
+	}
+
 	public List<Subject> getSubjects() {
 		return subjects;
 	}
@@ -117,6 +131,14 @@ public class Student {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Class getStudentClass() {

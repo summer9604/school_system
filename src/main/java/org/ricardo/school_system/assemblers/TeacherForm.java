@@ -3,22 +3,24 @@ package org.ricardo.school_system.assemblers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TeacherInfo {
+public class TeacherForm {
 
 	private String name;
 	private String address;
 	private int phonenumber;
 	private String email;
+	private String password;
 	private int subjectId;
 	
 	@JsonCreator
-	public TeacherInfo(@JsonProperty("name") String name, @JsonProperty("address") String address, 
+	public TeacherForm(@JsonProperty("name") String name, @JsonProperty("address") String address, 
 					   @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email, 
-					   @JsonProperty("subjectId") int subjectId) {
+					   @JsonProperty("password") String password, @JsonProperty("subjectId") int subjectId) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
 		this.email = email;
+		this.password = password;
 		this.subjectId = subjectId;
 	}
 
@@ -52,6 +54,14 @@ public class TeacherInfo {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public int getSubjectId() {

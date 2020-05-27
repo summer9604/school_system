@@ -3,6 +3,7 @@ package org.ricardo.school_system.daos;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.ricardo.school_system.entities.School;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +28,9 @@ public class SchoolDao extends GenericDao<School> {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		String query = "Select * from school";
+		Query query = session.createQuery("from School");
 
-		return session.createSQLQuery(query).addEntity(School.class).getResultList(); 
+		return (List<School>) query.getResultList();
 	}
 
 	@Override
@@ -46,9 +47,11 @@ public class SchoolDao extends GenericDao<School> {
 		
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from school where email = '" + email + "'";
+		Query query = session.createQuery("from School where email=:email");
+
+		query.setParameter("email", email);
 		
-		return (School) session.createSQLQuery(query).addEntity(School.class).getSingleResult();
+		return (School) query.uniqueResult();
 	}
 
 	@Override
@@ -62,9 +65,11 @@ public class SchoolDao extends GenericDao<School> {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		String query = "Select * from school where name = '" + name + "'";
+		Query query = session.createQuery("from School where name=:name");
+
+		query.setParameter("name", name);
 		
-		return (School) session.createSQLQuery(query).addEntity(School.class).getSingleResult();
+		return (School) query.uniqueResult();
 	}
 
 	@Override

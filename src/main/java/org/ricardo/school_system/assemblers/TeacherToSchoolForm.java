@@ -1,15 +1,15 @@
 package org.ricardo.school_system.assemblers;
 
-public class TeacherSchool {
+public class TeacherToSchoolForm {
 
 	private String teacherName;
 	private String schoolName;
 	
-	public TeacherSchool() {
+	public TeacherToSchoolForm() {
 		
 	}
 
-	public TeacherSchool(String teacherName, String schoolName) {
+	public TeacherToSchoolForm(String teacherName, String schoolName) {
 		this.teacherName = teacherName;
 		this.schoolName = schoolName;
 	}

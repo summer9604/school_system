@@ -3,12 +3,12 @@ package org.ricardo.school_system.assemblers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SchoolInfo {
+public class SchoolForm {
 
 	private String name;
 	
 	@JsonCreator
-	public SchoolInfo(@JsonProperty("name") String name) {
+	public SchoolForm(@JsonProperty("name") String name) {
 		this.name = name;
 	}
 

@@ -3,6 +3,7 @@ package org.ricardo.school_system.daos;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.ricardo.school_system.entities.Degree;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +28,9 @@ public class DegreeDao extends GenericDao<Degree> {
 		
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from degree";
+		Query query = session.createQuery("from Degree");
 		
-		return session.createSQLQuery(query).addEntity(Degree.class).getResultList();
+		return (List<Degree>) query.getResultList();
 	}
 
 	@Override
@@ -56,9 +57,11 @@ public class DegreeDao extends GenericDao<Degree> {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		String query = "Select * from degree where name = '" + name + "'";
+		Query query = session.createQuery("from Degree where name=:name");
 		
-		return (Degree) session.createSQLQuery(query).addEntity(Degree.class).getSingleResult();
+		query.setParameter("name", name);
+				
+		return (Degree) query.uniqueResult();
 	}
 
 	@Override
@@ -70,7 +73,6 @@ public class DegreeDao extends GenericDao<Degree> {
 		Degree degree = session.get(Degree.class, id);
 		
 		session.delete(degree);
-		
 	}
 
 	@Override

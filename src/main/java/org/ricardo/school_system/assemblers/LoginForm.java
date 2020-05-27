@@ -3,28 +3,28 @@ package org.ricardo.school_system.assemblers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class LoginInfo {
+public class LoginForm {
 
-	private String username;
+	private String email;
 	private String password;
 	
-	public LoginInfo() {
+	public LoginForm() {
 		
 	}
 	
 	@JsonCreator
-	public LoginInfo(@JsonProperty("username") String username, 
+	public LoginForm(@JsonProperty("email") String email, 
 					 @JsonProperty("password") String password) {
-		this.username = username;
+		this.email = email;
 		this.password = password;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {
@@ -37,7 +37,7 @@ public class LoginInfo {
 
 	@Override
 	public String toString() {
-		return "LoginInfo [username=" + username + ", password=" + password + "]";
+		return "LoginInfo [email=" + email + ", password=" + password + "]";
 	}
 	
 }
