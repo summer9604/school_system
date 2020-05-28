@@ -8,6 +8,8 @@ import org.ricardo.school_system.daos.DegreeDao;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.entities.Degree;
 import org.ricardo.school_system.entities.Subject;
+import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
+import org.ricardo.school_system.exceptions.SessionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ public class CourseService{
 		
 		HttpSession session = request.getSession(false);
 		
-		if(session == null) return new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN);
+		if (session == null) throw new SessionNotFoundException("You are not logged in.");
 
 		Degree degree = new Degree(degreeSubjectBundle.getDegreeName());
 
@@ -42,27 +44,26 @@ public class CourseService{
 
 		HttpSession session = request.getSession(false);
 		
+		if (session == null) throw new SessionNotFoundException("You are not logged in.");
+		
 		String[] permissions = (String[]) session.getAttribute("user-permissions");
 		
 		for(String permission : permissions) {
-			if(permission.equals("STUDENT")) {
-				return (session == null || session.getAttribute("user-credentials") == null) ?
-						new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN) :
-						new ResponseEntity<>(degreeDao.getAll(), HttpStatus.OK);
-			}
+			if(permission.equals("STUDENT")) 
+				return new ResponseEntity<>(degreeDao.getAll(), HttpStatus.OK);
 		}
 			
-		return new ResponseEntity<>("You are not authorized.", HttpStatus.UNAUTHORIZED);
+		throw new OperationNotAuthorizedException("You dont´t have enough permissions.");
 	}
 
 	@Transactional
 	public ResponseEntity<?> getDegreeById(HttpServletRequest request, int id) {
 		
 		HttpSession session = request.getSession(false);
+		
+		if (session == null) throw new SessionNotFoundException("You are not logged in.");
 
-		return (session == null || session.getAttribute("user-credentials") == null) ?
-				new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN) :
-				new ResponseEntity<>(degreeDao.getById(id), HttpStatus.OK);
+		return new ResponseEntity<>(degreeDao.getById(id), HttpStatus.OK);
 	}
 
 	@Transactional
@@ -83,20 +84,20 @@ public class CourseService{
 	public ResponseEntity<?> getAllSubjects(HttpServletRequest request) {
 		
 		HttpSession session = request.getSession(false);
+		
+		if (session == null) throw new SessionNotFoundException("You are not logged in.");
 
-		return (session == null || session.getAttribute("user-credentials") == null) ?
-				new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN):
-				new ResponseEntity<>(subjectDao.getAll(), HttpStatus.OK);		
+		return new ResponseEntity<>(subjectDao.getAll(), HttpStatus.OK);		
 	}
 
 	@Transactional
 	public ResponseEntity<?> getSubjectById(HttpServletRequest request, int id) {
 		
 		HttpSession session = request.getSession(false);
+		
+		if (session == null) throw new SessionNotFoundException("You are not logged in.");
 
-		return (session == null || session.getAttribute("user-credentials") == null) ?
-				new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN) :
-				new ResponseEntity<>(subjectDao.getById(id), HttpStatus.OK);
+		return new ResponseEntity<>(subjectDao.getById(id), HttpStatus.OK);
 	}
 
 	@Transactional

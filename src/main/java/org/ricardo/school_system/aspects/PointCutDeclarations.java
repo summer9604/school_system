@@ -7,12 +7,12 @@ public class PointCutDeclarations {
 	@Pointcut("execution(* org.ricardo.school_system.controllers.*.*(..))")
 	public void getControllerPackage() {}
 	
-	@Pointcut("execution(* org.ricardo.school_system.controllers.*.login(..))")
+	@Pointcut("execution(* org.ricardo.school_system.controllers.*.login*(..))")
 	public void loginEndPoint() {}
 	
-	@Pointcut("execution(* org.ricardo.school_system.controllers.*.addTeacher(..))")
+	@Pointcut("execution(* org.ricardo.school_system.controllers.*.add*(..))")
 	public void addTeacherEndPoint() {}
 	
 	@Pointcut("getControllerPackage() && !(loginEndPoint() || addTeacherEndPoint())")
-	public void validateToken() {}
+	public void validateSession() {}
 }

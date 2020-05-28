@@ -2,7 +2,6 @@ package org.ricardo.school_system.services;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import org.ricardo.school_system.assemblers.SchoolForm;
 import org.ricardo.school_system.daos.ClassDao;
@@ -88,11 +87,7 @@ public class SchoolService {
 	
 	@Transactional
 	public ResponseEntity<?> addSchoolToTeacher(HttpServletRequest request, int teacherId, SchoolForm schoolInfo) {
-		
-		HttpSession session = request.getSession(false); 
-				
-		if (session == null) return new ResponseEntity<>("You are not logged in.", HttpStatus.FORBIDDEN);
-		
+								
 		Teacher teacher = teacherDao.getById(teacherId);
 		
 		School school = schoolDao.getSchoolByName(schoolInfo.getName());
@@ -103,6 +98,12 @@ public class SchoolService {
 		
 		return new ResponseEntity<>("Teacher '" + teacher.getName() + "' is now teaching in '" + school.getName() + "'", HttpStatus.OK);
 	}
+	
+	private boolean hasPermissions(String[] permissions) {
+		//blablablablabla
+		return false;
+	}
+	
 }
 
 

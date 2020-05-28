@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class BeforeJwtTokenHandler {
+public class BeforeAuthorizationValidator {
 
 //	@Around("org.ricardo.school_system.aspects.PointCutDeclarations.validateToken()")
 //	public void validateTokens(JoinPoint joinPoint) {

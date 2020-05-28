@@ -38,7 +38,10 @@ public class StudentController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> add(HttpServletRequest request, StudentForm studentForm) {
+	public ResponseEntity<?> add(HttpServletRequest request, @RequestBody StudentForm studentForm) {
+		
+		System.out.println("Student form: " + studentForm);
+		
 		return studentService.add(request, studentForm);
 	}
 	

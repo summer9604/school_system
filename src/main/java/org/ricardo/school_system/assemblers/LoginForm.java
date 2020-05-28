@@ -8,10 +8,6 @@ public class LoginForm {
 	private String email;
 	private String password;
 	
-	public LoginForm() {
-		
-	}
-	
 	@JsonCreator
 	public LoginForm(@JsonProperty("email") String email, 
 					 @JsonProperty("password") String password) {

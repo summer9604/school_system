@@ -9,6 +9,7 @@ import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.daos.TeacherDao;
 import org.ricardo.school_system.entities.Student;
 import org.ricardo.school_system.entities.Teacher;
+import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,63 +29,82 @@ public class LoginService {
 
 		HttpSession session = request.getSession(false);
 		
-		if (session == null) {
-			
-			String[] permissions = null;
-			
-			if (role.equals("teacher")) {
-								
-				Teacher teacher = teacherDao.getByEmailAndPassword(loginInfo);
-				
-				if (teacher != null) {
-					
-					session = request.getSession();
-					
-					session.setAttribute("user-credentials", teacher);
-					
-					permissions = new String[] {teacher.getTeacherRole()};
-					
-					session.setAttribute("user-permissions", permissions);
-					
-					return new ResponseEntity<>(teacher, HttpStatus.OK);
-				}				
-			}
-			
-			if (role.equals("student")) {
-				
-				Student student = studentDao.getByEmailAndPassword(loginInfo);
-				
-				if (student != null) {
-					
-					session = request.getSession();
-					
-					session.setAttribute("user-credentials", student);
-					
-					permissions = new String[] {student.getStudentRole()};
-					
-					session.setAttribute("user-permissions", permissions);
-					
-					return new ResponseEntity<>(student, HttpStatus.OK);
-				}				
-			}	
-			
-			return new ResponseEntity<>("Wrong credentials", HttpStatus.UNAUTHORIZED);
-		}
+		if (session == null) return generateLoginSession(request, loginInfo, role, session);
 		
-		return new ResponseEntity<>("You have a session already.", HttpStatus.BAD_REQUEST);
+		throw new OperationNotAuthorizedException("You have a session already.");
 	}
 	
-	public ResponseEntity<?> logout(HttpServletRequest request){
+	public ResponseEntity<?> logout(HttpServletRequest request){				
+		return generateLogoutEnvironment(request);
+	}
+	
+	private ResponseEntity<?> generateLoginSession(HttpServletRequest request, LoginForm loginInfo, 
+									           String role, HttpSession session) {
 
+		String[] permissions = null;
+		
+		if (role.equals("teacher")) {
+							
+			Teacher teacher = teacherDao.getByEmailAndPassword(loginInfo);
+			
+			if (teacher != null) {
+				
+				session = request.getSession();
+				
+				session.setAttribute("user-credentials", teacher);
+				
+				permissions = new String[] {"ROLE_TEACHER", "ROLE_STUDENT"};
+				
+				session.setAttribute("user-permissions", permissions);
+				
+				return new ResponseEntity<>(teacher, HttpStatus.OK);
+			}				
+		}
+		
+		if (role.equals("student")) {
+			
+			Student student = studentDao.getByEmailAndPassword(loginInfo);
+			
+			if (student != null) {
+				
+				session = request.getSession();
+				
+				session.setAttribute("user-credentials", student);
+				
+				permissions = new String[] {"ROLE_STUDENT"};
+				
+				session.setAttribute("user-permissions", permissions);
+				
+				return new ResponseEntity<>(student, HttpStatus.OK);
+			}				
+		}	
+				
+		throw new OperationNotAuthorizedException("Wrong credentials");
+	}
+	
+	private ResponseEntity<?> generateLogoutEnvironment(HttpServletRequest request){
+		
 		HttpSession session = request.getSession(false);
 		
-		if (session == null) return new ResponseEntity<>("You have no current session.", HttpStatus.METHOD_NOT_ALLOWED);
+	    String[] permissions = (String[]) session.getAttribute("user-permissions");
 		
-		Teacher teacher = (Teacher) session.getAttribute("user-credentials");
+		for(String permission : permissions) {
+			
+			if(permission.equals("ROLE_TEACHER")) {
+				
+				Teacher teacher = (Teacher) session.getAttribute("user-credentials");
+				
+				session.invalidate();
+				
+				return new ResponseEntity<>("Teacher '" +  teacher.getName() + "' logged out.", HttpStatus.OK);
+			}
+		}
+				
+		Student student = (Student) session.getAttribute("user-credentials");
 		
 		session.invalidate();
-		
-		return new ResponseEntity<>("User '" +  teacher.getName() + "' logged out.", HttpStatus.ACCEPTED);
+				
+		return new ResponseEntity<>("Student '" +  student.getName() + "' logged out.", HttpStatus.OK);
 	}
 	
 }

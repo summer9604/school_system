@@ -37,7 +37,7 @@ public class TeacherController {
 		return loginService.login(request, loginInfo, "teacher");
 	}
 		
-	@GetMapping("/list")
+	@GetMapping("/all")
 	public ResponseEntity<?> getTeachers(HttpServletRequest request) {	
 		return teacherService.getAll(request);
 	}
