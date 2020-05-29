@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 public class DegreeDao extends GenericDao<Degree> {
 
 	@Override
-	@Transactional
 	public Degree add(Degree degree) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -22,7 +21,6 @@ public class DegreeDao extends GenericDao<Degree> {
 	}
 
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<Degree> getAll() {
 		
@@ -34,7 +32,6 @@ public class DegreeDao extends GenericDao<Degree> {
 	}
 
 	@Override
-	@Transactional
 	public Degree getById(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -52,7 +49,6 @@ public class DegreeDao extends GenericDao<Degree> {
 		return null;
 	}
 	
-	@Transactional
 	public Degree getDegreeByName(String name) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -65,7 +61,6 @@ public class DegreeDao extends GenericDao<Degree> {
 	}
 
 	@Override
-	@Transactional
 	public void delete(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -76,7 +71,6 @@ public class DegreeDao extends GenericDao<Degree> {
 	}
 
 	@Override
-	@Transactional
 	public Degree update(Degree degree) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -86,4 +80,32 @@ public class DegreeDao extends GenericDao<Degree> {
 		return degree;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Degree> getDegreesBySchoolId(int id) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		String query = "Select * from degree where idDegree in(\r\n" + 
+				"Select idDegree from degree d inner join school_degree sd\r\n" + 
+				"on sd.degree_id = d.idDegree \r\n" + 
+				"where sd.school_id = " + id + ");";
+
+		return session.createSQLQuery(query).addEntity(Degree.class).getResultList();
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

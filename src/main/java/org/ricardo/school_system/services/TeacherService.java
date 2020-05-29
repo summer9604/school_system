@@ -3,7 +3,7 @@ package org.ricardo.school_system.services;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import org.ricardo.school_system.assemblers.TeacherForm;
+import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.daos.TeacherDao;
 import org.ricardo.school_system.entities.Subject;
@@ -24,7 +24,7 @@ public class TeacherService {
 	private SubjectDao subjectDao;
 	
 	@Transactional
-	public ResponseEntity<?> add(HttpServletRequest request, TeacherForm teacherInfo) {	
+	public ResponseEntity<?> add(HttpServletRequest request, RegistrationTeacherForm teacherInfo) {	
 				
 		Subject subject = subjectDao.getById(teacherInfo.getSubjectId()); //pode dar exceções, trabalhar no exceptionControllerHandler.
 		

@@ -41,7 +41,7 @@ public class SchoolDao extends GenericDao<School> {
 
 		return session.get(School.class, id);
 	}
-
+	
 	@Override
 	public School getByEmail(String email) {
 		

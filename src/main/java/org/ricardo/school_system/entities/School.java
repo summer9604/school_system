@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="school")
-@JsonIgnoreProperties({"teachers", "classes", "degrees"})
+@JsonIgnoreProperties({"teachers", "classes", "degrees", "localAdmins"})
 public class School {
 
 	@Id
@@ -57,6 +57,11 @@ public class School {
            	   joinColumns = @JoinColumn(name = "school_id"),
                inverseJoinColumns = @JoinColumn(name = "degree_id"))
 	private List<Degree> degrees;
+	
+	@OneToMany(mappedBy = "school", 
+			   cascade = { CascadeType.DETACH, CascadeType.MERGE, 
+					   	   CascadeType.PERSIST, CascadeType.REFRESH })
+	private List<Admin> localAdmins;
 	
 	@Column(name="createdAt")
 	private LocalDate createdAt;
@@ -98,6 +103,13 @@ public class School {
 		if (degrees == null) degrees = new LinkedList<>();
 		
 		degrees.add(degree);
+	}
+	
+	public void addLocalAdmin(Admin localAdmin) {
+		
+		if (localAdmins == null) degrees = new LinkedList<>();
+		
+		localAdmins.add(localAdmin);
 	}
 
 	public int getId() {
@@ -162,6 +174,14 @@ public class School {
 
 	public void setDegrees(List<Degree> degrees) {
 		this.degrees = degrees;
+	}
+
+	public List<Admin> getLocalAdmins() {
+		return localAdmins;
+	}
+
+	public void setLocalAdmins(List<Admin> localAdmins) {
+		this.localAdmins = localAdmins;
 	}
 
 	public LocalDate getCreatedAt() {

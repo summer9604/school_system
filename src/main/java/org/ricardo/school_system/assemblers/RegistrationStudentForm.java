@@ -3,25 +3,23 @@ package org.ricardo.school_system.assemblers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TeacherForm {
+public class RegistrationStudentForm {
 
 	private String name;
 	private String address;
 	private int phonenumber;
 	private String email;
 	private String password;
-	private int subjectId;
 	
 	@JsonCreator
-	public TeacherForm(@JsonProperty("name") String name, @JsonProperty("address") String address, 
-					   @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email, 
-					   @JsonProperty("password") String password, @JsonProperty("subjectId") int subjectId) {
+	public RegistrationStudentForm(@JsonProperty("name") String name, @JsonProperty("address") String address,
+				       @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email,
+				       @JsonProperty("password") String password) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
 		this.email = email;
 		this.password = password;
-		this.subjectId = subjectId;
 	}
 
 	public String getName() {
@@ -64,18 +62,10 @@ public class TeacherForm {
 		this.password = password;
 	}
 
-	public int getSubjectId() {
-		return subjectId;
-	}
-
-	public void setSubjectId(int subjectId) {
-		this.subjectId = subjectId;
-	}
-
 	@Override
 	public String toString() {
-		return "TeacherInfo [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber + ", email="
-				+ email + ", subjectId=" + subjectId + "]";
+		return "StudentForm [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber + ", email="
+				+ email + ", password=" + password + "]";
 	}
 	
 }

@@ -20,7 +20,7 @@ public class HomeController {
 	public ResponseEntity<?> homePage(){
 		return new ResponseEntity<>("Welcome to the School System!", HttpStatus.OK);
 	}
-		
+	
 	@GetMapping("/logout")
 	public ResponseEntity<?> logout(HttpServletRequest request){
 		return loginService.logout(request);

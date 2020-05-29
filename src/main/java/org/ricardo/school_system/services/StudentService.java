@@ -3,7 +3,7 @@ package org.ricardo.school_system.services;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import org.ricardo.school_system.assemblers.StudentForm;
+import org.ricardo.school_system.assemblers.RegistrationStudentForm;
 import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.entities.Student;
 import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
@@ -19,7 +19,7 @@ public class StudentService {
 	private StudentDao studentDao;
 	
 	@Transactional
-	public ResponseEntity<?> add(HttpServletRequest request, StudentForm studentForm) {		
+	public ResponseEntity<?> add(HttpServletRequest request, RegistrationStudentForm studentForm) {		
 		
 		HttpSession session = request.getSession(false);		
 		

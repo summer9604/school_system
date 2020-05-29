@@ -13,6 +13,9 @@ public class PointCutDeclarations {
 	@Pointcut("execution(* org.ricardo.school_system.controllers.*.add*(..))")
 	public void addTeacherEndPoint() {}
 	
+	@Pointcut("execution(* org.ricardo.school_system.services.*.getDegreesBySchool(..))")
+	public void getDegreesPerSchoolEnpoint() {}
+	
 	@Pointcut("getControllerPackage() && !(loginEndPoint() || addTeacherEndPoint())")
 	public void validateSession() {}
 }

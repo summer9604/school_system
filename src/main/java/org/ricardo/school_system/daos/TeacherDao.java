@@ -4,7 +4,6 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.ricardo.school_system.assemblers.LoginForm;
-import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
 import org.springframework.stereotype.Repository;
 
@@ -30,15 +29,6 @@ public class TeacherDao extends GenericDao<Teacher> {
 		Query query = session.createQuery("from Teacher");
 
 		return (List<Teacher>) query.getResultList();
-	}
-
-	public Subject getSubject(int id) {
-		
-		Session session = sessionFactory.getCurrentSession();
-		
-		Teacher teacher = session.get(Teacher.class, id);
-		
-		return teacher.getSubject();
 	}
 	
 	@Override

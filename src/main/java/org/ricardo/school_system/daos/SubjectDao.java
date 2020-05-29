@@ -5,6 +5,7 @@ import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.ricardo.school_system.entities.Subject;
+import org.ricardo.school_system.entities.Teacher;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -40,6 +41,15 @@ public class SubjectDao extends GenericDao<Subject> {
 		Session session = sessionFactory.getCurrentSession();
 		
 		return session.get(Subject.class, id);
+	}
+	
+	public Subject getTeacherSubject(int id) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		Teacher teacher = session.get(Teacher.class, id);
+		
+		return teacher.getSubject();
 	}
 
 	@Override

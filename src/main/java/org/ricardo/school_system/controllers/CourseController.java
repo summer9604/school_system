@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("/course")
+@RequestMapping("/courses")
 public class CourseController {
 	
 	@Autowired
@@ -29,6 +29,11 @@ public class CourseController {
 	@GetMapping("/subjects/{id}")
 	public ResponseEntity<?> getSubject(HttpServletRequest request, @PathVariable("id") int id){
 		return courseService.getSubjectById(request, id);
+	}
+	
+	@PostMapping("/subjects/add")
+	public ResponseEntity<?> addSubject(HttpServletRequest request, @RequestBody String name) {	
+		return courseService.addSubject(name);
 	}
 	
 	@GetMapping("/degrees")

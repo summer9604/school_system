@@ -2,7 +2,7 @@ package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import org.ricardo.school_system.assemblers.LoginForm;
-import org.ricardo.school_system.assemblers.StudentForm;
+import org.ricardo.school_system.assemblers.RegistrationStudentForm;
 import org.ricardo.school_system.services.LoginService;
 import org.ricardo.school_system.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class StudentController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> add(HttpServletRequest request, @RequestBody StudentForm studentForm) {
+	public ResponseEntity<?> add(HttpServletRequest request, @RequestBody RegistrationStudentForm studentForm) {
 		
 		System.out.println("Student form: " + studentForm);
 		

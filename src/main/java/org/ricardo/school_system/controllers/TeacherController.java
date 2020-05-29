@@ -2,8 +2,8 @@ package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import org.ricardo.school_system.assemblers.LoginForm;
-import org.ricardo.school_system.assemblers.SchoolForm;
-import org.ricardo.school_system.assemblers.TeacherForm;
+import org.ricardo.school_system.assemblers.RegistrationSchoolForm;
+import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
 import org.ricardo.school_system.services.LoginService;
 import org.ricardo.school_system.services.SchoolService;
 import org.ricardo.school_system.services.TeacherService;
@@ -43,12 +43,12 @@ public class TeacherController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> addTeacher(HttpServletRequest request, @RequestBody TeacherForm teacherInfo) {
+	public ResponseEntity<?> addTeacher(HttpServletRequest request, @RequestBody RegistrationTeacherForm teacherInfo) {
 		return teacherService.add(request, teacherInfo);
 	}
 	
 	@PostMapping("/{id}")
-	public ResponseEntity<?> addSchoolToTeacher(HttpServletRequest request, @PathVariable("id") int id, @RequestBody SchoolForm schoolInfo) {
+	public ResponseEntity<?> addSchoolToTeacher(HttpServletRequest request, @PathVariable("id") int id, @RequestBody RegistrationSchoolForm schoolInfo) {
 		return schoolService.addSchoolToTeacher(request, id, schoolInfo);
 	}
 	

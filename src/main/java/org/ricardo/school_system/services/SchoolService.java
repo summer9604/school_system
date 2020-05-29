@@ -3,7 +3,7 @@ package org.ricardo.school_system.services;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import org.ricardo.school_system.assemblers.SchoolForm;
+import org.ricardo.school_system.assemblers.RegistrationSchoolForm;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.TeacherDao;
@@ -86,7 +86,7 @@ public class SchoolService {
 	}
 	
 	@Transactional
-	public ResponseEntity<?> addSchoolToTeacher(HttpServletRequest request, int teacherId, SchoolForm schoolInfo) {
+	public ResponseEntity<?> addSchoolToTeacher(HttpServletRequest request, int teacherId, RegistrationSchoolForm schoolInfo) {
 								
 		Teacher teacher = teacherDao.getById(teacherId);
 		
