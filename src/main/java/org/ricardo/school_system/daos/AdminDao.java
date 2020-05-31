@@ -58,7 +58,7 @@ public class AdminDao extends GenericDao<Admin> {
 
 		String query = "Select school_id from admin where id_admin = " + localAdminId;
 		
-		return (int) session.createSQLQuery(query).addEntity(Integer.class).uniqueResult();
+		return (int) session.createSQLQuery(query).uniqueResult();
 	}
 	
 	public Admin getByEmailAndPassword(LoginForm loginInfo) {

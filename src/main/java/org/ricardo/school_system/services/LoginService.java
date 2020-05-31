@@ -47,8 +47,6 @@ public class LoginService {
 	private ResponseEntity<?> generateLoginSession(HttpServletRequest request, LoginForm loginInfo, String role,
 			HttpSession session) {
 
-		String[] permissions = null;
-
 		switch (role) {
 
 		case "teacher":
@@ -64,7 +62,7 @@ public class LoginService {
 
 			session.setAttribute("user-permissions", "ROLE_TEACHER");
 
-			return new ResponseEntity<>(teacher, HttpStatus.OK);
+			return new ResponseEntity<>("Hello, teacher '" + teacher.getName() + "'", HttpStatus.OK);
 
 		case "student":
 
@@ -79,7 +77,7 @@ public class LoginService {
 
 			session.setAttribute("user-permissions", "ROLE_STUDENT");
 
-			return new ResponseEntity<>(student, HttpStatus.OK);
+			return new ResponseEntity<>("Hello, student '" + student.getName() + "'", HttpStatus.OK);
 
 		default:
 
@@ -104,7 +102,7 @@ public class LoginService {
 
 				session.setAttribute("user-permissions", "ROLE_LOCAL_ADMIN");
 
-				return new ResponseEntity<>(admin, HttpStatus.OK);
+				return new ResponseEntity<>("Hello, Local admin '" + admin.getName() + "'", HttpStatus.OK);
 
 			default:
 
@@ -114,7 +112,7 @@ public class LoginService {
 
 				session.setAttribute("user-permissions", "ROLE_GENERAL_ADMIN");
 
-				return new ResponseEntity<>(admin, HttpStatus.OK);
+				return new ResponseEntity<>("Hello, General admin '" + admin.getName() + "'", HttpStatus.OK);
 			}
 		}
 	}
