@@ -1,6 +1,8 @@
 package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.services.CourseService;
 import org.ricardo.school_system.services.LoginService;
@@ -42,13 +44,13 @@ public class SchoolController {
 	}
 	
 	@PostMapping("/admin/login")
-	public ResponseEntity<?> loginGeneralAdmin(HttpServletRequest request, @RequestBody LoginForm loginForm){
-		return loginService.login(request, loginForm, "general_admin");
+	public ResponseEntity<?> loginGeneralAdmin(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginForm){
+		return loginService.login(request, response, loginForm, "general_admin");
 	}
 	
 	@PostMapping("/localadmin/login")
-	public ResponseEntity<?> loginLocalAdmin(HttpServletRequest request, @RequestBody LoginForm loginForm){
-		return loginService.login(request, loginForm, "local_admin");
+	public ResponseEntity<?> loginLocalAdmin(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginForm){
+		return loginService.login(request, response, loginForm, "local_admin");
 	}
 	
 	@GetMapping("/degrees")

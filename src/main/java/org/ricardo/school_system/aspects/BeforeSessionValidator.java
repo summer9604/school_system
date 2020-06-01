@@ -1,11 +1,12 @@
 package org.ricardo.school_system.aspects;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.exceptions.SessionNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(1)
 public class BeforeSessionValidator {
+
+	@Autowired
+	private JwtHandler jwtHandler;
 
 	@Before("org.ricardo.school_system.aspects.PointCutDeclarations.validateSession()")
 	public void cenas(JoinPoint joinPoint) {
@@ -23,10 +27,13 @@ public class BeforeSessionValidator {
 
 				HttpServletRequest request = (HttpServletRequest) arg;
 
-				HttpSession session = request.getSession(false);
-
-				if (session == null)
+				String token = (String) request.getHeader("Authorization");
+				
+				if (token == null)
 					throw new SessionNotFoundException("AOP VALIDATOR - You are not logged in.");
+
+				if (jwtHandler.getUserPermissions(token) == null)
+					throw new SessionNotFoundException("AOP VALIDATOR - Invalid token.");
 			}
 		}
 	}

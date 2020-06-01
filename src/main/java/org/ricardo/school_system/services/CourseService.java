@@ -66,11 +66,12 @@ public class CourseService {
 	@Transactional
 	public ResponseEntity<?> getDegreesBySchool(HttpServletRequest request) {
 
-		HttpSession session = request.getSession(false);
+		int schoolId = (int) request.getIntHeader("school-id");
+		
+		return new ResponseEntity<>("PINTOU :D", HttpStatus.OK);
 
-		int schoolId = (int) session.getAttribute("school-credentials");
 
-		return new ResponseEntity<>(degreeDao.getDegreesBySchoolId(schoolId), HttpStatus.OK);
+//		return new ResponseEntity<>(degreeDao.getDegreesBySchoolId(schoolId), HttpStatus.OK);
 	}
 
 	@Transactional

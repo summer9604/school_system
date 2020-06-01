@@ -1,10 +1,12 @@
 package org.ricardo.school_system.services;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-
 import org.ricardo.school_system.assemblers.LoginForm;
+import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.daos.TeacherDao;
@@ -29,13 +31,16 @@ public class LoginService {
 	@Autowired
 	private StudentDao studentDao;
 
+	@Autowired
+	private JwtHandler jwtHandler;
+
 	@Transactional
-	public ResponseEntity<?> login(HttpServletRequest request, LoginForm loginInfo, String role) {
+	public ResponseEntity<?> login(HttpServletRequest request, HttpServletResponse response, LoginForm loginInfo, String role) {
 
 		HttpSession session = request.getSession(false);
-
+			//CHECKAR AQUI, RETIRAR A SESSAO E FAZER VERIFICAÇAO NO AOP.
 		if (session == null)
-			return generateLoginSession(request, loginInfo, role, session);
+			return generateLoginSession(request, response, loginInfo, role, session);
 
 		throw new OperationNotAuthorizedException("You have a session already.");
 	}
@@ -44,8 +49,10 @@ public class LoginService {
 		return generateLogoutEnvironment(request);
 	}
 
-	private ResponseEntity<?> generateLoginSession(HttpServletRequest request, LoginForm loginInfo, String role,
+	private ResponseEntity<?> generateLoginSession(HttpServletRequest request, HttpServletResponse response, LoginForm loginInfo, String role,
 			HttpSession session) {
+
+		String generatedToken;
 
 		switch (role) {
 
@@ -56,11 +63,9 @@ public class LoginService {
 			if (teacher == null)
 				throw new OperationNotAuthorizedException("Wrong credentials");
 
-			session = request.getSession();
+			generatedToken = jwtHandler.generateJwtToken(teacher.getId(), teacher.getTeacherRole());
 
-			session.setAttribute("user-credentials", teacher);
-
-			session.setAttribute("user-permissions", "ROLE_TEACHER");
+			response.addHeader("Authorization", generatedToken);
 
 			return new ResponseEntity<>("Hello, teacher '" + teacher.getName() + "'", HttpStatus.OK);
 
@@ -71,11 +76,9 @@ public class LoginService {
 			if (student == null)
 				throw new OperationNotAuthorizedException("Wrong credentials");
 
-			session = request.getSession();
+			generatedToken = jwtHandler.generateJwtToken(student.getId(), student.getStudentRole());
 
-			session.setAttribute("user-credentials", student);
-
-			session.setAttribute("user-permissions", "ROLE_STUDENT");
+			response.addHeader("Authorization", generatedToken);
 
 			return new ResponseEntity<>("Hello, student '" + student.getName() + "'", HttpStatus.OK);
 
@@ -92,25 +95,23 @@ public class LoginService {
 
 			case "local_admin":
 
-				session = request.getSession();
-
 				int schoolId = adminDao.getSchoolIdByLocalAdminId(admin.getId());
 
-				session.setAttribute("user-credentials", admin);
+				generatedToken = jwtHandler.generateJwtToken(admin.getId(), admin.getRole());
 
-				session.setAttribute("school-credentials", schoolId);
+				response.addHeader("Authorization", generatedToken);
 
-				session.setAttribute("user-permissions", "ROLE_LOCAL_ADMIN");
+				response.addIntHeader("school-id", schoolId);
 
 				return new ResponseEntity<>("Hello, Local admin '" + admin.getName() + "'", HttpStatus.OK);
 
 			default:
 
-				session = request.getSession();
+				generatedToken = jwtHandler.generateJwtToken(admin.getId(), admin.getRole());
 
-				session.setAttribute("user-credentials", admin);
+				response.addHeader("Authorization", generatedToken);
 
-				session.setAttribute("user-permissions", "ROLE_GENERAL_ADMIN");
+				response.addIntHeader("school-id", -1);
 
 				return new ResponseEntity<>("Hello, General admin '" + admin.getName() + "'", HttpStatus.OK);
 			}

@@ -1,13 +1,17 @@
 package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.assemblers.RegistrationSchoolForm;
 import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
+import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.services.LoginService;
 import org.ricardo.school_system.services.SchoolService;
 import org.ricardo.school_system.services.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,9 +36,22 @@ public class TeacherController {
 	@Autowired
 	private LoginService loginService;
 	
+	@Autowired
+	private JwtHandler jwtHandler;
+	
 	@PostMapping("/login")
-	public ResponseEntity<?> loginTeacher(HttpServletRequest request, @RequestBody LoginForm loginInfo){
-		return loginService.login(request, loginInfo, "teacher");
+	public ResponseEntity<?> loginTeacher(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginInfo){
+		return loginService.login(request, response, loginInfo, "teacher");
+	}
+	
+	@GetMapping("/me")
+	public ResponseEntity<?> getTeacherProfile(HttpServletRequest request){
+		
+		String token = request.getHeader("Authorization");
+		
+		int id = jwtHandler.getUserPermissions(token).getId();
+		
+		return teacherService.getById(request, id);
 	}
 		
 	@GetMapping("/all")

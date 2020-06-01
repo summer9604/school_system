@@ -38,18 +38,21 @@ public class TeacherService {
 	@Transactional
 	public ResponseEntity<?> getAll(HttpServletRequest request) {
 		
-		HttpSession session = request.getSession(false);		
-				
-		String[] permissions = (String[]) session.getAttribute("user-permissions");
+		return new ResponseEntity<>(teacherDao.getAll(), HttpStatus.OK);
+
 		
-		//hasPermissions(permissions); under development
-				
-		for(String permission : permissions) {
-			if(permission.equals("ROLE_TEACHER"))
-				return new ResponseEntity<>(teacherDao.getAll(), HttpStatus.OK);
-		}
-		
-		throw new OperationNotAuthorizedException("You dont´t have enough permissions.");
+//		HttpSession session = request.getSession(false);		
+//				
+//		String[] permissions = (String[]) session.getAttribute("user-permissions");
+//		
+//		//hasPermissions(permissions); under development
+//				
+//		for(String permission : permissions) {
+//			if(permission.equals("ROLE_TEACHER"))
+//				return new ResponseEntity<>(teacherDao.getAll(), HttpStatus.OK);
+//		}
+//		
+//		throw new OperationNotAuthorizedException("You dont´t have enough permissions.");
 	}
 
 	@Transactional

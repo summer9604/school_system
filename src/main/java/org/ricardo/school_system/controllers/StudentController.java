@@ -1,6 +1,7 @@
 package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.assemblers.RegistrationStudentForm;
 import org.ricardo.school_system.services.LoginService;
@@ -28,8 +29,8 @@ public class StudentController {
 	private StudentService studentService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> login(HttpServletRequest request, @RequestBody LoginForm loginInfo) {
-		return loginService.login(request, loginInfo, "student");
+	public ResponseEntity<?> login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginInfo) {
+		return loginService.login(request, response, loginInfo, "student");
 	}
 	
 	@GetMapping("/all")
@@ -38,10 +39,7 @@ public class StudentController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> add(HttpServletRequest request, @RequestBody RegistrationStudentForm studentForm) {
-		
-		System.out.println("Student form: " + studentForm);
-		
+	public ResponseEntity<?> add(HttpServletRequest request, @RequestBody RegistrationStudentForm studentForm) {		
 		return studentService.add(request, studentForm);
 	}
 	
