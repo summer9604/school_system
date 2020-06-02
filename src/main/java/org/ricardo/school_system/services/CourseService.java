@@ -64,14 +64,8 @@ public class CourseService {
 	}
 
 	@Transactional
-	public ResponseEntity<?> getDegreesBySchool(HttpServletRequest request) {
-
-		int schoolId = (int) request.getIntHeader("school-id");
-		
-		return new ResponseEntity<>("PINTOU :D", HttpStatus.OK);
-
-
-//		return new ResponseEntity<>(degreeDao.getDegreesBySchoolId(schoolId), HttpStatus.OK);
+	public ResponseEntity<?> getDegreesBySchool(int id, HttpServletRequest request) {
+		return new ResponseEntity<>(degreeDao.getDegreesBySchoolId(id), HttpStatus.OK);
 	}
 
 	@Transactional

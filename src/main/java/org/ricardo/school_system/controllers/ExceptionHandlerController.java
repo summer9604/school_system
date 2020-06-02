@@ -32,7 +32,7 @@ public class ExceptionHandlerController {
 		response.setStatus(HttpStatus.FORBIDDEN.value());
 		response.setMessage(exc.getMessage());
 		response.setTimeStamp(System.currentTimeMillis());
-
+		
 		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 	}
 	
@@ -50,8 +50,6 @@ public class ExceptionHandlerController {
 
 	@ExceptionHandler
 	public ResponseEntity<ErrorResponse> handleGenericException(Exception exc) {
-
-		System.out.println("\n\n" + exc.getMessage() + "\n\n");
 		
 		ErrorResponse response = new ErrorResponse();
 

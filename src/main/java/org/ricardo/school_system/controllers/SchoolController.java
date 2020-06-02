@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,18 +46,19 @@ public class SchoolController {
 	
 	@PostMapping("/admin/login")
 	public ResponseEntity<?> loginGeneralAdmin(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginForm){
-		return loginService.login(request, response, loginForm, "general_admin");
+		return loginService.login(response, loginForm, "general_admin");
 	}
 	
 	@PostMapping("/localadmin/login")
 	public ResponseEntity<?> loginLocalAdmin(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginForm){
-		return loginService.login(request, response, loginForm, "local_admin");
+		return loginService.login(response, loginForm, "local_admin");
 	}
 	
-	@GetMapping("/degrees")
-	public ResponseEntity<?> getDegreesBySchool(HttpServletRequest request){
-		return courseService.getDegreesBySchool(request);
+	@GetMapping("/{id}/degrees")
+	public ResponseEntity<?> getDegreesBySchool(@PathVariable("id") int id, HttpServletRequest request){
+		return courseService.getDegreesBySchool(id, request);
 	}
+	
 }
 
 

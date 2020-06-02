@@ -15,10 +15,11 @@ public class JwtHandler {
 
 	private final byte[] secret = Base64.getDecoder().decode("+inG/ISPbc4mCGvQKHB/qZ1+7BnSfZupvDUvjDQOBC4=");
 
-	public String generateJwtToken(int userId, String userRole) {
+	public String generateJwtToken(int userId, int schoolId, String userRole) {
 
 		String token = Jwts.builder()
 				.claim("user-id", userId)
+				.claim("local-admin-school-id", schoolId)
 				.claim("user-permissions", userRole)
 				.setIssuedAt(Date.from(Instant.now()))
 				.setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.MINUTES)))

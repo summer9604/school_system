@@ -2,16 +2,13 @@ package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.assemblers.RegistrationSchoolForm;
 import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
-import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.services.LoginService;
 import org.ricardo.school_system.services.SchoolService;
 import org.ricardo.school_system.services.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,41 +33,33 @@ public class TeacherController {
 	@Autowired
 	private LoginService loginService;
 	
-	@Autowired
-	private JwtHandler jwtHandler;
-	
 	@PostMapping("/login")
 	public ResponseEntity<?> loginTeacher(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginInfo){
-		return loginService.login(request, response, loginInfo, "teacher");
+		return loginService.login(response, loginInfo, "teacher");
 	}
 	
 	@GetMapping("/me")
-	public ResponseEntity<?> getTeacherProfile(HttpServletRequest request){
-		
-		String token = request.getHeader("Authorization");
-		
-		int id = jwtHandler.getUserPermissions(token).getId();
-		
-		return teacherService.getById(request, id);
+	public ResponseEntity<?> getInfo(HttpServletRequest request){
+		return teacherService.getById(request);
 	}
 		
 	@GetMapping("/all")
-	public ResponseEntity<?> getTeachers(HttpServletRequest request) {	
+	public ResponseEntity<?> adminGetTeachers(HttpServletRequest request) {	
 		return teacherService.getAll(request);
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> addTeacher(HttpServletRequest request, @RequestBody RegistrationTeacherForm teacherInfo) {
+	public ResponseEntity<?> localAdminAddTeacher(HttpServletRequest request, @RequestBody RegistrationTeacherForm teacherInfo) {
 		return teacherService.add(request, teacherInfo);
 	}
 	
 	@PostMapping("/{id}")
-	public ResponseEntity<?> addSchoolToTeacher(HttpServletRequest request, @PathVariable("id") int id, @RequestBody RegistrationSchoolForm schoolInfo) {
+	public ResponseEntity<?> localAdminhireTeacher(HttpServletRequest request, @PathVariable("id") int id, @RequestBody RegistrationSchoolForm schoolInfo) {
 		return schoolService.addSchoolToTeacher(request, id, schoolInfo);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> removeTeacher(HttpServletRequest request, @PathVariable("id") int id) {
+	public ResponseEntity<?> adminRemoveTeacher(HttpServletRequest request, @PathVariable("id") int id) {
 		return teacherService.delete(request, id);
 	}
 	

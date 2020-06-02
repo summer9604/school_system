@@ -10,12 +10,16 @@ public class PointCutDeclarations {
 	@Pointcut("execution(* org.ricardo.school_system.controllers.*.login*(..))")
 	public void loginEndPoint() {}
 	
-	@Pointcut("execution(* org.ricardo.school_system.controllers.*.add*(..))")
-	public void addTeacherEndPoint() {}
+	@Pointcut("execution(* org.ricardo.school_system.controllers.*.homePage(..))")
+	public void getEntryPoint() {}
 	
-	@Pointcut("execution(* org.ricardo.school_system.services.*.getDegreesBySchool(..))")
-	public void getDegreesPerSchoolEnpoint() {}
+	@Pointcut("execution(* org.ricardo.school_system.controllers.*.admin*(..))")
+	public void getGeneralAdminEndPoints() {}
 	
-	@Pointcut("getControllerPackage() && !(loginEndPoint() || addTeacherEndPoint())")
+	@Pointcut("execution(* org.ricardo.school_system.controllers.*.localAdmin*(..))")
+	public void getLocalAdminEndPoints() {}
+	
+	@Pointcut("getControllerPackage() && !(getEntryPoint() || loginEndPoint())")
 	public void validateSession() {}
+	
 }

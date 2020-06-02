@@ -32,7 +32,7 @@ public class CourseController {
 	}
 	
 	@PostMapping("/subjects/add")
-	public ResponseEntity<?> addSubject(HttpServletRequest request, @RequestBody String name) {	
+	public ResponseEntity<?> adminAddSubject(HttpServletRequest request, @RequestBody String name) {	
 		return courseService.addSubject(name);
 	}
 	
@@ -42,12 +42,12 @@ public class CourseController {
 	}
 	
 	@GetMapping("/degrees/{id}")
-	public ResponseEntity<?> getDegree(HttpServletRequest request, @PathVariable("id") int id){
+	public ResponseEntity<?> getDegreeById(HttpServletRequest request, @PathVariable("id") int id){
 		return courseService.getDegreeById(request, id);
 	}
 	
 	@PostMapping("/degrees/add")
-	public ResponseEntity<?> addDegree(HttpServletRequest request, @RequestBody DegreeSubjectBundle degreeSubjectBundle) {	
+	public ResponseEntity<?> adminAddDegree(HttpServletRequest request, @RequestBody DegreeSubjectBundle degreeSubjectBundle) {	
 		return courseService.addDegree(request, degreeSubjectBundle);
 	}
 	

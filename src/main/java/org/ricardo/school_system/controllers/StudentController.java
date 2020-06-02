@@ -30,21 +30,21 @@ public class StudentController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginInfo) {
-		return loginService.login(request, response, loginInfo, "student");
+		return loginService.login(response, loginInfo, "student");
 	}
 	
 	@GetMapping("/all")
-	public ResponseEntity<?> getAll(HttpServletRequest request) {
+	public ResponseEntity<?> adminGetAll(HttpServletRequest request) {
 		return studentService.getAll(request);
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> add(HttpServletRequest request, @RequestBody RegistrationStudentForm studentForm) {		
+	public ResponseEntity<?> localAdminAdd(HttpServletRequest request, @RequestBody RegistrationStudentForm studentForm) {		
 		return studentService.add(request, studentForm);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> remove(@PathVariable("id") int id, HttpServletRequest request){
+	public ResponseEntity<?> adminRemove(@PathVariable("id") int id, HttpServletRequest request){
 		return studentService.delete(request, id);
 	}
 

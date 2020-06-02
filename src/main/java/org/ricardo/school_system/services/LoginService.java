@@ -3,10 +3,10 @@ package org.ricardo.school_system.services;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.auth.JwtHandler;
+import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.daos.TeacherDao;
@@ -35,22 +35,16 @@ public class LoginService {
 	private JwtHandler jwtHandler;
 
 	@Transactional
-	public ResponseEntity<?> login(HttpServletRequest request, HttpServletResponse response, LoginForm loginInfo, String role) {
-
-		HttpSession session = request.getSession(false);
-			//CHECKAR AQUI, RETIRAR A SESSAO E FAZER VERIFICAÇAO NO AOP.
-		if (session == null)
-			return generateLoginSession(request, response, loginInfo, role, session);
-
-		throw new OperationNotAuthorizedException("You have a session already.");
+	public ResponseEntity<?> login(HttpServletResponse response, LoginForm loginInfo, String role) {
+		return generateLoginSession(response, loginInfo, role);
 	}
 
-	public ResponseEntity<?> logout(HttpServletRequest request) {
-		return generateLogoutEnvironment(request);
+	@Transactional
+	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+		return generateLogoutEnvironment(request, response);
 	}
 
-	private ResponseEntity<?> generateLoginSession(HttpServletRequest request, HttpServletResponse response, LoginForm loginInfo, String role,
-			HttpSession session) {
+	private ResponseEntity<?> generateLoginSession(HttpServletResponse response, LoginForm loginInfo, String role) {
 
 		String generatedToken;
 
@@ -63,9 +57,13 @@ public class LoginService {
 			if (teacher == null)
 				throw new OperationNotAuthorizedException("Wrong credentials");
 
-			generatedToken = jwtHandler.generateJwtToken(teacher.getId(), teacher.getTeacherRole());
+			generatedToken = jwtHandler.generateJwtToken(teacher.getId(), -1, teacher.getTeacherRole());
 
-			response.addHeader("Authorization", generatedToken);
+			Cookie teacherCookie = new Cookie("jwtToken", generatedToken);
+			teacherCookie.setPath("/");
+			teacherCookie.setMaxAge(0);
+
+			response.addCookie(teacherCookie);
 
 			return new ResponseEntity<>("Hello, teacher '" + teacher.getName() + "'", HttpStatus.OK);
 
@@ -76,9 +74,13 @@ public class LoginService {
 			if (student == null)
 				throw new OperationNotAuthorizedException("Wrong credentials");
 
-			generatedToken = jwtHandler.generateJwtToken(student.getId(), student.getStudentRole());
+			generatedToken = jwtHandler.generateJwtToken(student.getId(), -1, student.getStudentRole());
 
-			response.addHeader("Authorization", generatedToken);
+			Cookie studentCookie = new Cookie("jwtToken", generatedToken);
+			studentCookie.setPath("/");
+			studentCookie.setMaxAge(0);
+			
+			response.addCookie(studentCookie);
 
 			return new ResponseEntity<>("Hello, student '" + student.getName() + "'", HttpStatus.OK);
 
@@ -97,64 +99,75 @@ public class LoginService {
 
 				int schoolId = adminDao.getSchoolIdByLocalAdminId(admin.getId());
 
-				generatedToken = jwtHandler.generateJwtToken(admin.getId(), admin.getRole());
+				generatedToken = jwtHandler.generateJwtToken(admin.getId(), schoolId, admin.getRole());
 
-				response.addHeader("Authorization", generatedToken);
+				Cookie localAdminCookie = new Cookie("jwtToken", generatedToken);
+				localAdminCookie.setPath("/");
+				localAdminCookie.setMaxAge(0);
 
-				response.addIntHeader("school-id", schoolId);
+				response.addCookie(localAdminCookie);
 
 				return new ResponseEntity<>("Hello, Local admin '" + admin.getName() + "'", HttpStatus.OK);
 
 			default:
 
-				generatedToken = jwtHandler.generateJwtToken(admin.getId(), admin.getRole());
+				generatedToken = jwtHandler.generateJwtToken(admin.getId(), -1, admin.getRole());
 
-				response.addHeader("Authorization", generatedToken);
+				Cookie generalAdminCookie = new Cookie("jwtToken", generatedToken);
+				generalAdminCookie.setPath("/");
+				generalAdminCookie.setMaxAge(0);
 
-				response.addIntHeader("school-id", -1);
+				response.addCookie(generalAdminCookie);
 
 				return new ResponseEntity<>("Hello, General admin '" + admin.getName() + "'", HttpStatus.OK);
 			}
 		}
 	}
 
-	private ResponseEntity<?> generateLogoutEnvironment(HttpServletRequest request) {
+	private ResponseEntity<?> generateLogoutEnvironment(HttpServletRequest request, HttpServletResponse response) {
 
-		HttpSession session = request.getSession(false);
+		Cookie cookie = null;
 
-		String permissions = (String) session.getAttribute("user-permissions");
+		for(Cookie requestCookie : request.getCookies()) {
+			if(requestCookie.getName().equals("jwtToken")) {
+				cookie = requestCookie;
+				break;
+			}
+		}
 
-		switch (permissions) {
+		JwtUserPermissions jwtUserPermissions = jwtHandler.getUserPermissions(cookie.getValue());
+
+		switch (jwtUserPermissions.getPermissions()) {
 
 		case "ROLE_TEACHER":
+			
+			Teacher teacher = teacherDao.getById(jwtUserPermissions.getId());
 
-			Teacher teacher = (Teacher) session.getAttribute("user-credentials");
+			response.addCookie(new Cookie(cookie.getName(), ""));
 
-			session.invalidate();
-
-			return new ResponseEntity<>("Teacher '" + teacher.getName() + "' logged out.", HttpStatus.OK);
+			return new ResponseEntity<>("Teacher '" + teacher.getName() + "' logged out.", HttpStatus.OK);	
 
 		case "ROLE_STUDENT":
+			
+			Student student = studentDao.getById(jwtUserPermissions.getId());
 
-			Student student = (Student) session.getAttribute("user-credentials");
-
-			session.invalidate();
+			response.addCookie(new Cookie(cookie.getName(), ""));
 
 			return new ResponseEntity<>("Student '" + student.getName() + "' logged out.", HttpStatus.OK);
 
 		case "ROLE_LOCAL_ADMIN":
+			
+			Admin localAdmin = adminDao.getById(jwtUserPermissions.getId());
 
-			Admin localAdmin = (Admin) session.getAttribute("user-credentials");
-
-			session.invalidate();
+			response.addCookie(new Cookie(cookie.getName(), ""));
 
 			return new ResponseEntity<>("Local admin '" + localAdmin.getName() + "' logged out.", HttpStatus.OK);
 
 		default:
+			
+			Admin generalAdmin = adminDao.getById(jwtUserPermissions.getId());
 
-			Admin generalAdmin = (Admin) session.getAttribute("user-credentials");
-
-			session.invalidate();
+			response.addCookie(new Cookie(cookie.getName(), ""));
 
 			return new ResponseEntity<>("General admin '" + generalAdmin.getName() + "' logged out.", HttpStatus.OK);
 		}

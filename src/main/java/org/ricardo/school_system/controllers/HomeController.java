@@ -1,6 +1,7 @@
 package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.ricardo.school_system.services.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,8 @@ public class HomeController {
 	}
 	
 	@GetMapping("/logout")
-	public ResponseEntity<?> logout(HttpServletRequest request){
-		return loginService.logout(request);
+	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
+		return loginService.logout(request, response);
 	}
 	
 }
