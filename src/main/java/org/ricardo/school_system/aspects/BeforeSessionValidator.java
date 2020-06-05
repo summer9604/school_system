@@ -1,7 +1,5 @@
 package org.ricardo.school_system.aspects;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -15,69 +13,33 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Order(1)
-public class BeforeSessionValidator {
+public class BeforeSessionValidator extends GenericAspect {
 
 	@Autowired
 	private JwtHandler jwtHandler;
 
-	@Before("org.ricardo.school_system.aspects.PointCutDeclarations.validateSession()")
+	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.validateSession()")
 	public void verifyToken(JoinPoint joinPoint) {
 
-		HttpServletRequest request = getHttpServletRequest(joinPoint);
+		String token = getToken(joinPoint);
 
-		if (request.getCookies() != null) {
-
-			for(Cookie cookie : request.getCookies()) {
-
-				if (cookie.getName().equals("jwtToken")) {
-
-					String token = cookie.getValue();
-					//REFORMULAR EXCEPTIONS
-					if (token == null || token.length() == 0)
-						throw new SessionNotFoundException("AOP VALIDATOR - You are not logged in.");
-
-					if (jwtHandler.getUserPermissions(token) == null)
-						throw new SessionNotFoundException("AOP VALIDATOR - Invalid token.");
-				}
-			}
-		}
-		else {
+		if (token == null || token.length() == 0)
 			throw new SessionNotFoundException("AOP VALIDATOR - You are not logged in.");
-		}
+
+		if (jwtHandler.getUserPermissions(token) == null)
+			throw new SessionNotFoundException("AOP VALIDATOR - Invalid token.");			
 	}
 
-	@Before("org.ricardo.school_system.aspects.PointCutDeclarations.loginEndPoint()")
-	public void checkAlreadyLoggedUser(JoinPoint joinPoint) {
+	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.loginEndPoint()")
+	public void verifyLoginEndpoint(JoinPoint joinPoint) {
 
-		HttpServletRequest request = getHttpServletRequest(joinPoint);
+		String token = getToken(joinPoint);
 
-		if(request.getCookies() != null) {
-
-			for(Cookie cookie : request.getCookies()) {
-
-				if (cookie.getName().equals("jwtToken")) {
-
-					String token = cookie.getValue();
-
-					if (jwtHandler.getUserPermissions(token) != null)
-						throw new OperationNotAuthorizedException("You have a session already.");
-				}
-			} 	
-		}
-	}
-
-	private HttpServletRequest getHttpServletRequest(JoinPoint joinPoint) {
-
-		for(Object arg : joinPoint.getArgs()) {
-			if (arg instanceof HttpServletRequest) return (HttpServletRequest) arg;
-		}
-		return null;
+		if (jwtHandler.getUserPermissions(token) != null)
+			throw new OperationNotAuthorizedException("You have a session already.");
 	}
 
 }
-
-
-
 
 
 

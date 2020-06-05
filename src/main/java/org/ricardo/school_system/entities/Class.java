@@ -26,7 +26,7 @@ public class Class {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
+	@Column(name = "idClass")
 	private int id;
 	
 	@Column(name = "school_year")

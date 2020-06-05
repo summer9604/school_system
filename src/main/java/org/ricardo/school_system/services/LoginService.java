@@ -64,6 +64,8 @@ public class LoginService {
 			teacherCookie.setMaxAge(0);
 
 			response.addCookie(teacherCookie);
+			response.addHeader("Access-Control-Allow-Credentials", "true");
+			response.addHeader("Access-Control-Allow-Origin", "*");
 
 			return new ResponseEntity<>("Hello, teacher '" + teacher.getName() + "'", HttpStatus.OK);
 
@@ -79,8 +81,10 @@ public class LoginService {
 			Cookie studentCookie = new Cookie("jwtToken", generatedToken);
 			studentCookie.setPath("/");
 			studentCookie.setMaxAge(0);
-			
+
 			response.addCookie(studentCookie);
+			response.addHeader("Access-Control-Allow-Credentials", "true");
+			response.addHeader("Access-Control-Allow-Origin", "*");
 
 			return new ResponseEntity<>("Hello, student '" + student.getName() + "'", HttpStatus.OK);
 
@@ -95,7 +99,7 @@ public class LoginService {
 
 			switch (adminRole) {
 
-			case "local_admin":
+			case "ROLE_LOCAL_ADMIN":
 
 				int schoolId = adminDao.getSchoolIdByLocalAdminId(admin.getId());
 
@@ -106,6 +110,8 @@ public class LoginService {
 				localAdminCookie.setMaxAge(0);
 
 				response.addCookie(localAdminCookie);
+				response.addHeader("Access-Control-Allow-Credentials", "true");
+				response.addHeader("Access-Control-Allow-Origin", "*");
 
 				return new ResponseEntity<>("Hello, Local admin '" + admin.getName() + "'", HttpStatus.OK);
 
@@ -118,6 +124,8 @@ public class LoginService {
 				generalAdminCookie.setMaxAge(0);
 
 				response.addCookie(generalAdminCookie);
+				response.addHeader("Access-Control-Allow-Credentials", "true");
+				response.addHeader("Access-Control-Allow-Origin", "*");
 
 				return new ResponseEntity<>("Hello, General admin '" + admin.getName() + "'", HttpStatus.OK);
 			}
@@ -140,34 +148,38 @@ public class LoginService {
 		switch (jwtUserPermissions.getPermissions()) {
 
 		case "ROLE_TEACHER":
-			
+
 			Teacher teacher = teacherDao.getById(jwtUserPermissions.getId());
 
 			response.addCookie(new Cookie(cookie.getName(), ""));
+			response.addHeader("Access-Control-Allow-Credentials", "false");
 
 			return new ResponseEntity<>("Teacher '" + teacher.getName() + "' logged out.", HttpStatus.OK);	
 
 		case "ROLE_STUDENT":
-			
+
 			Student student = studentDao.getById(jwtUserPermissions.getId());
 
 			response.addCookie(new Cookie(cookie.getName(), ""));
+			response.addHeader("Access-Control-Allow-Credentials", "false");
 
 			return new ResponseEntity<>("Student '" + student.getName() + "' logged out.", HttpStatus.OK);
 
 		case "ROLE_LOCAL_ADMIN":
-			
+
 			Admin localAdmin = adminDao.getById(jwtUserPermissions.getId());
 
 			response.addCookie(new Cookie(cookie.getName(), ""));
+			response.addHeader("Access-Control-Allow-Credentials", "false");
 
 			return new ResponseEntity<>("Local admin '" + localAdmin.getName() + "' logged out.", HttpStatus.OK);
 
 		default:
-			
+
 			Admin generalAdmin = adminDao.getById(jwtUserPermissions.getId());
 
 			response.addCookie(new Cookie(cookie.getName(), ""));
+			response.addHeader("Access-Control-Allow-Credentials", "false");
 
 			return new ResponseEntity<>("General admin '" + generalAdmin.getName() + "' logged out.", HttpStatus.OK);
 		}

@@ -1,11 +1,11 @@
 package org.ricardo.school_system.daos;
 
 import java.util.List;
+import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.entities.Admin;
-import org.ricardo.school_system.entities.School;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -27,7 +27,7 @@ public class AdminDao extends GenericDao<Admin> {
 
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Admin");
+		Query<Admin> query = session.createQuery("from Admin");
 
 		return (List<Admin>) query.getResultList();
 	}
@@ -41,17 +41,19 @@ public class AdminDao extends GenericDao<Admin> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Admin getByEmail(String email) {
 
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Admin where email=:email");
+		Query<Admin> query = session.createQuery("from Admin where email=:email");
 		
 		query.setParameter("email", email);
 
 		return (Admin) query.uniqueResult();
 	}
 	
+	@Transactional
 	public int getSchoolIdByLocalAdminId(int localAdminId) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -61,11 +63,12 @@ public class AdminDao extends GenericDao<Admin> {
 		return (int) session.createSQLQuery(query).uniqueResult();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Admin getByEmailAndPassword(LoginForm loginInfo) {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Admin where email=:email and password=:password");
+		Query<Admin> query = session.createQuery("from Admin where email=:email and password=:password");
 		
 		query.setParameter("email", loginInfo.getEmail());
 		query.setParameter("password", loginInfo.getPassword());
@@ -79,7 +82,7 @@ public class AdminDao extends GenericDao<Admin> {
 
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Admin where name=:name");
+		Query<Admin> query = session.createQuery("from Admin where name=:name");
 		
 		query.setParameter("name", name);
 		

@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.entities.Student;
-import org.ricardo.school_system.entities.Teacher;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -27,7 +26,7 @@ public class StudentDao extends GenericDao<Student> {
 		
 		Session session = sessionFactory.getCurrentSession();
 
-		Query query = session.createQuery("from Student");
+		Query<Student> query = session.createQuery("from Student");
 		
 		return (List<Student>) query.getResultList();
 	}
@@ -41,27 +40,41 @@ public class StudentDao extends GenericDao<Student> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Student getByEmail(String email) {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Student where email=:email");
+		Query<Student> query = session.createQuery("from Student where email=:email");
 		
 		query.setParameter("email", email);
 				
 		return (Student) query.uniqueResult();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Student getByEmailAndPassword(LoginForm loginInfo) {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Student where email=:email and password=:password");
+		Query<Student> query = session.createQuery("from Student where email=:email and password=:password");
 		
 		query.setParameter("email", loginInfo.getEmail());
 		query.setParameter("password", loginInfo.getPassword());
 
 		return (Student) query.uniqueResult();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Student> getStudentsByTeacherId(int teacherId) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		String query = "Select * from student where class_id in (\r\n" + 
+				"Select class_id from teacher_class \r\n" + 
+				"where teacher_id = " + teacherId + ");";
+
+		return (List<Student>) session.createSQLQuery(query).addEntity(Student.class).getResultList();
 	}
 
 	@Override
@@ -70,7 +83,7 @@ public class StudentDao extends GenericDao<Student> {
 		
 		Session session = sessionFactory.getCurrentSession();
 
-		Query query = session.createQuery("from Student where name=:name");
+		Query<Student> query = session.createQuery("from Student where name=:name");
 
 		query.setParameter("name", name);
 		

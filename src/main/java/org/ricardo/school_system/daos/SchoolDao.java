@@ -13,7 +13,7 @@ public class SchoolDao extends GenericDao<School> {
 	@Override
 	@Transactional
 	public School add(School school) {
-		
+
 		Session session = sessionFactory.getCurrentSession();
 
 		session.saveOrUpdate(school);
@@ -25,10 +25,10 @@ public class SchoolDao extends GenericDao<School> {
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<School> getAll() {
-		
+
 		Session session = sessionFactory.getCurrentSession();
-		
-		Query query = session.createQuery("from School");
+
+		Query<School> query = session.createQuery("from School");
 
 		return (List<School>) query.getResultList();
 	}
@@ -41,16 +41,17 @@ public class SchoolDao extends GenericDao<School> {
 
 		return session.get(School.class, id);
 	}
-	
+
 	@Override
+	@SuppressWarnings("unchecked")
 	public School getByEmail(String email) {
-		
+
 		Session session = sessionFactory.getCurrentSession();
 
-		Query query = session.createQuery("from School where email=:email");
+		Query<School> query = session.createQuery("from School where email=:email");
 
 		query.setParameter("email", email);
-		
+
 		return (School) query.uniqueResult();
 	}
 
@@ -59,39 +60,67 @@ public class SchoolDao extends GenericDao<School> {
 	public List<School> getByName(String name) {
 		return null;
 	}
-	
+
 	@Transactional
+	@SuppressWarnings("unchecked")
 	public School getSchoolByName(String name) {
-		
+
 		Session session = sessionFactory.getCurrentSession();
-		
-		Query query = session.createQuery("from School where name=:name");
+
+		Query<School> query = session.createQuery("from School where name=:name");
 
 		query.setParameter("name", name);
-		
+
 		return (School) query.uniqueResult();
 	}
 
 	@Override
 	@Transactional
 	public void delete(int id) {
-		
+
 		Session session = sessionFactory.getCurrentSession();
 
 		School school = session.get(School.class, id);
-		
+
 		session.delete(school);
 	}
 
 	@Override
 	@Transactional
 	public School update(School school) {
-		
+
 		Session session = sessionFactory.getCurrentSession();
 
 		session.saveOrUpdate(school);
-		
+
 		return school;
 	}
 
+	@Transactional
+	public int getSchoolIdByTeacherId(int teacherId) {
+
+		Session session = sessionFactory.getCurrentSession();
+
+		String query = "Select school_id from teacher where idteacher = " + teacherId;
+
+		return (int) session.createSQLQuery(query).uniqueResult();
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

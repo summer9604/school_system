@@ -1,9 +1,11 @@
 package org.ricardo.school_system.services;
 
 import java.util.List;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import org.ricardo.school_system.assemblers.RegistrationSchoolForm;
+import org.ricardo.school_system.auth.JwtHandler;
+import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.TeacherDao;
@@ -20,20 +22,23 @@ public class SchoolService {
 
 	@Autowired
 	private SchoolDao schoolDao;
-	
+
 	@Autowired
 	private ClassDao classDao;
-	
+
 	@Autowired
 	private TeacherDao teacherDao;
-	
+
+	@Autowired
+	private JwtHandler jwtHandler;
+
 	public School addSchool(School school) {		
 		return schoolDao.add(school);
 	}
 
 	@Transactional
-	public List<School> getAllSchools() {
-		return schoolDao.getAll();
+	public ResponseEntity<?> getAllSchools() {
+		return new ResponseEntity<>(schoolDao.getAll(), HttpStatus.OK);
 	}
 
 	@Transactional
@@ -55,7 +60,7 @@ public class SchoolService {
 	public School updateSchool(School school) {
 		return schoolDao.update(school);
 	}
-	
+
 	public Class addClass(Class schoolClass) {		
 		return classDao.add(schoolClass);
 	}
@@ -66,8 +71,8 @@ public class SchoolService {
 	}
 
 	@Transactional
-	public Class getClassById(int id) {
-		return classDao.getById(id);
+	public ResponseEntity<?> getClassById(HttpServletRequest request, int id) {
+		return new ResponseEntity<>(classDao.getById(id), HttpStatus.OK);
 	}
 
 	@Transactional
@@ -84,24 +89,44 @@ public class SchoolService {
 	public Class updateClass(Class schoolClass) {
 		return classDao.update(schoolClass);
 	}
-	
+
 	@Transactional
-	public ResponseEntity<?> addSchoolToTeacher(HttpServletRequest request, int teacherId, RegistrationSchoolForm schoolInfo) {
-								
+	public ResponseEntity<?> getClassesByTeacherId(HttpServletRequest request) {
+
+		JwtUserPermissions userPermissions = retrievePermissions(request);
+
+		return new ResponseEntity<>(classDao.getClassesByTeacherId(userPermissions.getId()), HttpStatus.OK);
+	}
+
+	@Transactional
+	public ResponseEntity<?> hireTeacher(HttpServletRequest request, int teacherId) {
+
+		JwtUserPermissions userPermissions = retrievePermissions(request);
+
 		Teacher teacher = teacherDao.getById(teacherId);
-		
-		School school = schoolDao.getSchoolByName(schoolInfo.getName());
-		
+
+		School school = schoolDao.getById(userPermissions.getSchoolId());
+
 		teacher.setSchool(school);
-		
+
 		teacherDao.update(teacher);
-		
+
 		return new ResponseEntity<>("Teacher '" + teacher.getName() + "' is now teaching in '" + school.getName() + "'", HttpStatus.OK);
 	}
-	
-	private boolean hasPermissions(String[] permissions) {
-		//blablablablabla
-		return false;
+
+	public ResponseEntity<?> getClassesBySchool(int id, HttpServletRequest request) {
+		return new ResponseEntity<>(classDao.getClassesBySchoolId(id), HttpStatus.OK);
+	}
+
+	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
+
+		for(Cookie cookie : request.getCookies()) {
+
+			if(cookie.getName().equals("jwtToken"))
+				return jwtHandler.getUserPermissions(cookie.getValue());
+		}
+
+		return null;
 	}
 	
 }

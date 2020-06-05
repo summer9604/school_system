@@ -1,15 +1,12 @@
 package org.ricardo.school_system.services;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import org.ricardo.school_system.assemblers.DegreeSubjectBundle;
 import org.ricardo.school_system.daos.DegreeDao;
 import org.ricardo.school_system.daos.SubjectDao;
-import org.ricardo.school_system.entities.Admin;
 import org.ricardo.school_system.entities.Degree;
 import org.ricardo.school_system.entities.Subject;
-import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,17 +34,7 @@ public class CourseService {
 
 	@Transactional
 	public ResponseEntity<?> getAllDegrees(HttpServletRequest request) {
-
-		HttpSession session = request.getSession(false);
-
-		String[] permissions = (String[]) session.getAttribute("user-permissions");
-
-		for (String permission : permissions) {
-			if (permission.equals("STUDENT"))
-				return new ResponseEntity<>(degreeDao.getAll(), HttpStatus.OK);
-		}
-
-		throw new OperationNotAuthorizedException("You dont´t have enough permissions.");
+		return new ResponseEntity<>(degreeDao.getAll(), HttpStatus.OK);
 	}
 
 	@Transactional

@@ -30,7 +30,7 @@ public class TeacherService {
 	@Transactional
 	public ResponseEntity<?> add(HttpServletRequest request, RegistrationTeacherForm teacherInfo) {	
 
-		Subject subject = subjectDao.getById(teacherInfo.getSubjectId()); //pode dar exceções, trabalhar no exceptionControllerHandler.
+		Subject subject = subjectDao.getById(teacherInfo.getSubjectId());
 
 		Teacher teacher = new Teacher(teacherInfo.getName(), teacherInfo.getAddress(), 
 				teacherInfo.getPhonenumber(), teacherInfo.getEmail(), 
@@ -41,15 +41,26 @@ public class TeacherService {
 
 	@Transactional
 	public ResponseEntity<?> getAll(HttpServletRequest request) {
+		
+		JwtUserPermissions userPermissions = retrievePermissions(request);
+		
+		if (userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN"))
+			return new ResponseEntity<>(teacherDao.getTeachersBySchoolId(userPermissions.getSchoolId()), HttpStatus.OK);
+		
 		return new ResponseEntity<>(teacherDao.getAll(), HttpStatus.OK);
 	}
 
 	@Transactional
 	public ResponseEntity<?> getById(HttpServletRequest request) {		
 
-		JwtUserPermissions permissions = retrievePermissions(request);
+		JwtUserPermissions userPermissions = retrievePermissions(request);
 
-		return new ResponseEntity<>(teacherDao.getById(permissions.getId()), HttpStatus.OK);
+		return new ResponseEntity<>(teacherDao.getById(userPermissions.getId()), HttpStatus.OK);
+	}
+	
+	@Transactional
+	public ResponseEntity<?> getByIdForAdmin(int id, HttpServletRequest request) {		
+		return new ResponseEntity<>(teacherDao.getById(id), HttpStatus.OK);
 	}
 
 	@Transactional
@@ -64,6 +75,9 @@ public class TeacherService {
 
 	@Transactional
 	public ResponseEntity<?> delete(HttpServletRequest request, int id) {
+		
+		teacherDao.delete(id);
+		
 		return new ResponseEntity<>("Teacher with id " + id + " removed.", HttpStatus.OK);
 	}
 
@@ -76,7 +90,7 @@ public class TeacherService {
 
 		for(Cookie cookie : request.getCookies()) {
 			
-			if(cookie.getName().equals("jwtToken"))
+			if (cookie.getName().equals("jwtToken"))
 				return jwtHandler.getUserPermissions(cookie.getValue());
 		}
 		

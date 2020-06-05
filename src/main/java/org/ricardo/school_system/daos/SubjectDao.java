@@ -29,7 +29,7 @@ public class SubjectDao extends GenericDao<Subject> {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Subject");
+		Query<Subject> query = session.createQuery("from Subject");
 
 		return (List<Subject>) query.getResultList();
 	}
@@ -65,11 +65,12 @@ public class SubjectDao extends GenericDao<Subject> {
 	}
 	
 	@Transactional
+	@SuppressWarnings("unchecked")
 	public Subject getSubjectByName(String name) {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Student where name=:name");
+		Query<Subject> query = session.createQuery("from Student where name=:name");
 		
 		query.setParameter("name", name);
 						

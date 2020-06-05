@@ -22,7 +22,7 @@ public class JwtHandler {
 				.claim("local-admin-school-id", schoolId)
 				.claim("user-permissions", userRole)
 				.setIssuedAt(Date.from(Instant.now()))
-				.setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.MINUTES)))
+				.setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
 				.signWith(Keys.hmacShaKeyFor(secret))
 				.compact();
 
@@ -43,7 +43,8 @@ public class JwtHandler {
 
 		String userPermissions = result.getBody().get("user-permissions", String.class);
 		int id = result.getBody().get("user-id", Integer.class);
+		int schoolId = result.getBody().get("local-admin-school-id", Integer.class);
 
-		return new JwtUserPermissions(id, userPermissions);
+		return new JwtUserPermissions(id, userPermissions, schoolId);
 	}
 }

@@ -1,7 +1,6 @@
 package org.ricardo.school_system.daos;
 
 import java.util.List;
-import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.ricardo.school_system.entities.Degree;
@@ -26,7 +25,7 @@ public class DegreeDao extends GenericDao<Degree> {
 		
 		Session session = sessionFactory.getCurrentSession();
 
-		Query query = session.createQuery("from Degree");
+		Query<Degree> query = session.createQuery("from Degree");
 		
 		return (List<Degree>) query.getResultList();
 	}
@@ -49,11 +48,12 @@ public class DegreeDao extends GenericDao<Degree> {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Degree getDegreeByName(String name) {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = session.createQuery("from Degree where name=:name");
+		Query<Degree> query = session.createQuery("from Degree where name=:name");
 		
 		query.setParameter("name", name);
 				
@@ -86,9 +86,7 @@ public class DegreeDao extends GenericDao<Degree> {
 		Session session = sessionFactory.getCurrentSession();
 		
 		String query = "Select * from degree where idDegree in(\r\n" + 
-				"Select idDegree from degree d inner join school_degree sd\r\n" + 
-				"on sd.degree_id = d.idDegree \r\n" + 
-				"where sd.school_id = " + id + ");";
+				"Select degree_id from school_degree where school_id = " + id + ");";
 
 		return session.createSQLQuery(query).addEntity(Degree.class).getResultList();
 	}
