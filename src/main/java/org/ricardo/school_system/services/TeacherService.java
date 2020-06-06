@@ -1,15 +1,19 @@
 package org.ricardo.school_system.services;
 
+import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
+import org.ricardo.school_system.assemblers.TeacherClassForm;
 import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
+import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.daos.TeacherDao;
 import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
+import org.ricardo.school_system.entities.Class;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +28,9 @@ public class TeacherService {
 	@Autowired
 	private SubjectDao subjectDao;
 
+	@Autowired
+	private ClassDao classDao;
+	
 	@Autowired
 	private JwtHandler jwtHandler;
 
@@ -86,6 +93,23 @@ public class TeacherService {
 		return new ResponseEntity<>(teacherDao.update(teacher), HttpStatus.OK);
 	}
 
+	@Transactional
+	public ResponseEntity<?> placeIntoClasses(TeacherClassForm teacherClassForm, HttpServletRequest request) {
+
+		List<Integer> classesId = teacherClassForm.getClassesId();
+		Teacher teacher = teacherDao.getById(teacherClassForm.getTeachedId());
+		
+		for(int classId : classesId) {
+			Class schoolClass = classDao.getById(classId);
+			teacher.addClass(schoolClass);
+		}
+		
+		teacherDao.update(teacher);
+
+		return new ResponseEntity<>("Teacher allocated in " + classesId.size() + " new classes.", HttpStatus.OK);
+	}
+
+	
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
 
 		for(Cookie cookie : request.getCookies()) {

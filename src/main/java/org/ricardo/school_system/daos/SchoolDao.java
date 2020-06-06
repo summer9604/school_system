@@ -4,6 +4,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
 import org.springframework.stereotype.Repository;
 
@@ -74,6 +75,17 @@ public class SchoolDao extends GenericDao<School> {
 		return (School) query.uniqueResult();
 	}
 
+	@Transactional
+	public School getSchoolByClassId(int classId) {
+
+		Session session = sessionFactory.getCurrentSession();
+
+		String query = "Select * from school where idschool in (" + 
+				"Select school_id from class where idClass = " + classId + ");";
+
+		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();	
+	}
+
 	@Override
 	@Transactional
 	public void delete(int id) {
@@ -97,13 +109,14 @@ public class SchoolDao extends GenericDao<School> {
 	}
 
 	@Transactional
-	public int getSchoolIdByTeacherId(int teacherId) {
+	public School getSchoolByTeacherId(int teacherId) {
 
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select school_id from teacher where idteacher = " + teacherId;
+		String query = "Select * from school where idschool in "
+				+ "(Select school_id from teacher where idteacher = " + teacherId + ");";
 
-		return (int) session.createSQLQuery(query).uniqueResult();
+		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();
 	}
 
 }

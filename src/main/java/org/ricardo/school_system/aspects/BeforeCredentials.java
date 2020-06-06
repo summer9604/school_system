@@ -7,6 +7,7 @@ import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.TeacherDao;
+import org.ricardo.school_system.entities.School;
 import org.ricardo.school_system.entities.Teacher;
 import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
 import org.ricardo.school_system.exceptions.TeacherNotFoundException;
@@ -46,9 +47,9 @@ public class BeforeCredentials extends GenericAspect {
 		if (teacher == null)
 			throw new TeacherNotFoundException("Teacher not Found");
 
-		int schoolId = schoolDao.getSchoolIdByTeacherId(teacher.getId());
+		School schoolTeacher = schoolDao.getSchoolByTeacherId(teacher.getId());
 
-		if (permissions.getPermissions().equals("ROLE_LOCAL_ADMIN") && permissions.getSchoolId() != schoolId)
+		if (permissions.getPermissions().equals("ROLE_LOCAL_ADMIN") && permissions.getSchoolId() != schoolTeacher.getId())
 			throw new OperationNotAuthorizedException("AOP VALIDATOR - You don't have enough permissions.");		
 	}
 
@@ -64,12 +65,30 @@ public class BeforeCredentials extends GenericAspect {
 				if (teacher == null)
 					throw new TeacherNotFoundException("Teacher Not Found");
 
-				int schoolId = schoolDao.getSchoolIdByTeacherId(teacher.getId());
+				School schoolTeacher = schoolDao.getSchoolByTeacherId(teacher.getId());
 
-				if (schoolId > 0) 
+				if (schoolTeacher.getId() > 0) 
 					throw new OperationNotAuthorizedException("Teacher is currently employed.");
 			}
 		}
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -59,4 +59,9 @@ public class TeacherController {
 		return studentService.getStudentsByTeacherId(request);
 	}
  	
+	@GetMapping("/students/{id}")
+	public ResponseEntity<?> getStudentById(@PathVariable("id") int id, HttpServletRequest request){
+		return studentService.getById(request, id);
+	}
+	
 }

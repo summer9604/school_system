@@ -13,10 +13,9 @@ public class ServicePointCutDeclarations {
 	@Pointcut("execution(* org.ricardo.school_system.services.TeacherService.getByIdForAdmin(..))")
 	public void checkGetTeacherByIdForAdmin() {}
 	
-	@Pointcut("execution(* org.ricardo.school_system.controllers.SchoolController.getTeacher*(..))")
-	public void getTeachersEndPoint() {}
-	
-	@Pointcut("execution(* org.ricardo.school_system.controllers.SchoolController.getTeacherById(..))")
-	public void getTeacherByIdEndPoint() {}
-	
+	@Pointcut("execution(* org.ricardo.school_system.services.StudentService.getById(..))")
+	public void checkGetStudentByIdPermissions() {}
+
+	@Pointcut("execution( * org.ricardo.school_system.services.TeacherService.placeIntoClasses(..))")
+	public void checkTeachersPlacementIntoClassesPermissions() {}
 }

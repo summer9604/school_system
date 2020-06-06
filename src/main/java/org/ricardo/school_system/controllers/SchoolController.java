@@ -2,8 +2,10 @@ package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
+import org.ricardo.school_system.assemblers.TeacherClassForm;
 import org.ricardo.school_system.services.CourseService;
 import org.ricardo.school_system.services.LoginService;
 import org.ricardo.school_system.services.SchoolService;
@@ -63,12 +65,17 @@ public class SchoolController {
 	}
 		
 	@PostMapping("/teachers/{id}")
-	public ResponseEntity<?> localAdminHireTeacher(HttpServletRequest request, @PathVariable("id") int id) {
+	public ResponseEntity<?> localAdminHireTeacher(@PathVariable("id") int id, HttpServletRequest request) {
 		return schoolService.hireTeacher(request, id);
 	}
 	
+	@PostMapping("/teachers/placement")
+	public ResponseEntity<?> localAdminPlaceTeachersIntoClasses(@RequestBody TeacherClassForm teacherClassForm, HttpServletRequest request){
+		return teacherService.placeIntoClasses(teacherClassForm, request);
+	}
+	
 	@DeleteMapping("/teachers/{id}")
-	public ResponseEntity<?> adminRemoveTeacher(HttpServletRequest request, @PathVariable("id") int id) {
+	public ResponseEntity<?> adminRemoveTeacher(@PathVariable("id") int id, HttpServletRequest request) {
 		return teacherService.delete(request, id);
 	}
 	

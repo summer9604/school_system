@@ -104,6 +104,17 @@ public class ClassDao extends GenericDao<Class> {
 
 		return (List<Class>) session.createSQLQuery(query).addEntity(Class.class).getResultList();
 	}
+	
+	@Transactional
+	public Class getClassByStudentId(int id) {
+		
+		Session session = sessionFactory.getCurrentSession();
+	
+		String query = "Select * from class where idClass in (" + 
+					   "Select class_id from student where idstudent = " + id + ");";
+		
+		return (Class) session.createSQLQuery(query).addEntity(Class.class).uniqueResult();
+	}
 
 	@Transactional
 	public Class getClassTeacherRelation(int teacherId, int classId) {

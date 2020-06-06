@@ -1,6 +1,7 @@
 package org.ricardo.school_system.entities;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -89,6 +90,14 @@ public class Teacher {
 		this.updatedAt = LocalDate.now();
 	}
 
+	
+	public void addClass(Class schoolClass) {
+		
+		if (classes == null) classes = new LinkedList<>();
+		
+		classes.add(schoolClass);
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -201,3 +210,28 @@ public class Teacher {
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

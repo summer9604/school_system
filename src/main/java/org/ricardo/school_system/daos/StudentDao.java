@@ -1,6 +1,9 @@
 package org.ricardo.school_system.daos;
 
 import java.util.List;
+
+import javax.transaction.Transactional;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.ricardo.school_system.assemblers.LoginForm;
@@ -32,6 +35,7 @@ public class StudentDao extends GenericDao<Student> {
 	}
 
 	@Override
+	@Transactional
 	public Student getById(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
