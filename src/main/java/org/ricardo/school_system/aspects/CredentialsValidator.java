@@ -11,10 +11,12 @@ import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.StudentDao;
+import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.daos.TeacherDao;
 import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
 import org.ricardo.school_system.entities.Student;
+import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
 import org.ricardo.school_system.exceptions.ClassNotFoundException;
 import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
@@ -40,6 +42,9 @@ public class CredentialsValidator extends GenericAspect {
 
 	@Autowired
 	private StudentDao studentDao;
+
+	@Autowired
+	private SubjectDao subjectDao;
 
 	@Autowired
 	private TeacherDao teacherDao;
@@ -159,8 +164,6 @@ public class CredentialsValidator extends GenericAspect {
 
 		int teacherId = teacherClassForm.getTeachedId();
 
-		System.out.println("\nTEACHER ID : " + teacherId + "\n");
-		
 		School schoolTeacher = schoolDao.getSchoolByTeacherId(teacherId);//nullpoint porque?????
 
 		if (!userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN") ||
@@ -173,6 +176,8 @@ public class CredentialsValidator extends GenericAspect {
 		if (teacher == null)
 			throw new TeacherNotFoundException("Teacher with id " + teacherId + " not found.");
 
+		Subject teacherSubject = subjectDao.getTeacherSubject(teacher.getId());
+
 		List<Integer> classesId = teacherClassForm.getClassesId();
 
 		for(int classId : classesId) {
@@ -182,11 +187,16 @@ public class CredentialsValidator extends GenericAspect {
 			if (classSchoolId != schoolTeacher.getId())
 				throw new OperationNotAuthorizedException("Teacher with id " + teacherId + " and class with id " + classId + " are not placed in the same school");
 
-			Class teacherClass = classDao.getClassTeacherRelation(teacherId, classId);
-
-			if (teacherClass != null)
+			if (classDao.getClassTeacherRelation(teacherId, classId) != null)
 				throw new OperationNotAuthorizedException("Teacher with id " + teacherId + " already have class with id " + classId);
-		}
+
+			if (subjectDao.getSubjectFromClass(teacherSubject, classId) == null)
+				throw new OperationNotAuthorizedException("Class with id " + classId  + " doesn't have '" + teacherSubject.getName() + "' on its schedule.");
+
+			if (teacherDao.getTeacherFromClass(teacherSubject, classId) != null)
+				throw new OperationNotAuthorizedException("Class with id " + classId  + " already has a teacher that teaches '" + teacherSubject.getName() + "'");
+		}		
+
 	}
 
 }

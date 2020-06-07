@@ -5,6 +5,7 @@ import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.ricardo.school_system.assemblers.LoginForm;
+import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
 import org.springframework.stereotype.Repository;
 
@@ -110,6 +111,17 @@ public class TeacherDao extends GenericDao<Teacher> {
 		query.setParameter("id", id);
 
 		return (List<Teacher>) query.getResultList();
+	}
+
+	@Transactional
+	public Teacher getTeacherFromClass(Subject teacherSubject, int classId) {
+		
+		Session session = sessionFactory.getCurrentSession();
+
+		String query = "Select * from teacher where subject_id = " + teacherSubject.getId() + "\r\n" + 
+				"and idteacher in (Select teacher_id from teacher_class where class_id = " + classId + ");";
+		
+		return (Teacher) session.createSQLQuery(query).addEntity(Teacher.class).uniqueResult();
 	}
 
 }

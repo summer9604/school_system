@@ -43,6 +43,7 @@ public class SubjectDao extends GenericDao<Subject> {
 		return session.get(Subject.class, id);
 	}
 	
+	@Transactional
 	public Subject getTeacherSubject(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -97,6 +98,18 @@ public class SubjectDao extends GenericDao<Subject> {
 		session.saveOrUpdate(subject);
 		
 		return subject;
+	}
+
+	@Transactional
+	public Subject getSubjectFromClass(Subject teacherSubject, int classId) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		String query = "Select * from subject where name = '" + teacherSubject.getName() + "' and idsubject in (\r\n" + 
+				"Select subject_id from degree_subject \r\n" + 
+				"where degree_id = (Select degree_id from class where idClass = " + classId + "));";
+		
+		return (Subject) session.createSQLQuery(query).addEntity(Subject.class).uniqueResult();
 	}
 
 }

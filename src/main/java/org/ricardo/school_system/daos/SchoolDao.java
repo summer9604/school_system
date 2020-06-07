@@ -4,7 +4,6 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
 import org.springframework.stereotype.Repository;
 
