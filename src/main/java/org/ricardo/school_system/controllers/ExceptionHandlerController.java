@@ -1,8 +1,9 @@
 package org.ricardo.school_system.controllers;
 
+import org.ricardo.school_system.exceptions.ClassNotFoundException;
 import org.ricardo.school_system.exceptions.ErrorResponse;
 import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
-import org.ricardo.school_system.exceptions.ClassNotFoundException;
+import org.ricardo.school_system.exceptions.SchoolNotFoundException;
 import org.ricardo.school_system.exceptions.SessionNotFoundException;
 import org.ricardo.school_system.exceptions.StudentNotFoundException;
 import org.ricardo.school_system.exceptions.TeacherNotFoundException;
@@ -14,6 +15,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ExceptionHandlerController {
 
+	@ExceptionHandler
+	public ResponseEntity<ErrorResponse> handleStudentNotFoundException(SchoolNotFoundException exc) {
+
+		ErrorResponse response = new ErrorResponse();
+
+		response.setStatus(HttpStatus.NOT_FOUND.value());
+		response.setMessage(exc.getMessage());
+		response.setTimeStamp(System.currentTimeMillis());
+
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
+	
 	@ExceptionHandler
 	public ResponseEntity<ErrorResponse> handleStudentNotFoundException(StudentNotFoundException exc) {
 
@@ -74,16 +87,16 @@ public class ExceptionHandlerController {
 		return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 	}
 
-//	@ExceptionHandler
-//	public ResponseEntity<ErrorResponse> handleGenericException(Exception exc) {
-//		
-//		ErrorResponse response = new ErrorResponse();
-//
-//		response.setStatus(HttpStatus.BAD_REQUEST.value());
-//		response.setMessage("Bad request");
-//		response.setTimeStamp(System.currentTimeMillis());
-//
-//		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//	}
+	@ExceptionHandler
+	public ResponseEntity<ErrorResponse> handleGenericException(Exception exc) {
+		
+		ErrorResponse response = new ErrorResponse();
+
+		response.setStatus(HttpStatus.BAD_REQUEST.value());
+		response.setMessage("Bad request");
+		response.setTimeStamp(System.currentTimeMillis());
+
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
 	
 }

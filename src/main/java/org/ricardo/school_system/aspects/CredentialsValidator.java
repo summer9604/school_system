@@ -1,9 +1,13 @@
 package org.ricardo.school_system.aspects;
 
 import java.util.List;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.ricardo.school_system.assemblers.RegistrationLocalAdminForm;
+import org.ricardo.school_system.assemblers.RegistrationStudentForm;
+import org.ricardo.school_system.assemblers.StudentGradeForm;
 import org.ricardo.school_system.assemblers.TeacherClassForm;
 import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
@@ -11,15 +15,18 @@ import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.StudentDao;
+import org.ricardo.school_system.daos.StudentSubjectDao;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.daos.TeacherDao;
 import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
 import org.ricardo.school_system.entities.Student;
+import org.ricardo.school_system.entities.StudentSubject;
 import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
 import org.ricardo.school_system.exceptions.ClassNotFoundException;
 import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
+import org.ricardo.school_system.exceptions.SchoolNotFoundException;
 import org.ricardo.school_system.exceptions.StudentNotFoundException;
 import org.ricardo.school_system.exceptions.TeacherNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +55,9 @@ public class CredentialsValidator extends GenericAspect {
 
 	@Autowired
 	private TeacherDao teacherDao;
+
+	@Autowired
+	private StudentSubjectDao studentSubjectDao;
 
 	@Autowired
 	private JwtHandler jwtHandler;
@@ -196,10 +206,98 @@ public class CredentialsValidator extends GenericAspect {
 			if (teacherDao.getTeacherFromClass(teacherSubject, classId) != null)
 				throw new OperationNotAuthorizedException("Class with id " + classId  + " already has a teacher that teaches '" + teacherSubject.getName() + "'");
 		}		
+	}
+
+	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkGiveGradeToStudentPermissions()")
+	public void checkGiveGradeToStudentPermissions(JoinPoint joinPoint) {
+
+		String token = getToken(joinPoint);
+
+		JwtUserPermissions userPermissions = jwtHandler.getUserPermissions(token);
+
+		StudentGradeForm studentGradeForm = null;
+
+		for(Object arg : joinPoint.getArgs()) {
+			if (arg instanceof StudentGradeForm) 	
+				studentGradeForm = (StudentGradeForm) arg;
+		}
+
+		if (!userPermissions.getPermissions().equals("ROLE_TEACHER"))
+			throw new OperationNotAuthorizedException("You don´t have enough permissions");
+
+		if (studentDao.getById(studentGradeForm.getStudentId()) == null)
+			throw new StudentNotFoundException("Student with id " + studentGradeForm.getStudentId() + " not found");
+
+		StudentSubject studentSubject = studentSubjectDao.getByStudentIdAndTeacherId(userPermissions.getId(), studentGradeForm.getStudentId());
+
+		if (userPermissions.getPermissions().equals("ROLE_TEACHER") && studentSubject == null)
+			throw new OperationNotAuthorizedException("You don´t have enough permissions (NOT YOUR STUDENT)");
+	}
+
+	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkAddLocalAdminPermissions()")
+	public void checkAddLocalAdminPermissions(JoinPoint joinPoint) {
+
+		RegistrationLocalAdminForm registrationLocalAdminForm = null;
+
+		for(Object arg : joinPoint.getArgs()) {
+			if (arg instanceof RegistrationLocalAdminForm) 	
+				registrationLocalAdminForm = (RegistrationLocalAdminForm) arg;
+		}
+
+		int schoolId = registrationLocalAdminForm.getSchoolId();
+
+		School school = schoolDao.getById(schoolId);
+
+		if (school == null)
+			throw new SchoolNotFoundException("School with id " + schoolId + " not found");
+	}
+
+	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkAddStudentPermissions()")
+	public void checkAddStudentPermissions(JoinPoint joinPoint) {
+
+		String token = getToken(joinPoint);
+
+		JwtUserPermissions userPermissions = jwtHandler.getUserPermissions(token);
+
+		RegistrationStudentForm registrationStudentForm = null;
+
+		for(Object arg : joinPoint.getArgs()) {
+			if (arg instanceof RegistrationStudentForm) 	
+				registrationStudentForm = (RegistrationStudentForm) arg;
+		}
+
+		String studentEmail = registrationStudentForm.getEmail();
+
+		Student studentWithSameEmail = studentDao.getByEmail(studentEmail);
+
+		if (studentWithSameEmail != null)
+			throw new OperationNotAuthorizedException("Student with email '" + studentEmail + "' alreadys exists");
+
+		int studentPhonenumber = registrationStudentForm.getPhonenumber();
+
+		Student studentWithSamePhonenumber = studentDao.getByPhonenumber(studentPhonenumber);
+
+		if (studentWithSamePhonenumber != null)
+			throw new OperationNotAuthorizedException("Student with phonenumber '" + studentPhonenumber + "' alreadys exists");
+
+		int classId = registrationStudentForm.getClassId();
+		int schoolId = userPermissions.getSchoolId();
+
+		Class schoolClass = classDao.getClassIdAndSchoolId(classId, schoolId);
+
+		if (schoolClass == null)
+			throw new OperationNotAuthorizedException("Class with id " +  classId + " does not belong to school with id" + schoolId);
 
 	}
 
 }
+
+
+
+
+
+
+
 
 
 

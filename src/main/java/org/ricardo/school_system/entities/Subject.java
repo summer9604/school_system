@@ -22,56 +22,51 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "subject")
 @JsonIgnoreProperties({"degrees", "students", "teachers"})
 public class Subject {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idsubject")
 	private int id;
-	
+
 	@Column(name = "name")
 	private String name;
-	
+
 	@ManyToMany(fetch = FetchType.LAZY,
-        	    cascade = {CascadeType.DETACH, CascadeType.MERGE,
-        			       CascadeType.PERSIST, CascadeType.REFRESH})
+			cascade = {CascadeType.DETACH, CascadeType.MERGE,
+					CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinTable(name = "degree_subject",
-               joinColumns = @JoinColumn(name = "subject_id"),
-               inverseJoinColumns = @JoinColumn(name = "degree_id"))
+	joinColumns = @JoinColumn(name = "subject_id"),
+	inverseJoinColumns = @JoinColumn(name = "degree_id"))
 	private List<Degree> degrees;
-	
-	@ManyToMany(fetch = FetchType.LAZY,
-	    		cascade = { CascadeType.DETACH, CascadeType.MERGE,
-			            	CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinTable(name = "student_subject",
-           	   joinColumns = @JoinColumn(name = "subject_id"),
-               inverseJoinColumns = @JoinColumn(name = "student_id"))
-	private List<Student> students;
-	
+
+	@OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<StudentSubject> students;
+
 	@OneToMany(mappedBy = "subject",
-	           cascade = {CascadeType.DETACH, CascadeType.MERGE,
-	                      CascadeType.PERSIST, CascadeType.REFRESH})
+			cascade = {CascadeType.DETACH, CascadeType.MERGE,
+					CascadeType.PERSIST, CascadeType.REFRESH})
 	private List<Teacher> teachers;
-	
+
 	@Column(name = "createdAt")
 	private LocalDate createdAt;
-	
+
 	@Column(name = "updatedAt")
 	private LocalDate updatedAt;
 
 	public Subject() {
-		
+
 	}
-	
+
 	public Subject(String name) {
 		this.name = name;
 		this.createdAt = LocalDate.now();
 		this.updatedAt = LocalDate.now();
 	}
-	
+
 	public void addDegree(Degree degree) {
-		
+
 		if (degrees == null) degrees = new LinkedList<>();
-		
+
 		degrees.add(degree);
 	}
 
@@ -91,11 +86,11 @@ public class Subject {
 		this.name = name;
 	}
 
-	public List<Student> getStudents() {
+	public List<StudentSubject> getStudents() {
 		return students;
 	}
 
-	public void setStudents(List<Student> students) {
+	public void setStudents(List<StudentSubject> students) {
 		this.students = students;
 	}
 
@@ -135,5 +130,5 @@ public class Subject {
 	public String toString() {
 		return "Subject [id=" + id + ", name=" + name + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-	
+
 }

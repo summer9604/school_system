@@ -4,11 +4,14 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import org.ricardo.school_system.assemblers.RegistrationLocalAdminForm;
 import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
+import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.TeacherDao;
+import org.ricardo.school_system.entities.Admin;
 import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
 import org.ricardo.school_system.entities.Teacher;
@@ -28,6 +31,9 @@ public class SchoolService {
 
 	@Autowired
 	private TeacherDao teacherDao;
+	
+	@Autowired
+	private AdminDao adminDao;
 
 	@Autowired
 	private JwtHandler jwtHandler;
@@ -118,6 +124,26 @@ public class SchoolService {
 		return new ResponseEntity<>(classDao.getClassesBySchoolId(id), HttpStatus.OK);
 	}
 
+	@Transactional
+	public ResponseEntity<?> addLocalAdmin(HttpServletRequest request, RegistrationLocalAdminForm registrationLocalAdminForm) {
+		
+		Admin admin = new Admin();
+		
+		School school = schoolDao.getById(registrationLocalAdminForm.getSchoolId());
+		
+		admin.setName(registrationLocalAdminForm.getName());
+		admin.setAddress(registrationLocalAdminForm.getAddress());
+		admin.setPhonenumber(registrationLocalAdminForm.getPhonenumber());
+		admin.setSchool(school);
+		admin.setEmail(registrationLocalAdminForm.getEmail());
+		admin.setPassword(registrationLocalAdminForm.getPassword());
+		admin.setRole("ROLE_LOCAL_ADMIN");//MAIS TARDE PODE SER QUE MUDE ISTO.....PARA PUDER DAR ADD A GENERALS
+		
+		adminDao.add(admin);
+				
+		return new ResponseEntity<>("Local admin ´" + admin.getName() + "' added.", HttpStatus.OK);
+	}
+	
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
 
 		for(Cookie cookie : request.getCookies()) {

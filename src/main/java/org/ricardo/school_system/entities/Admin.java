@@ -53,7 +53,8 @@ public class Admin {
 	private LocalDate updatedAt;
 
 	public Admin() {
-		
+		this.createdAt = LocalDate.now();
+		this.updatedAt = LocalDate.now();
 	}
 
 	public Admin(String name, String address, int phonenumber, String email, String password, String role) {

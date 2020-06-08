@@ -15,55 +15,61 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="teacher")
-@JsonIgnoreProperties({"classes", "school", "subject"})
+@JsonIgnoreProperties({"classes", "school", "subject", "studentsGrades"})
 public class Teacher {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="idteacher")
 	private int id;
-	
+
 	@Column(name="name")
 	private String name;
-	
+
 	@Column(name="address")
 	private String address;
 
 	@Column(name="phonenumber")
 	private int phonenumber;
-	
+
 	@Column(name="email")
 	private String email;
-	
+
 	@Column(name="password")
 	private String password;
-	
+
 	@Column(name="teacher_role")
 	private String teacherRole;
 
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
-                          CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "school_id")
+			 	  	 	  CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinColumn(name = "school_id")
 	private School school;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
-                          CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToMany(mappedBy="teacher", fetch = FetchType.LAZY, 
+			   cascade = {CascadeType.DETACH, CascadeType.MERGE,
+						  CascadeType.PERSIST, CascadeType.REFRESH})
+	private List<StudentSubject> studentsGrades;
+
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+					      CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "subject_id")
 	private Subject subject;
-    
-    @ManyToMany(fetch = FetchType.LAZY,
-        		cascade = {CascadeType.DETACH, CascadeType.MERGE,
-        				   CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(name = "teacher_class",
-   	   	   	   joinColumns = @JoinColumn(name = "teacher_id"),
-   	   	   	   inverseJoinColumns = @JoinColumn(name = "class_id"))
-    private List<Class> classes;
+
+	@ManyToMany(fetch = FetchType.LAZY,
+			    cascade = {CascadeType.DETACH, CascadeType.MERGE,
+				     	   CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinTable(name = "teacher_class",
+	joinColumns = @JoinColumn(name = "teacher_id"),
+	inverseJoinColumns = @JoinColumn(name = "class_id"))
+	private List<Class> classes;
 
 	@Column(name="createdAt")
 	private LocalDate createdAt;
@@ -73,9 +79,9 @@ public class Teacher {
 
 	@Column(name="retiredAt")
 	private LocalDate retiredAt;
-	
+
 	public Teacher() {
-		
+
 	}
 
 	public Teacher(String name, String address, int phonenumber, String email, String password, Subject subject) {
@@ -90,14 +96,14 @@ public class Teacher {
 		this.updatedAt = LocalDate.now();
 	}
 
-	
+
 	public void addClass(Class schoolClass) {
-		
+
 		if (classes == null) classes = new LinkedList<>();
-		
+
 		classes.add(schoolClass);
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -121,7 +127,7 @@ public class Teacher {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
@@ -174,6 +180,14 @@ public class Teacher {
 		this.school = school;
 	}
 
+	public List<StudentSubject> getStudentsGrades() {
+		return studentsGrades;
+	}
+
+	public void setStudentsGrades(List<StudentSubject> studentsGrades) {
+		this.studentsGrades = studentsGrades;
+	}
+
 	public Subject getSubject() {
 		return subject;
 	}
@@ -205,10 +219,10 @@ public class Teacher {
 	@Override
 	public String toString() {
 		return "Teacher [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
-				+ ", email=" + email + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", retiredAt="
-				+ retiredAt + "]";
+				+ ", email=" + email + ", password=" + password + ", teacherRole=" + teacherRole + ", createdAt="
+				+ createdAt + ", updatedAt=" + updatedAt + ", retiredAt=" + retiredAt + "]";
 	}
-	
+
 }
 
 

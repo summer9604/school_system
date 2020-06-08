@@ -2,7 +2,9 @@ package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.ricardo.school_system.assemblers.LoginForm;
+import org.ricardo.school_system.assemblers.StudentGradeForm;
 import org.ricardo.school_system.services.LoginService;
 import org.ricardo.school_system.services.SchoolService;
 import org.ricardo.school_system.services.StudentService;
@@ -57,6 +59,11 @@ public class TeacherController {
 	@GetMapping("/students")
 	public ResponseEntity<?> getStudents(HttpServletRequest request){
 		return studentService.getStudentsByTeacherId(request);
+	}
+	
+	@PostMapping("/students/grades")
+	public ResponseEntity<?> giveStudentsGrades(HttpServletRequest request, @RequestBody StudentGradeForm studentGradeForm) {
+		return studentService.giveGradeToStudent(request, studentGradeForm);
 	}
  	
 	@GetMapping("/students/{id}")

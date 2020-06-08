@@ -3,25 +3,30 @@ package org.ricardo.school_system.assemblers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RegistrationStudentForm {
+public class RegistrationLocalAdminForm {
 
 	private String name;
+	
 	private String address;
+	
 	private int phonenumber;
+	
 	private String email;
-	private int classId;
+	
 	private String password;
 	
+	private int schoolId;
+
 	@JsonCreator
-	public RegistrationStudentForm(@JsonProperty("name") String name, @JsonProperty("address") String address,
-				       @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email,
-				       @JsonProperty("classId") int classId, @JsonProperty("password") String password) {
+	public RegistrationLocalAdminForm(@JsonProperty("name") String name, @JsonProperty("address") String address, 
+									  @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email, 
+									  @JsonProperty("password") String password, @JsonProperty("schoolId") int schoolId) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
 		this.email = email;
-		this.classId = classId;
 		this.password = password;
+		this.schoolId = schoolId;
 	}
 
 	public String getName() {
@@ -56,14 +61,6 @@ public class RegistrationStudentForm {
 		this.email = email;
 	}
 
-	public int getClassId() {
-		return classId;
-	}
-
-	public void setClassId(int classId) {
-		this.classId = classId;
-	}
-
 	public String getPassword() {
 		return password;
 	}
@@ -72,10 +69,18 @@ public class RegistrationStudentForm {
 		this.password = password;
 	}
 
+	public int getSchoolId() {
+		return schoolId;
+	}
+
+	public void setSchoolId(int schoolId) {
+		this.schoolId = schoolId;
+	}
+
 	@Override
 	public String toString() {
-		return "RegistrationStudentForm [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
-				+ ", email=" + email + ", classId=" + classId + ", password=" + password + "]";
+		return "RegistrationLocalAdminForm [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
+				+ ", email=" + email + ", password=" + password + ", schoolId=" + schoolId + "]";
 	}
 	
 }

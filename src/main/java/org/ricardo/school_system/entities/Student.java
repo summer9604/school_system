@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -49,12 +48,9 @@ public class Student {
 				           CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "class_id")
 	private Class studentClass;
-	//se eu elimino o aluno, todos os resultados intermediarios tambem sao eliminados...
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL) 
-	@JoinTable(name = "student_subject",
-               joinColumns = @JoinColumn(name = "student_id"),
-               inverseJoinColumns = @JoinColumn(name = "subject_id"))
-	private List<Subject> subjects;
+
+	@ManyToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL) 
+	private List<StudentSubject> subjects;
 
 	@Column(name = "createdAt")
 	private LocalDate createdAt;
@@ -63,7 +59,9 @@ public class Student {
 	private LocalDate updatedAt;
 
 	public Student() {
-
+		this.createdAt = LocalDate.now();
+		this.updatedAt = LocalDate.now();
+		this.studentRole = "ROLE_STUDENT";
 	}
 
 	public Student(String name, String address, int phonenumber, String email, String password) {
@@ -109,11 +107,11 @@ public class Student {
 		this.studentRole = studentRole;
 	}
 
-	public List<Subject> getSubjects() {
+	public List<StudentSubject> getSubjects() {
 		return subjects;
 	}
 
-	public void setSubjects(List<Subject> subjects) {
+	public void setSubjects(List<StudentSubject> subjects) {
 		this.subjects = subjects;
 	}
 
