@@ -1,7 +1,6 @@
 package org.ricardo.school_system.aspects;
 
 import java.util.List;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -9,7 +8,6 @@ import org.ricardo.school_system.assemblers.RegistrationLocalAdminForm;
 import org.ricardo.school_system.assemblers.RegistrationStudentForm;
 import org.ricardo.school_system.assemblers.StudentGradeForm;
 import org.ricardo.school_system.assemblers.TeacherClassForm;
-import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.ClassDao;
@@ -18,12 +16,14 @@ import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.daos.StudentSubjectDao;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.daos.TeacherDao;
+import org.ricardo.school_system.entities.Admin;
 import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
 import org.ricardo.school_system.entities.Student;
 import org.ricardo.school_system.entities.StudentSubject;
 import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
+import org.ricardo.school_system.exceptions.AdminNotFoundException;
 import org.ricardo.school_system.exceptions.ClassNotFoundException;
 import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
 import org.ricardo.school_system.exceptions.SchoolNotFoundException;
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@Order(2)
+@Order(3)
 public class CredentialsValidator extends GenericAspect {
 
 	@Autowired
@@ -58,9 +58,6 @@ public class CredentialsValidator extends GenericAspect {
 
 	@Autowired
 	private StudentSubjectDao studentSubjectDao;
-
-	@Autowired
-	private JwtHandler jwtHandler;
 
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.getGeneralAdminEndPoints()")
 	public void validateGeneralAdminTokens(JoinPoint joinPoint) {
@@ -139,7 +136,10 @@ public class CredentialsValidator extends GenericAspect {
 		if (student == null)
 			throw new StudentNotFoundException("Student with id " + studentId + " not found.");
 
-		Class studentClass = classDao.getClassByStudentId(studentId);//ALUNO TEM QUE TER SEMPRE UMA TURMA...
+		Class studentClass = classDao.getClassByStudentId(studentId);
+		
+		if (studentClass == null && !userPermissions.getPermissions().equals("ROLE_GENERAL_ADMIN"))
+			throw new OperationNotAuthorizedException("Access denied. This student is under General admin supervision.");
 
 		if (userPermissions.getPermissions().equals("ROLE_TEACHER")) {
 
@@ -174,7 +174,7 @@ public class CredentialsValidator extends GenericAspect {
 
 		int teacherId = teacherClassForm.getTeachedId();
 
-		School schoolTeacher = schoolDao.getSchoolByTeacherId(teacherId);//nullpoint porque?????
+		School schoolTeacher = schoolDao.getSchoolByTeacherId(teacherId);
 
 		if (!userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN") ||
 				(userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN") &&
@@ -287,9 +287,53 @@ public class CredentialsValidator extends GenericAspect {
 
 		if (schoolClass == null)
 			throw new OperationNotAuthorizedException("Class with id " +  classId + " does not belong to school with id" + schoolId);
+	}
+	
+	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkRemoveLocalAdminPermissions()")
+	public void checkRemoveLocalAdminPermissions(JoinPoint joinPoint) {
+		
+		int adminId = 0;
 
+		for(Object arg : joinPoint.getArgs()) {
+			if (arg instanceof Integer) adminId = (int) arg;
+		}
+
+		Admin admin = adminDao.getById(adminId);
+			
+		if (admin == null)
+			throw new AdminNotFoundException("Admin with id " + adminId + " not found.");
+		
+		if (admin.getRole().equals("ROLE_GENERAL_ADMIN"))
+			throw new OperationNotAuthorizedException("You can't remove a General Admin.");
 	}
 
+	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkExpelStudentPermissions()")
+	public void checkExpelStudentPermissions(JoinPoint joinPoint) {
+		
+		String token = getToken(joinPoint);
+
+		JwtUserPermissions userPermissions = jwtHandler.getUserPermissions(token);
+		
+		int studentId = 0;
+
+		for(Object arg : joinPoint.getArgs()) {
+			if (arg instanceof Integer) studentId = (int) arg;
+		}
+		
+		Student student = studentDao.getById(studentId);
+		
+		if (student == null)
+			throw new StudentNotFoundException("Student with id " + studentId + " not found.");
+		
+		School studentSchool = schoolDao.getSchoolByStudentId(studentId);
+		
+		int adminSchoolId = userPermissions.getSchoolId();
+		
+		if (studentSchool.getId() != adminSchoolId)
+			throw new OperationNotAuthorizedException("Access denied. This student doesn't belong to the school with id " + adminSchoolId + ".");
+		
+	}
+	
 }
 
 

@@ -18,6 +18,15 @@ public class ControllerPointCutDeclarations {
 	
 	@Pointcut("execution(* org.ricardo.school_system.controllers.*.localAdmin*(..))")
 	public void getLocalAdminEndPoints() {}
+
+	@Pointcut("execution(* org.ricardo.school_system.controllers.SchoolController.*(..)) && !loginEndPoint()")
+	public void getAdminController() {}
+	
+	@Pointcut("execution(* org.ricardo.school_system.controllers.TeacherController.*(..)) && !loginEndPoint()")
+	public void getTeacherController() {}
+	
+	@Pointcut("execution(* org.ricardo.school_system.controllers.StudentController.*(..)) && !loginEndPoint()")
+	public void getStudentController() {}
 	
 	@Pointcut("execution(* org.ricardo.school_system.controllers.ExceptionHandlerController.*(..))")
 	public void getExceptionHandlerControllerClass() {}

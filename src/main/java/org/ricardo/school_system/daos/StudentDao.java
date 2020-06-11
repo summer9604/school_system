@@ -74,8 +74,8 @@ public class StudentDao extends GenericDao<Student> {
 		Session session = sessionFactory.getCurrentSession();
 
 		String query = "Select * from student where class_id in (\r\n" + 
-				"Select class_id from teacher_class \r\n" + 
-				"where teacher_id = " + teacherId + ");";
+					   "Select class_id from teacher_class \r\n" + 
+				       "where teacher_id = " + teacherId + ");";
 
 		return (List<Student>) session.createSQLQuery(query).addEntity(Student.class).getResultList();
 	}
@@ -124,6 +124,26 @@ public class StudentDao extends GenericDao<Student> {
 		query.setParameter("phonenumber", studentPhonenumber);
 
 		return (Student) query.uniqueResult();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Student> getStudentsBySchoolId(int schoolId) {
+
+		Session session = sessionFactory.getCurrentSession();
+		
+		String query = "Select * from student where class_id in(\r\n" + 
+					   "Select idClass from class where school_id = " + schoolId + ");";
+
+		return (List<Student>) session.createSQLQuery(query).addEntity(Student.class).getResultList();
+	}
+
+	public void expelStudent(int id) {
+
+		Session session = sessionFactory.getCurrentSession();
+		
+		String query = "Update student set class_id = null where idstudent = " + id;
+
+		 session.createSQLQuery(query).executeUpdate();
 	}
 
 }

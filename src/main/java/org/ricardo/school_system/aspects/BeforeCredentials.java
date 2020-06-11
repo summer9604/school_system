@@ -3,7 +3,6 @@ package org.ricardo.school_system.aspects;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.TeacherDao;
@@ -17,11 +16,8 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@Order(3)
+@Order(4)
 public class BeforeCredentials extends GenericAspect {
-
-	@Autowired
-	private JwtHandler jwtHandler;
 
 	@Autowired
 	private SchoolDao schoolDao;
@@ -45,7 +41,7 @@ public class BeforeCredentials extends GenericAspect {
 		Teacher teacher = teacherDao.getById(teacherId);
 
 		if (teacher == null)
-			throw new TeacherNotFoundException("Teacher not Found");
+			throw new TeacherNotFoundException("Teacher with id " + teacherId + " not found.");
 
 		School schoolTeacher = schoolDao.getSchoolByTeacherId(teacher.getId());
 
@@ -56,21 +52,21 @@ public class BeforeCredentials extends GenericAspect {
 	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkHireTeacher()")
 	public void checkIfTeacherIsEmployedAlready(JoinPoint joinPoint) {
 
+		int teacherId = 0;
+
 		for(Object arg : joinPoint.getArgs()) {
-
-			if (arg instanceof Integer) {
-
-				Teacher teacher = teacherDao.getById((int) arg); 
-
-				if (teacher == null)
-					throw new TeacherNotFoundException("Teacher Not Found");
-
-				School schoolTeacher = schoolDao.getSchoolByTeacherId(teacher.getId());
-
-				if (schoolTeacher.getId() > 0) 
-					throw new OperationNotAuthorizedException("Teacher is currently employed.");
-			}
+			if (arg instanceof Integer) teacherId = (int) arg;
 		}
+		
+		Teacher teacher = teacherDao.getById(teacherId); 
+
+		if (teacher == null)
+			throw new TeacherNotFoundException("Teacher with id " + teacherId + " not found.");
+
+		School schoolTeacher = schoolDao.getSchoolByTeacherId(teacher.getId());
+
+		if (schoolTeacher.getId() > 0) 
+			throw new OperationNotAuthorizedException("Teacher is currently employed.");
 	}
 
 }

@@ -55,7 +55,7 @@ public class LoginService {
 			Teacher teacher = teacherDao.getByEmailAndPassword(loginInfo);
 
 			if (teacher == null)
-				throw new OperationNotAuthorizedException("Wrong credentials");
+				throw new OperationNotAuthorizedException("Wrong credentials.");
 
 			generatedToken = jwtHandler.generateJwtToken(teacher.getId(), -1, teacher.getTeacherRole());
 
@@ -67,14 +67,14 @@ public class LoginService {
 			response.addHeader("Access-Control-Allow-Credentials", "true");
 			response.addHeader("Access-Control-Allow-Origin", "*");
 
-			return new ResponseEntity<>("Hello, teacher '" + teacher.getName() + "'", HttpStatus.OK);
+			return new ResponseEntity<>("Hello, teacher '" + teacher.getName() + "'.", HttpStatus.OK);
 
 		case "student":
 
 			Student student = studentDao.getByEmailAndPassword(loginInfo);
 
 			if (student == null)
-				throw new OperationNotAuthorizedException("Wrong credentials");
+				throw new OperationNotAuthorizedException("Wrong credentials.");
 
 			generatedToken = jwtHandler.generateJwtToken(student.getId(), -1, student.getStudentRole());
 
@@ -86,14 +86,14 @@ public class LoginService {
 			response.addHeader("Access-Control-Allow-Credentials", "true");
 			response.addHeader("Access-Control-Allow-Origin", "*");
 
-			return new ResponseEntity<>("Hello, student '" + student.getName() + "'", HttpStatus.OK);
+			return new ResponseEntity<>("Hello, student '" + student.getName() + "'.", HttpStatus.OK);
 
 		default:
 
 			Admin admin = adminDao.getByEmailAndPassword(loginInfo);
 
 			if (admin == null)
-				throw new OperationNotAuthorizedException("Wrong credentials");
+				throw new OperationNotAuthorizedException("Wrong credentials.");
 
 			String adminRole = admin.getRole();
 
@@ -113,7 +113,7 @@ public class LoginService {
 				response.addHeader("Access-Control-Allow-Credentials", "true");
 				response.addHeader("Access-Control-Allow-Origin", "*");
 
-				return new ResponseEntity<>("Hello, Local admin '" + admin.getName() + "'", HttpStatus.OK);
+				return new ResponseEntity<>("Hello, Local admin '" + admin.getName() + "'.", HttpStatus.OK);
 
 			default:
 
@@ -127,7 +127,7 @@ public class LoginService {
 				response.addHeader("Access-Control-Allow-Credentials", "true");
 				response.addHeader("Access-Control-Allow-Origin", "*");
 
-				return new ResponseEntity<>("Hello, General admin '" + admin.getName() + "'", HttpStatus.OK);
+				return new ResponseEntity<>("Hello, General admin '" + admin.getName() + "'.", HttpStatus.OK);
 			}
 		}
 	}

@@ -15,6 +15,9 @@ import org.ricardo.school_system.entities.Admin;
 import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
 import org.ricardo.school_system.entities.Teacher;
+import org.ricardo.school_system.exceptions.SchoolNotFoundException;
+import org.ricardo.school_system.exceptions.AdminNotFoundException;
+import org.ricardo.school_system.exceptions.ClassNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +34,7 @@ public class SchoolService {
 
 	@Autowired
 	private TeacherDao teacherDao;
-	
+
 	@Autowired
 	private AdminDao adminDao;
 
@@ -44,56 +47,99 @@ public class SchoolService {
 
 	@Transactional
 	public ResponseEntity<?> getAllSchools() {
-		return new ResponseEntity<>(schoolDao.getAll(), HttpStatus.OK);
+
+		List<School> schools = schoolDao.getAll();
+
+		if (schools.isEmpty())
+			throw new SchoolNotFoundException("No schools were found.");
+
+		return new ResponseEntity<>(schools, HttpStatus.OK);
 	}
 
 	@Transactional
-	public School getSchoolById(int id) {
-		return schoolDao.getById(id);
+	public ResponseEntity<?> getSchoolById(int id) {
+
+		School school = schoolDao.getById(id);
+
+		if (school == null)
+			throw new SchoolNotFoundException("School with id " + id + " not found.");
+
+		return new ResponseEntity<>(school, HttpStatus.OK);
 	}
 
 	@Transactional
-	public School getSchoolByEmail(String email) {
-		return schoolDao.getByEmail(email);
+	public ResponseEntity<?> getSchoolByEmail(String email) {
+
+		School school = schoolDao.getByEmail(email);
+
+		if (school == null)
+			throw new SchoolNotFoundException("School with email " + email + " not found.");
+
+		return new ResponseEntity<>(school, HttpStatus.OK);
 	}
 
 	@Transactional
-	public void deleteSchool(int id) {
+	public ResponseEntity<?> deleteSchool(int id) {
+
 		schoolDao.delete(id);
+
+		return new ResponseEntity<>("School with id " + id + " deleted.", HttpStatus.OK);
+	}
+
+	//hmm....muito a checkar aqui, nomeadamente os parametros....talvex um form aqui em vez de school.
+	@Transactional
+	public ResponseEntity<?> updateSchool(School school) {		
+		return new ResponseEntity<>(schoolDao.update(school), HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> addClass(Class schoolClass) {	
+		return new ResponseEntity<>(classDao.add(schoolClass), HttpStatus.OK);
 	}
 
 	@Transactional
-	public School updateSchool(School school) {
-		return schoolDao.update(school);
-	}
+	public ResponseEntity<?> getAllClasses() {
 
-	public Class addClass(Class schoolClass) {		
-		return classDao.add(schoolClass);
-	}
+		List<Class> schoolClasses = classDao.getAll();
 
-	@Transactional
-	public List<Class> getAllClasses() {
-		return classDao.getAll();
+		if (schoolClasses.isEmpty())
+			throw new ClassNotFoundException("Classes not found.");
+
+		return new ResponseEntity<>(schoolClasses, HttpStatus.OK);
 	}
 
 	@Transactional
 	public ResponseEntity<?> getClassById(HttpServletRequest request, int id) {
-		return new ResponseEntity<>(classDao.getById(id), HttpStatus.OK);
+
+		Class schoolClass = classDao.getById(id);
+
+		if (schoolClass == null)
+			throw new ClassNotFoundException("Classe with id " + id + " not found.");
+
+		return new ResponseEntity<>(schoolClass, HttpStatus.OK);
 	}
 
-	@Transactional
-	public Class getClassByEmail(String email) {
-		return classDao.getByEmail(email);
-	}
+	//	@Transactional
+	//	public ResponseEntity<?> getClassByEmail(String email) {
+	//		
+	//		Class schoolClass = classDao.getByEmail(email);
+	//		
+	//		if (schoolClass == null)
+	//			throw new ClassNotFoundException("Class with email " + email + " not found.");
+	//		
+	//		return new ResponseEntity<>(schoolClass, HttpStatus.OK);
+	//	}
 
 	@Transactional
-	public void deleteClass(int id) {
+	public ResponseEntity<?> deleteClass(int id) {
+
 		classDao.delete(id);
+
+		return new ResponseEntity<>("Class with id " + id + " deleted.", HttpStatus.OK);
 	}
 
 	@Transactional
-	public Class updateClass(Class schoolClass) {
-		return classDao.update(schoolClass);
+	public ResponseEntity<?> updateClass(Class schoolClass) {
+		return new ResponseEntity<>(classDao.update(schoolClass), HttpStatus.OK);
 	}
 
 	@Transactional
@@ -101,7 +147,12 @@ public class SchoolService {
 
 		JwtUserPermissions userPermissions = retrievePermissions(request);
 
-		return new ResponseEntity<>(classDao.getClassesByTeacherId(userPermissions.getId()), HttpStatus.OK);
+		List<Class> schoolClasses = classDao.getClassesByTeacherId(userPermissions.getId());
+
+		if (schoolClasses.isEmpty())
+			throw new ClassNotFoundException("Classes not found.");
+
+		return new ResponseEntity<>(schoolClasses, HttpStatus.OK);
 	}
 
 	@Transactional
@@ -117,20 +168,37 @@ public class SchoolService {
 
 		teacherDao.update(teacher);
 
-		return new ResponseEntity<>("Teacher '" + teacher.getName() + "' is now teaching in '" + school.getName() + "'", HttpStatus.OK);
+		return new ResponseEntity<>("Teacher '" + teacher.getName() + "' is now teaching in '" + school.getName() + "'.", HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> getClassesBySchool(int id, HttpServletRequest request) {
-		return new ResponseEntity<>(classDao.getClassesBySchoolId(id), HttpStatus.OK);
+
+		List<Class> schoolClasses = classDao.getClassesBySchoolId(id);
+
+		if (schoolClasses.isEmpty())
+			throw new ClassNotFoundException("Classes not found at school with id " + id);
+
+		return new ResponseEntity<>(schoolClasses, HttpStatus.OK);
+	}
+
+	@Transactional
+	public ResponseEntity<?> getLocalAdmins() {
+
+		List<Admin> localAdmins = adminDao.getLocalAdmins();
+
+		if (localAdmins.isEmpty())
+			throw new AdminNotFoundException("No Local Admins were found.");
+
+		return new ResponseEntity<>(localAdmins, HttpStatus.OK);
 	}
 
 	@Transactional
 	public ResponseEntity<?> addLocalAdmin(HttpServletRequest request, RegistrationLocalAdminForm registrationLocalAdminForm) {
-		
-		Admin admin = new Admin();
-		
+
 		School school = schoolDao.getById(registrationLocalAdminForm.getSchoolId());
-		
+
+		Admin admin = new Admin();
+
 		admin.setName(registrationLocalAdminForm.getName());
 		admin.setAddress(registrationLocalAdminForm.getAddress());
 		admin.setPhonenumber(registrationLocalAdminForm.getPhonenumber());
@@ -138,12 +206,20 @@ public class SchoolService {
 		admin.setEmail(registrationLocalAdminForm.getEmail());
 		admin.setPassword(registrationLocalAdminForm.getPassword());
 		admin.setRole("ROLE_LOCAL_ADMIN");//MAIS TARDE PODE SER QUE MUDE ISTO.....PARA PUDER DAR ADD A GENERALS
-		
+
 		adminDao.add(admin);
-				
+
 		return new ResponseEntity<>("Local admin ´" + admin.getName() + "' added.", HttpStatus.OK);
 	}
 	
+	@Transactional
+	public ResponseEntity<?> removeLocalAdmin(HttpServletRequest request, int id) {
+
+		adminDao.delete(id);
+
+		return new ResponseEntity<>("Local admin with id " + id + " was fired!", HttpStatus.OK);
+	}
+
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
 
 		for(Cookie cookie : request.getCookies()) {
@@ -154,7 +230,7 @@ public class SchoolService {
 
 		return null;
 	}
-	
+
 }
 
 

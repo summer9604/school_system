@@ -33,6 +33,7 @@ public class AdminDao extends GenericDao<Admin> {
 	}
 
 	@Override
+	@Transactional
 	public Admin getById(int id) {
 
 		Session session = sessionFactory.getCurrentSession();
@@ -86,7 +87,7 @@ public class AdminDao extends GenericDao<Admin> {
 		
 		query.setParameter("name", name);
 		
-		return (List<Admin>) query.getResultList();
+		return query.getResultList();
 	}
 
 	@Override
@@ -109,4 +110,27 @@ public class AdminDao extends GenericDao<Admin> {
 	    return admin;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Admin> getLocalAdmins() {
+
+		Session session = sessionFactory.getCurrentSession();
+		
+		Query<Admin> query = session.createQuery("from Admin where school_id > 0");
+		
+		return query.getResultList();
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

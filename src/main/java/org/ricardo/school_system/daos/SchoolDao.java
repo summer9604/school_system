@@ -80,7 +80,7 @@ public class SchoolDao extends GenericDao<School> {
 		Session session = sessionFactory.getCurrentSession();
 
 		String query = "Select * from school where idschool in (" + 
-				"Select school_id from class where idClass = " + classId + ");";
+				       "Select school_id from class where idClass = " + classId + ");";
 
 		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();	
 	}
@@ -112,8 +112,20 @@ public class SchoolDao extends GenericDao<School> {
 
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from school where idschool in "
-				+ "(Select school_id from teacher where idteacher = " + teacherId + ");";
+		String query = "Select * from school where idschool in " + 
+					   "(Select school_id from teacher where idteacher = " + teacherId + ");";
+
+		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();
+	}
+
+	@Transactional
+	public School getSchoolByStudentId(int studentId) {
+		
+		Session session = sessionFactory.getCurrentSession();
+
+		String query = "Select * from school where idschool in(\r\n" + 
+					   "Select school_id from class where idClass in(\r\n" + 
+					   "Select class_id from student where idstudent = " + studentId + "))";
 
 		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();
 	}

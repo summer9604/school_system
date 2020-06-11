@@ -13,6 +13,7 @@ import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.daos.TeacherDao;
 import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
+import org.ricardo.school_system.exceptions.TeacherNotFoundException;
 import org.ricardo.school_system.entities.Class;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class TeacherService {
 
 	@Autowired
 	private ClassDao classDao;
-	
+
 	@Autowired
 	private JwtHandler jwtHandler;
 
@@ -39,22 +40,43 @@ public class TeacherService {
 
 		Subject subject = subjectDao.getById(teacherInfo.getSubjectId());
 
-		Teacher teacher = new Teacher(teacherInfo.getName(), teacherInfo.getAddress(), 
-				teacherInfo.getPhonenumber(), teacherInfo.getEmail(), 
-				teacherInfo.getPassword(), subject);
+		Teacher teacher = new Teacher();
 
-		return new ResponseEntity<>(teacherDao.add(teacher), HttpStatus.OK);
+		teacher.setName(teacherInfo.getName());
+		teacher.setAddress(teacherInfo.getAddress());
+		teacher.setPhonenumber(teacherInfo.getPhonenumber());
+		teacher.setEmail(teacherInfo.getEmail());
+		teacher.setPassword(teacherInfo.getPassword());
+		teacher.setSubject(subject);
+
+		teacherDao.add(teacher);
+
+		return new ResponseEntity<>("Teacher '" + teacher.getName() + "' added to the School System.", HttpStatus.OK);
 	}
 
 	@Transactional
 	public ResponseEntity<?> getAll(HttpServletRequest request) {
-		
+
 		JwtUserPermissions userPermissions = retrievePermissions(request);
-		
-		if (userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN"))
-			return new ResponseEntity<>(teacherDao.getTeachersBySchoolId(userPermissions.getSchoolId()), HttpStatus.OK);
-		
-		return new ResponseEntity<>(teacherDao.getAll(), HttpStatus.OK);
+
+		List<Teacher> teachers;
+
+		if (userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN")) {
+
+			teachers = teacherDao.getTeachersBySchoolId(userPermissions.getSchoolId());
+
+			if (teachers.isEmpty())
+				throw new TeacherNotFoundException("No teachers were found at school with id " + userPermissions.getSchoolId());
+
+			return new ResponseEntity<>(teachers, HttpStatus.OK);
+		}
+
+		teachers = teacherDao.getAll();
+
+		if (teachers.isEmpty())
+			throw new TeacherNotFoundException("No teachers were found.");
+
+		return new ResponseEntity<>(teachers, HttpStatus.OK);
 	}
 
 	@Transactional
@@ -64,27 +86,45 @@ public class TeacherService {
 
 		return new ResponseEntity<>(teacherDao.getById(userPermissions.getId()), HttpStatus.OK);
 	}
-	
+
 	@Transactional
-	public ResponseEntity<?> getByIdForAdmin(int id, HttpServletRequest request) {		
-		return new ResponseEntity<>(teacherDao.getById(id), HttpStatus.OK);
+	public ResponseEntity<?> getByIdForAdmin(int id, HttpServletRequest request) {	
+		
+		Teacher teacher = teacherDao.getById(id);
+		
+		if (teacher == null)
+			throw new TeacherNotFoundException("Teacher with id " + id + " not found.");
+		
+		return new ResponseEntity<>(teacher, HttpStatus.OK);
 	}
 
 	@Transactional
-	public ResponseEntity<?> getByEmail(HttpServletRequest request, String email) {				
-		return new ResponseEntity<>(teacherDao.getByEmail(email), HttpStatus.OK);
+	public ResponseEntity<?> getByEmail(HttpServletRequest request, String email) {	
+		
+		Teacher teacher = teacherDao.getByEmail(email);
+		
+		if (teacher == null)
+			throw new TeacherNotFoundException("Teacher with email " + email + " not found.");
+		
+		return new ResponseEntity<>(teacher, HttpStatus.OK);
 	}
 
 	@Transactional
-	public ResponseEntity<?> getByName(HttpServletRequest request, String name) {				
-		return new ResponseEntity<>(teacherDao.getByName(name), HttpStatus.OK);
+	public ResponseEntity<?> getByName(HttpServletRequest request, String name) {	
+		
+		List<Teacher> teachers = teacherDao.getByName(name);
+		
+		if (teachers.isEmpty())
+			throw new TeacherNotFoundException("No teachers named " + name + " were found.");
+		
+		return new ResponseEntity<>(teachers, HttpStatus.OK);
 	}
 
 	@Transactional
 	public ResponseEntity<?> delete(HttpServletRequest request, int id) {
-		
+
 		teacherDao.delete(id);
-		
+
 		return new ResponseEntity<>("Teacher with id " + id + " removed.", HttpStatus.OK);
 	}
 
@@ -98,26 +138,26 @@ public class TeacherService {
 
 		List<Integer> classesId = teacherClassForm.getClassesId();
 		Teacher teacher = teacherDao.getById(teacherClassForm.getTeachedId());
-		
+
 		for(int classId : classesId) {
 			Class schoolClass = classDao.getById(classId);
 			teacher.addClass(schoolClass);
 		}
-		
+
 		teacherDao.update(teacher);
 
 		return new ResponseEntity<>("Teacher allocated in " + classesId.size() + " new classes.", HttpStatus.OK);
 	}
 
-	
+
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
 
 		for(Cookie cookie : request.getCookies()) {
-			
+
 			if (cookie.getName().equals("jwtToken"))
 				return jwtHandler.getUserPermissions(cookie.getValue());
 		}
-		
+
 		return null;
 	}
 

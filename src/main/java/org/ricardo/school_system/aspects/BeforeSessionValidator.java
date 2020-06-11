@@ -3,10 +3,8 @@ package org.ricardo.school_system.aspects;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
 import org.ricardo.school_system.exceptions.SessionNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(1)
 public class BeforeSessionValidator extends GenericAspect {
-
-	@Autowired
-	private JwtHandler jwtHandler;
 
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.validateSession()")
 	public void verifyToken(JoinPoint joinPoint) {
