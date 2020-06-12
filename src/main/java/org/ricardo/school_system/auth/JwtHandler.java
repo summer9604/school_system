@@ -40,7 +40,7 @@ public class JwtHandler {
 		} catch(Exception ex) {
 			return null;
 		}
-
+		
 		String userPermissions = result.getBody().get("user-permissions", String.class);
 		int id = result.getBody().get("user-id", Integer.class);
 		int schoolId = result.getBody().get("local-admin-school-id", Integer.class);

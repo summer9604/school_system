@@ -220,6 +220,11 @@ public class SchoolService {
 		return new ResponseEntity<>("Local admin with id " + id + " was fired!", HttpStatus.OK);
 	}
 
+	@Transactional
+	public ResponseEntity<?> getLocalAdminById(HttpServletRequest request, int id) {
+		return new ResponseEntity<>(adminDao.getById(id), HttpStatus.OK);
+	}
+	
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
 
 		for(Cookie cookie : request.getCookies()) {

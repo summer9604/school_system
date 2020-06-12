@@ -113,16 +113,16 @@ public class ExceptionHandlerController {
 		return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 	}
 
-	@ExceptionHandler
-	public ResponseEntity<ErrorResponse> handleGenericException(Exception exc) {
-		
-		ErrorResponse response = new ErrorResponse();
-
-		response.setStatus(HttpStatus.BAD_REQUEST.value());
-		response.setMessage("Bad request");
-		response.setTimeStamp(System.currentTimeMillis());
-
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-	}
+//	@ExceptionHandler
+//	public ResponseEntity<ErrorResponse> handleGenericException(Exception exc) {
+//		
+//		ErrorResponse response = new ErrorResponse();
+//
+//		response.setStatus(HttpStatus.BAD_REQUEST.value());
+//		response.setMessage("Bad request");
+//		response.setTimeStamp(System.currentTimeMillis());
+//
+//		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//	}
 	
 }

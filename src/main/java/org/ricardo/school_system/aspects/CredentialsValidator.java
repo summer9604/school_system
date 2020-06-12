@@ -141,21 +141,24 @@ public class CredentialsValidator extends GenericAspect {
 		if (studentClass == null && !userPermissions.getPermissions().equals("ROLE_GENERAL_ADMIN"))
 			throw new OperationNotAuthorizedException("Access denied. This student is under General admin supervision.");
 
-		if (userPermissions.getPermissions().equals("ROLE_TEACHER")) {
+		if (studentClass != null) {
+			
+			if (userPermissions.getPermissions().equals("ROLE_TEACHER")) {
 
-			Class teacherClass = classDao.getClassTeacherRelation(userPermissions.getId(), studentClass.getId());
+				Class teacherClass = classDao.getClassTeacherRelation(userPermissions.getId(), studentClass.getId());
 
-			if (teacherClass == null)
-				throw new OperationNotAuthorizedException("You don't have enough permissions");
+				if (teacherClass == null)
+					throw new OperationNotAuthorizedException("You don't have enough permissions");
 
-			if (studentClass.getId() != teacherClass.getId())
-				throw new OperationNotAuthorizedException("You don´t have enough permissions");
+				if (studentClass.getId() != teacherClass.getId())
+					throw new OperationNotAuthorizedException("You don´t have enough permissions");
+			}
+
+			School schoolClass = schoolDao.getSchoolByClassId(studentClass.getId());
+
+			if (userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN") && schoolClass.getId() != userPermissions.getSchoolId())
+				throw new OperationNotAuthorizedException("Student with id " + studentId + " belongs to other school.");
 		}
-
-		School schoolClass = schoolDao.getSchoolByClassId(studentClass.getId());
-
-		if (userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN") && schoolClass.getId() != userPermissions.getSchoolId())
-			throw new OperationNotAuthorizedException("You don´t have enough permissions");
 	}
 
 	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkTeachersPlacementIntoClassesPermissions()")
@@ -331,7 +334,58 @@ public class CredentialsValidator extends GenericAspect {
 		
 		if (studentSchool.getId() != adminSchoolId)
 			throw new OperationNotAuthorizedException("Access denied. This student doesn't belong to the school with id " + adminSchoolId + ".");
+	}
+	
+	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkGetGradesByStudentId()")
+	public void checkGetGradesByStudentId(JoinPoint joinPoint) {
 		
+		String token = getToken(joinPoint);
+
+		JwtUserPermissions userPermissions = jwtHandler.getUserPermissions(token);
+		
+		int studentId = 0;
+
+		for(Object arg : joinPoint.getArgs()) {
+			if (arg instanceof Integer) studentId = (int) arg;
+		}
+		
+		Student student = studentDao.getById(studentId);
+		
+		if (student == null)
+			throw new StudentNotFoundException("Student with id " + studentId + " not found.");
+		
+		if (userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN") && 
+				schoolDao.getSchoolByStudentId(studentId).getId() != userPermissions.getSchoolId())
+			throw new OperationNotAuthorizedException("Access denied. This student doesn't belong to the school with id " + userPermissions.getSchoolId() + ".");
+		
+		if (userPermissions.getPermissions().equals("ROLE_TEACHER") && 
+				studentSubjectDao.getByStudentIdAndTeacherId(userPermissions.getId(), studentId) == null)
+			throw new OperationNotAuthorizedException("Access denied. This is not a student from one of your classes.");
+	}
+	
+	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkGetLocalAdminById()")
+	public void checkGetLocalAdminById(JoinPoint joinPoint) {
+		
+		String token = getToken(joinPoint);
+		
+		JwtUserPermissions userPermissions = jwtHandler.getUserPermissions(token);
+		
+		int adminId = 0;
+
+		for(Object arg : joinPoint.getArgs()) {
+			if (arg instanceof Integer) adminId = (int) arg;
+		}		
+		
+		if (adminId == userPermissions.getId())
+			throw new OperationNotAuthorizedException("WHY ARE YOU LOOKING FOR YOURSELF?!!!!");
+		
+		Admin admin = adminDao.getById(adminId);
+		
+		if (admin == null)
+			throw new AdminNotFoundException("Admin with id" + adminId + " not found.");
+		
+		if (userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN") && admin.getRole().equals("ROLE_GENERAL_ADMIN"))
+			throw new OperationNotAuthorizedException("Access denied.");
 	}
 	
 }

@@ -22,7 +22,7 @@ public class BeforeSessionValidator extends GenericAspect {
 			throw new SessionNotFoundException("AOP VALIDATOR - You are not logged in.");
 
 		if (jwtHandler.getUserPermissions(token) == null)
-			throw new SessionNotFoundException("AOP VALIDATOR - Invalid token.");			
+			throw new SessionNotFoundException("AOP VALIDATOR - Invalid token.");	
 	}
 
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.loginEndPoint()")

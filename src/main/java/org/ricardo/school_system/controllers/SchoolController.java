@@ -49,7 +49,7 @@ public class SchoolController {
 		return schoolService.getAllSchools();
 	}
 	
-	@PostMapping("/admin/login")
+	@PostMapping("/admins/login")
 	public ResponseEntity<?> loginGeneralAdmin(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginForm){
 		return loginService.login(response, loginForm, "admin");
 	}
@@ -94,14 +94,19 @@ public class SchoolController {
 		return schoolService.getClassesBySchool(id, request);
 	}
 	
-	 @GetMapping("/localadmins")
-	 public ResponseEntity<?> adminGetLocalAdmins(HttpServletRequest request) {
-		 return schoolService.getLocalAdmins();
-	 }
+	@GetMapping("/localadmins")
+    public ResponseEntity<?> adminGetLocalAdmins(HttpServletRequest request) {
+	    return schoolService.getLocalAdmins();
+	}
 	
 	@PostMapping("/localadmins")
 	public ResponseEntity<?> adminAddLocalAdmin(HttpServletRequest request, @RequestBody RegistrationLocalAdminForm registrationLocalAdminForm) {
 		return schoolService.addLocalAdmin(request, registrationLocalAdminForm);
+	}
+	
+	@GetMapping("/admins/{id}")
+	public ResponseEntity<?> getLocalAdminById(@PathVariable("id") int id, HttpServletRequest request) {
+		return schoolService.getLocalAdminById(request, id);
 	}
 	
 	@DeleteMapping("/localadmins/{id}")
@@ -118,7 +123,17 @@ public class SchoolController {
 	public ResponseEntity<?> localAdminAdd(HttpServletRequest request, @RequestBody RegistrationStudentForm studentForm) {		
 		return studentService.add(request, studentForm);
 	}
+	
+	@GetMapping("/students/{id}/grades")
+	public ResponseEntity<?> getGradesByStudentId(HttpServletRequest request, @PathVariable("id") int id) {
+		return studentService.getGradesByStudentId(request, id);
+	}
 
+	@GetMapping("/students/{id}")
+	public ResponseEntity<?> getStudentById(HttpServletRequest request, @PathVariable("id") int id){
+		return studentService.getById(request,id);
+	}
+	
 	@DeleteMapping("/students/{id}")
 	public ResponseEntity<?> localAdminExpelStudent(HttpServletRequest request, @PathVariable("id") int id){
 		return studentService.expelStudent(request, id);
@@ -130,9 +145,6 @@ public class SchoolController {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-													//	Procurar estudante por ID;
-													//	Procurar localAdmin por ID;
-													//	Procurar notas de determinado aluno;
 													//	Encriptar passwords
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

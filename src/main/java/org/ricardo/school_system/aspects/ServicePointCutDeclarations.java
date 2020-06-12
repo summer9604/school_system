@@ -33,4 +33,10 @@ public class ServicePointCutDeclarations {
 
 	@Pointcut("execution(* org.ricardo.school_system.services.StudentService.giveGradeToStudent(..))")
 	public void checkGiveGradeToStudentPermissions() {}
+	
+	@Pointcut("execution(* org.ricardo.school_system.services.StudentService.getGradesByStudentId(*, *))")
+	public void checkGetGradesByStudentId() {}
+	
+	@Pointcut("execution(* org.ricardo.school_system.services.SchoolService.getLocalAdminById(*, *))")
+	public void checkGetLocalAdminById() {}
 }

@@ -10,7 +10,7 @@ public class JwtUserPermissions {
 	private int schoolId;
 
 	@JsonCreator
-	public JwtUserPermissions(@JsonProperty("id") int id,@JsonProperty("permissions") String permissions, 
+	public JwtUserPermissions(@JsonProperty("id") int id, @JsonProperty("permissions") String permissions, 
 							  @JsonProperty("schoolId") int schoolId) {
 		this.id = id;
 		this.permissions = permissions;

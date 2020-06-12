@@ -72,14 +72,13 @@ public class StudentService {
 		return new ResponseEntity<>(grades, HttpStatus.OK);
 	}
 
-	//FOR ADMINS, TEACHERS...
 	@Transactional
 	public ResponseEntity<?> getGradesByStudentId(HttpServletRequest request, int studentId){
 		
 		List<StudentSubject> grades = studentSubjectDao.getByStudentId(studentId);
 		
 		if (grades.isEmpty())
-			throw new GradeNotFoundException("Student with id " + studentId + " has no grades attached");
+			throw new GradeNotFoundException("Student with id " + studentId + " has no grades attached.");
 		
 		return new ResponseEntity<>(grades, HttpStatus.OK);
 	}
@@ -110,9 +109,9 @@ public class StudentService {
 	@Transactional
 	public ResponseEntity<?> getById(HttpServletRequest request) {		
 
-		JwtUserPermissions uerPermissions = retrievePermissions(request);
+		JwtUserPermissions userPermissions = retrievePermissions(request);
 
-		int studentId = uerPermissions.getId();
+		int studentId = userPermissions.getId();
 
 		return new ResponseEntity<>(studentDao.getById(studentId), HttpStatus.OK);
 	}
@@ -202,7 +201,7 @@ public class StudentService {
 
 		for(Cookie cookie : request.getCookies()) {
 
-			if(cookie.getName().equals("jwtToken"))
+			if (cookie.getName().equals("jwtToken"))
 				return jwtHandler.getUserPermissions(cookie.getValue());
 		}
 

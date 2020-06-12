@@ -21,7 +21,7 @@ public class BeforeControllerPermissionsValidator extends GenericAspect {
 		JwtUserPermissions permissions = jwtHandler.getUserPermissions(token);
 		
 		if (!permissions.getPermissions().equals("ROLE_GENERAL_ADMIN") && !permissions.getPermissions().equals("ROLE_LOCAL_ADMIN"))
-			throw new OperationNotAuthorizedException("Access denied. You are not an admin.");
+			throw new OperationNotAuthorizedException("Access denied. You are not an admin.");		
 	}
 	
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.getTeacherController()")
