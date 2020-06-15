@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Order(1)
-public class BeforeSessionValidator extends GenericAspect {
+public class BeforeAspectFirstLayerValidator extends GenericAspect {
 
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.validateSession()")
 	public void verifyToken(JoinPoint joinPoint) {

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Order(4)
-public class BeforeCredentials extends GenericAspect {
+public class BeforeAspectFourthLayerValidator extends GenericAspect {
 
 	@Autowired
 	private SchoolDao schoolDao;

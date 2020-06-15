@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Order(3)
-public class CredentialsValidator extends GenericAspect {
+public class BeforeAspectThirdLayerValidator extends GenericAspect {
 
 	@Autowired
 	private ClassDao classDao;

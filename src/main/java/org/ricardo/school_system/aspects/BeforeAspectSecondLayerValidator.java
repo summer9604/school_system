@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Order(2)
-public class BeforeControllerPermissionsValidator extends GenericAspect {
+public class BeforeAspectSecondLayerValidator extends GenericAspect {
 
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.getAdminController()")
 	public void checkAdminControllerPermissions(JoinPoint joinPoint) {
