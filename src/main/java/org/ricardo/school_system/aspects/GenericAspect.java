@@ -1,6 +1,5 @@
 package org.ricardo.school_system.aspects;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.ricardo.school_system.auth.JwtHandler;
@@ -12,24 +11,20 @@ public abstract class GenericAspect {
 	public JwtHandler jwtHandler;
 	
 	public String getToken(JoinPoint joinPoint) {
-
+		
 		for(Object arg : joinPoint.getArgs()) {
 
 			if (arg instanceof HttpServletRequest) {
 
 				HttpServletRequest request = (HttpServletRequest) arg;
 
-				if (request.getCookies() != null) {
-
-					for(Cookie cookie : request.getCookies()) {
-
-						if (cookie.getName().equals("jwtToken")) {														
-							return cookie.getValue();
-						}
-					}
-				}
+				System.out.println("Token: " + request.getHeader("jwttoken"));
+				
+				if (request.getHeader("jwttoken") != null)
+					return request.getHeader("jwttoken");
 			}			
 		}
+		
 		return null;
 	}
 	

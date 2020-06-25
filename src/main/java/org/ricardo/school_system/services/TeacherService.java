@@ -1,7 +1,6 @@
 package org.ricardo.school_system.services;
 
 import java.util.List;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
@@ -152,11 +151,8 @@ public class TeacherService {
 
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
 
-		for(Cookie cookie : request.getCookies()) {
-
-			if (cookie.getName().equals("jwtToken"))
-				return jwtHandler.getUserPermissions(cookie.getValue());
-		}
+		if (request.getHeader("jwttoken") != null)
+			return jwtHandler.getUserPermissions(request.getHeader("jwttoken"));
 
 		return null;
 	}
