@@ -20,7 +20,7 @@ public class BeforeAspectFirstLayerValidator extends GenericAspect {
 
 		if (token == null || token.length() == 0)
 			throw new SessionNotFoundException("AOP VALIDATOR - You are not logged in.");
-
+		
 		if (jwtHandler.getUserPermissions(token) == null)
 			throw new SessionNotFoundException("AOP VALIDATOR - Invalid token.");	
 	}

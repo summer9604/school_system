@@ -3,6 +3,7 @@ package org.ricardo.school_system.controllers;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ricardo.school_system.assemblers.EditableUserProfileForm;
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.assemblers.RegistrationLocalAdminForm;
 import org.ricardo.school_system.assemblers.RegistrationStudentForm;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,6 +55,11 @@ public class SchoolController {
 	public ResponseEntity<?> loginGeneralAdmin(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginForm loginForm){
 		return loginService.login(response, loginForm, "admin");
 	}
+	
+	@GetMapping("/admins/me")
+	public ResponseEntity<?> getPersonalInfo(HttpServletRequest request){
+		return schoolService.getAdminProfile(request);
+	}
 		
 	@GetMapping("/teachers")
 	public ResponseEntity<?> getTeachers(HttpServletRequest request) {	
@@ -72,6 +79,11 @@ public class SchoolController {
 	@PostMapping("/teachers/{id}")
 	public ResponseEntity<?> localAdminHireTeacher(@PathVariable("id") int id, HttpServletRequest request) {
 		return schoolService.hireTeacher(request, id);
+	}
+
+	@PutMapping("/teachers/{id}")
+	public ResponseEntity<?> localAdminEditTeacherProfile(@PathVariable("id") int id, @RequestBody EditableUserProfileForm editableUserProfileForm, HttpServletRequest request) {
+		return teacherService.update(id, editableUserProfileForm, request);
 	}
 	
 	@PostMapping("/teachers/placement")
@@ -120,7 +132,7 @@ public class SchoolController {
 	}
 
 	@PostMapping("/students")
-	public ResponseEntity<?> localAdminAdd(HttpServletRequest request, @RequestBody RegistrationStudentForm studentForm) {		
+	public ResponseEntity<?> localAdminAddStudent(HttpServletRequest request, @RequestBody RegistrationStudentForm studentForm) {		
 		return studentService.add(request, studentForm);
 	}
 	
@@ -132,6 +144,11 @@ public class SchoolController {
 	@GetMapping("/students/{id}")
 	public ResponseEntity<?> getStudentById(HttpServletRequest request, @PathVariable("id") int id){
 		return studentService.getById(request,id);
+	}
+	
+	@PutMapping("/students/{id}")
+	public ResponseEntity<?> localAdminEditStudentProfile(@PathVariable("id") int id, @RequestBody EditableUserProfileForm editableUserProfileForm, HttpServletRequest request) {
+		return studentService.update(id, editableUserProfileForm, request);
 	}
 	
 	@DeleteMapping("/students/{id}")
@@ -146,6 +163,8 @@ public class SchoolController {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 													//	Encriptar passwords
+	
+													//  Editar TEACHERS, STUDENTS
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

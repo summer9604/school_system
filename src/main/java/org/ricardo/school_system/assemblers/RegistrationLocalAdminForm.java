@@ -17,6 +17,10 @@ public class RegistrationLocalAdminForm {
 	
 	private int schoolId;
 
+	public RegistrationLocalAdminForm() {
+		
+	}
+	
 	@JsonCreator
 	public RegistrationLocalAdminForm(@JsonProperty("name") String name, @JsonProperty("address") String address, 
 									  @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email, 

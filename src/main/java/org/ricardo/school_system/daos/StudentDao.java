@@ -42,7 +42,6 @@ public class StudentDao extends GenericDao<Student> {
 	}
 
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public Student getByEmail(String email) {
 
@@ -73,9 +72,10 @@ public class StudentDao extends GenericDao<Student> {
 
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from student where class_id in (\r\n" + 
-					   "Select class_id from teacher_class \r\n" + 
-				       "where teacher_id = " + teacherId + ");";
+		String query = "Select * from student s \r\n" + 
+				"inner join teacher_class tc on tc.class_id = s.class_id\r\n" + 
+				"inner join teacher t on t.idteacher = tc.teacher_id\r\n" + 
+				"where t.idteacher = " + teacherId + "; ";
 
 		return (List<Student>) session.createSQLQuery(query).addEntity(Student.class).getResultList();
 	}
@@ -131,10 +131,24 @@ public class StudentDao extends GenericDao<Student> {
 
 		Session session = sessionFactory.getCurrentSession();
 		
-		String query = "Select * from student where class_id in(\r\n" + 
-					   "Select idClass from class where school_id = " + schoolId + ");";
+		String query = "Select * from student s \r\n" + 
+				"inner join class c on s.class_id = c.idClass\r\n" + 
+				"inner join school sc on c.school_id = sc.idschool\r\n" + 
+				"where sc.idschool = " + schoolId + ";";
 
 		return (List<Student>) session.createSQLQuery(query).addEntity(Student.class).getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Student> getStudentsByClassId(int classId){
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		Query<Student> query = session.createQuery("from Student where class_id=:classId");
+
+		query.setParameter("classId", classId);
+
+		return (List<Student>) query.getResultList();
 	}
 
 	public void expelStudent(int id) {

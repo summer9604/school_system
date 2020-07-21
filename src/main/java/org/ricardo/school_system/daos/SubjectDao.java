@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 public class SubjectDao extends GenericDao<Subject> {
 
 	@Override
-	@Transactional
 	public Subject add(Subject subject) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -23,7 +22,6 @@ public class SubjectDao extends GenericDao<Subject> {
 	}
 
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<Subject> getAll() {
 		
@@ -35,7 +33,6 @@ public class SubjectDao extends GenericDao<Subject> {
 	}
 
 	@Override
-	@Transactional
 	public Subject getById(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -44,28 +41,25 @@ public class SubjectDao extends GenericDao<Subject> {
 	}
 	
 	@Transactional
-	public Subject getTeacherSubject(int id) {
+	public Subject getTeacherSubject(int teacherId) {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		Teacher teacher = session.get(Teacher.class, id);
+		Teacher teacher = session.get(Teacher.class, teacherId);
 		
 		return teacher.getSubject();
 	}
 
 	@Override
-	@Transactional
 	public Subject getByEmail(String email) {
 		return null;
 	}
 
 	@Override
-	@Transactional
 	public List<Subject> getByName(String name) {
 		return null;
 	}
 	
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public Subject getSubjectByName(String name) {
 		
@@ -79,7 +73,6 @@ public class SubjectDao extends GenericDao<Subject> {
 	}
 
 	@Override
-	@Transactional
 	public void delete(int id) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -90,7 +83,6 @@ public class SubjectDao extends GenericDao<Subject> {
 	}
 
 	@Override
-	@Transactional
 	public Subject update(Subject subject) {
 		
 		Session session = sessionFactory.getCurrentSession();
@@ -105,11 +97,39 @@ public class SubjectDao extends GenericDao<Subject> {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		String query = "Select * from subject where name = '" + teacherSubject.getName() + "' and idsubject in (\r\n" + 
-				"Select subject_id from degree_subject \r\n" + 
-				"where degree_id = (Select degree_id from class where idClass = " + classId + "));";
+		String query = "Select * from subject s \r\n" + 
+				"inner join degree_subject ds on ds.subject_id = s.idsubject\r\n" + 
+				"inner join class c on c.degree_id = ds.degree_id\r\n" + 
+				"where c.idClass = " + classId + " and s.idsubject = " +  teacherSubject.getId() + ";";
 		
 		return (Subject) session.createSQLQuery(query).addEntity(Subject.class).uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Subject> getSubjectsByClassId(int classId) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		String query = "Select * from subject s \r\n" + 
+				"inner join degree_subject ds on ds.subject_id = s.idsubject\r\n" + 
+				"inner join class c on c.degree_id = ds.degree_id\r\n" + 
+				"where c.idClass = " + classId + ";";
+		
+		return (List<Subject>) session.createSQLQuery(query).addEntity(Subject.class).getResultList();
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

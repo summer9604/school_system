@@ -16,33 +16,28 @@ public class BeforeAspectSecondLayerValidator extends GenericAspect {
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.getAdminController()")
 	public void checkAdminControllerPermissions(JoinPoint joinPoint) {
 		
-		String token = getToken(joinPoint);
-
-		JwtUserPermissions permissions = jwtHandler.getUserPermissions(token);
+		JwtUserPermissions userPermissions = getUserPermissions(joinPoint);
 		
-		if (!permissions.getPermissions().equals("ROLE_GENERAL_ADMIN") && !permissions.getPermissions().equals("ROLE_LOCAL_ADMIN"))
+		if (!userPermissions.getPermissions().equals("ROLE_GENERAL_ADMIN") && !userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN"))
 			throw new OperationNotAuthorizedException("Access denied. You are not an admin.");		
 	}
 	
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.getTeacherController()")
 	public void checkTeacherControllerPermissions(JoinPoint joinPoint) {
 		
-		String token = getToken(joinPoint);
-
-		JwtUserPermissions permissions = jwtHandler.getUserPermissions(token);
+		JwtUserPermissions userPermissions = getUserPermissions(joinPoint);
 		
-		if (!permissions.getPermissions().equals("ROLE_TEACHER"))
+		if (!userPermissions.getPermissions().equals("ROLE_TEACHER"))
 			throw new OperationNotAuthorizedException("Access denied. You are not a teacher.");
 	} 
 	
 	@Before("org.ricardo.school_system.aspects.ControllerPointCutDeclarations.getStudentController()")
 	public void checkStudentControllerPermissions(JoinPoint joinPoint) {
 		
-		String token = getToken(joinPoint);
-
-		JwtUserPermissions permissions = jwtHandler.getUserPermissions(token);
+		JwtUserPermissions userPermissions = getUserPermissions(joinPoint);
 		
-		if (!permissions.getPermissions().equals("ROLE_STUDENT"))
+		if (!userPermissions.getPermissions().equals("ROLE_STUDENT"))
 			throw new OperationNotAuthorizedException("Access denied. You are not a student.");
 	}
+	
 }

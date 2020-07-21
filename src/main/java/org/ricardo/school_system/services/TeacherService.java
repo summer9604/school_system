@@ -3,6 +3,8 @@ package org.ricardo.school_system.services;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+
+import org.ricardo.school_system.assemblers.EditableUserProfileForm;
 import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
 import org.ricardo.school_system.assemblers.TeacherClassForm;
 import org.ricardo.school_system.auth.JwtHandler;
@@ -128,8 +130,17 @@ public class TeacherService {
 	}
 
 	@Transactional
-	public ResponseEntity<?> update(HttpServletRequest request, Teacher teacher) {				
-		return new ResponseEntity<>(teacherDao.update(teacher), HttpStatus.OK);
+	public ResponseEntity<?> update(int teacherId, EditableUserProfileForm editableUserProfileForm, HttpServletRequest request) {		
+		
+		Teacher teacher = teacherDao.getById(teacherId);
+			
+		teacher.setAddress(editableUserProfileForm.getAddress());
+		teacher.setEmail(editableUserProfileForm.getEmail());
+		teacher.setPhonenumber(editableUserProfileForm.getPhonenumber());
+			
+		teacherDao.update(teacher);
+		
+		return new ResponseEntity<>(teacher, HttpStatus.OK);
 	}
 
 	@Transactional
@@ -147,14 +158,9 @@ public class TeacherService {
 
 		return new ResponseEntity<>("Teacher allocated in " + classesId.size() + " new classes.", HttpStatus.OK);
 	}
-
-
+	
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
-
-		if (request.getHeader("jwttoken") != null)
-			return jwtHandler.getUserPermissions(request.getHeader("jwttoken"));
-
-		return null;
+		return request.getHeader("jwttoken") != null ? jwtHandler.getUserPermissions(request.getHeader("jwttoken")) : null;
 	}
 
 }

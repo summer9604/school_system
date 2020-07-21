@@ -56,6 +56,11 @@ public class TeacherController {
 		return schoolService.getClassById(request, id);
 	}
 	
+	@GetMapping("/classes/{id}/students")
+	public ResponseEntity<?> getStudentsByClassId(@PathVariable("id") int id, HttpServletRequest request){
+		return studentService.getStudentsByClassId(request, id);
+	}
+	
 	@GetMapping("/students")
 	public ResponseEntity<?> getStudents(HttpServletRequest request){
 		return studentService.getStudentsByTeacherId(request);
@@ -76,9 +81,7 @@ public class TeacherController {
 		return studentService.giveGradeToStudent(request, studentGradeForm);
 	}
 	
-	
-	
-	//GET LOCALADMINS (OF THEIR SCHOOL ONLY) ADD TO STUDENTS( GET TEACHERS ASWELL).
+	//GET LOCALADMINS (OF THEIR SCHOOL ONLY) AND ADD TO STUDENTS( GET TEACHERS ASWELL).
 
 }
 

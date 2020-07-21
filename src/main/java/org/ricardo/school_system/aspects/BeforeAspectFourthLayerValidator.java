@@ -3,6 +3,7 @@ package org.ricardo.school_system.aspects;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.ricardo.school_system.assemblers.DataAndPermissions;
 import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.TeacherDao;
@@ -25,18 +26,15 @@ public class BeforeAspectFourthLayerValidator extends GenericAspect {
 	@Autowired
 	private TeacherDao teacherDao;
 
+	@SuppressWarnings("rawtypes")
 	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkGetTeacherByIdForAdmin()")
 	public void validateAdminTokensForGetTeacherById(JoinPoint joinPoint) {
 
-		String token = getToken(joinPoint);
+		DataAndPermissions dataAndPermissions = getDataAndPermissions(joinPoint, 1);
 
-		JwtUserPermissions permissions = jwtHandler.getUserPermissions(token);
-
-		int teacherId = 0;
-
-		for(Object arg : joinPoint.getArgs()) {
-			if (arg instanceof Integer) teacherId = (int) arg;
-		}
+		JwtUserPermissions userPermissions = (JwtUserPermissions) dataAndPermissions.getUserPermissions();
+		
+		int teacherId = (int) dataAndPermissions.getData();
 
 		Teacher teacher = teacherDao.getById(teacherId);
 
@@ -45,18 +43,17 @@ public class BeforeAspectFourthLayerValidator extends GenericAspect {
 
 		School schoolTeacher = schoolDao.getSchoolByTeacherId(teacher.getId());
 
-		if (permissions.getPermissions().equals("ROLE_LOCAL_ADMIN") && permissions.getSchoolId() != schoolTeacher.getId())
+		if (userPermissions.getPermissions().equals("ROLE_LOCAL_ADMIN") && userPermissions.getSchoolId() != schoolTeacher.getId())
 			throw new OperationNotAuthorizedException("AOP VALIDATOR - You don't have enough permissions.");		
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Before("org.ricardo.school_system.aspects.ServicePointCutDeclarations.checkHireTeacher()")
 	public void checkIfTeacherIsEmployedAlready(JoinPoint joinPoint) {
 
-		int teacherId = 0;
-
-		for(Object arg : joinPoint.getArgs()) {
-			if (arg instanceof Integer) teacherId = (int) arg;
-		}
+		DataAndPermissions dataAndPermissions = getDataAndPermissions(joinPoint, 1);
+		
+		int teacherId = (int) dataAndPermissions.getData();
 		
 		Teacher teacher = teacherDao.getById(teacherId); 
 

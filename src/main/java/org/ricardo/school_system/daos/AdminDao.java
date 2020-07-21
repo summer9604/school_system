@@ -42,6 +42,7 @@ public class AdminDao extends GenericDao<Admin> {
 	}
 
 	@Override
+	@Transactional
 	@SuppressWarnings("unchecked")
 	public Admin getByEmail(String email) {
 
@@ -118,6 +119,19 @@ public class AdminDao extends GenericDao<Admin> {
 		Query<Admin> query = session.createQuery("from Admin where school_id > 0");
 		
 		return query.getResultList();
+	}
+
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public Admin getByPhonenumber(int localAdminPhoneNumber) {
+
+		Session session = sessionFactory.getCurrentSession();
+
+		Query<Admin> query = session.createQuery("from Admin where phonenumber=:phonenumber");
+
+		query.setParameter("phonenumber", localAdminPhoneNumber);
+
+		return (Admin) query.uniqueResult();
 	}
 
 }

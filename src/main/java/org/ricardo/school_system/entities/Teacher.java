@@ -3,7 +3,6 @@ package org.ricardo.school_system.entities;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,14 +14,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="teacher")
-@JsonIgnoreProperties({"classes", "school", "subject", "studentsGrades"})
+@JsonIgnoreProperties({"classes", "school", "subject"})
 public class Teacher {
 
 	@Id
@@ -45,18 +44,14 @@ public class Teacher {
 	@Column(name="password")
 	private String password;
 
+	@JsonProperty("role") //O postman estava a receber esta propriedade como "teacherRole", entao usei JsonProperty e agora aparecem os 2 xD
 	@Column(name="teacher_role")
-	private String teacherRole;
+	private String role;
 
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
 			 	  	 	  CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "school_id")
 	private School school;
-
-	@OneToMany(mappedBy="teacher", fetch = FetchType.LAZY, 
-			   cascade = {CascadeType.DETACH, CascadeType.MERGE,
-						  CascadeType.PERSIST, CascadeType.REFRESH})
-	private List<StudentSubject> studentsGrades;
 
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
 					      CascadeType.PERSIST, CascadeType.REFRESH})
@@ -91,7 +86,7 @@ public class Teacher {
 		this.email = email;
 		this.password = password;
 		this.subject = subject;
-		this.teacherRole = "ROLE_TEACHER";
+		this.role = "ROLE_TEACHER";
 		this.createdAt = LocalDate.now();
 		this.updatedAt = LocalDate.now();
 	}
@@ -137,11 +132,11 @@ public class Teacher {
 	}
 
 	public String getTeacherRole() {
-		return teacherRole;
+		return role;
 	}
 
 	public void setTeacherRole(String teacherRole) {
-		this.teacherRole = teacherRole;
+		this.role = teacherRole;
 	}
 
 	public void setRetiredAt(LocalDate retiredAt) {
@@ -180,14 +175,6 @@ public class Teacher {
 		this.school = school;
 	}
 
-	public List<StudentSubject> getStudentsGrades() {
-		return studentsGrades;
-	}
-
-	public void setStudentsGrades(List<StudentSubject> studentsGrades) {
-		this.studentsGrades = studentsGrades;
-	}
-
 	public Subject getSubject() {
 		return subject;
 	}
@@ -219,7 +206,7 @@ public class Teacher {
 	@Override
 	public String toString() {
 		return "Teacher [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
-				+ ", email=" + email + ", password=" + password + ", teacherRole=" + teacherRole + ", createdAt="
+				+ ", email=" + email + ", password=" + password + ", teacherRole=" + role + ", createdAt="
 				+ createdAt + ", updatedAt=" + updatedAt + ", retiredAt=" + retiredAt + "]";
 	}
 

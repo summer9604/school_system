@@ -6,21 +6,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TeacherClassForm {
 
-	private int teachedId;
+	private int teacherId;
 	private List<Integer> classesId;
 
+	public TeacherClassForm() {
+		
+	}
+	
 	@JsonCreator
 	public TeacherClassForm(@JsonProperty("teacherId") int teacherId, @JsonProperty("classesId") List<Integer> classesId) {
-		this.teachedId = teacherId;
+		this.teacherId = teacherId;
 		this.classesId = classesId;
 	}
 
 	public int getTeachedId() {
-		return teachedId;
+		return teacherId;
 	}
 
-	public void setTeachedId(int teachedId) {
-		this.teachedId = teachedId;
+	public void setTeachedId(int teacherId) {
+		this.teacherId = teacherId;
 	}
 
 	public List<Integer> getClassesId() {
@@ -33,7 +37,7 @@ public class TeacherClassForm {
 
 	@Override
 	public String toString() {
-		return "TeacherClassForm [teachedId=" + teachedId + ", classesId=" + classesId + "]";
+		return "TeacherClassForm [teacherId=" + teacherId + ", classesId=" + classesId + "]";
 	}
 
 }

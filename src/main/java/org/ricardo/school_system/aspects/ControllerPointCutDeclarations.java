@@ -18,7 +18,13 @@ public class ControllerPointCutDeclarations {
 	
 	@Pointcut("execution(* org.ricardo.school_system.controllers.*.localAdmin*(..))")
 	public void getLocalAdminEndPoints() {}
-
+	
+	@Pointcut("execution(* org.ricardo.school_system.controllers.ExceptionHandlerController.*(..))")
+	public void getExceptionHandlerControllerClass() {}
+	
+	@Pointcut("execution(* org.ricardo.school_system.controllers.SchoolController.getTeacherById(..))")
+	public void getTeacherByIdEndPoint() {}
+	
 	@Pointcut("execution(* org.ricardo.school_system.controllers.SchoolController.*(..)) && !loginEndPoint()")
 	public void getAdminController() {}
 	
@@ -27,15 +33,6 @@ public class ControllerPointCutDeclarations {
 	
 	@Pointcut("execution(* org.ricardo.school_system.controllers.StudentController.*(..)) && !loginEndPoint()")
 	public void getStudentController() {}
-	
-	@Pointcut("execution(* org.ricardo.school_system.controllers.ExceptionHandlerController.*(..))")
-	public void getExceptionHandlerControllerClass() {}
-	
-	@Pointcut("execution(* org.ricardo.school_system.controllers.SchoolController.getTeacher*(..))")
-	public void getTeachersEndPoint() {}
-	
-	@Pointcut("execution(* org.ricardo.school_system.controllers.SchoolController.getTeacherById(..))")
-	public void getTeacherByIdEndPoint() {}
 	
 	@Pointcut("getControllerPackage() && !(getEntryPoint() || loginEndPoint() || getExceptionHandlerControllerClass())")
 	public void validateSession() {}

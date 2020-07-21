@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 public class SchoolDao extends GenericDao<School> {
 
 	@Override
-	@Transactional
 	public School add(School school) {
 
 		Session session = sessionFactory.getCurrentSession();
@@ -22,7 +21,6 @@ public class SchoolDao extends GenericDao<School> {
 	}
 
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<School> getAll() {
 
@@ -56,12 +54,10 @@ public class SchoolDao extends GenericDao<School> {
 	}
 
 	@Override
-	@Transactional
 	public List<School> getByName(String name) {
 		return null;
 	}
 
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public School getSchoolByName(String name) {
 
@@ -79,14 +75,14 @@ public class SchoolDao extends GenericDao<School> {
 
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from school where idschool in (" + 
-				       "Select school_id from class where idClass = " + classId + ");";
+		String query = "Select * from school s inner join class c\r\n" + 
+				"on c.school_id = s.idschool\r\n" + 
+				"where c.idClass = " + classId + ";";
 
 		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();	
 	}
 
 	@Override
-	@Transactional
 	public void delete(int id) {
 
 		Session session = sessionFactory.getCurrentSession();
@@ -97,7 +93,6 @@ public class SchoolDao extends GenericDao<School> {
 	}
 
 	@Override
-	@Transactional
 	public School update(School school) {
 
 		Session session = sessionFactory.getCurrentSession();
@@ -112,22 +107,71 @@ public class SchoolDao extends GenericDao<School> {
 
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from school where idschool in " + 
-					   "(Select school_id from teacher where idteacher = " + teacherId + ");";
+		String query = "Select * from school s \r\n" + 
+				"inner join teacher t on t.school_id = s.idschool\r\n" + 
+				"where t.idteacher = " + teacherId + ";";
 
 		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();
 	}
 
 	@Transactional
 	public School getSchoolByStudentId(int studentId) {
-		
+
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from school where idschool in(\r\n" + 
-					   "Select school_id from class where idClass in(\r\n" + 
-					   "Select class_id from student where idstudent = " + studentId + "))";
+		String query = "Select * from school s \r\n" + 
+				"inner join class c on c.school_id = s.idschool\r\n" + 
+				"inner join student st on st.class_id = c.idClass\r\n" + 
+				"where st.idstudent = " + studentId + ";";
 
 		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();
+	}
+
+	@Transactional
+	public School getSchoolByLocalAdminIdAndClassId(int localAdminId, int classId) {
+
+		Session session = sessionFactory.getCurrentSession();
+
+		String query = "Select * from school s inner join admin a\r\n" + 
+				"on a.school_id = s.idschool inner join class c\r\n" + 
+				"on c.school_id = s.idschool\r\n" + 
+				"where a.id_admin = " + localAdminId + " and c.idClass = " + classId + ";";
+
+		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();
+	}
+
+	@Transactional
+	public Integer checkPhoneNumberAvailability(int phonenumber) {
+
+		Session session = sessionFactory.getCurrentSession();
+
+		String query = "(Select phonenumber from teacher t\r\n" + 
+				"where t.phonenumber = " + phonenumber + ")\r\n" + 
+				"union\r\n" + 
+				"(Select phonenumber from student s\r\n" + 
+				"where s.phonenumber = " + phonenumber + ")\r\n" + 
+				"union\r\n" + 
+				"(Select phonenumber from teacher t\r\n" + 
+				"where t.phonenumber = " + phonenumber + ")";
+
+		return (Integer) session.createSQLQuery(query).uniqueResult();
+	}
+
+	@Transactional
+	public String checkEmailAvailability(String email) {
+
+		Session session = sessionFactory.getCurrentSession();
+
+		String query = "(Select email from teacher t\r\n" + 
+				"where t.email = '" + email + "')\r\n" + 
+				"union\r\n" + 
+				"(Select email from student s\r\n" + 
+				"where s.email = '" + email + "')\r\n" + 
+				"union\r\n" + 
+				"(Select email from teacher t\r\n" + 
+				"where t.email = '" + email + "')";
+
+		return (String) session.createSQLQuery(query).uniqueResult();
 	}
 
 }

@@ -114,12 +114,26 @@ public class TeacherDao extends GenericDao<Teacher> {
 	}
 
 	@Transactional
-	public Teacher getTeacherFromClass(Subject teacherSubject, int classId) {
+	public Teacher getTeacherFromClassBySubjectIdAndClassId(Subject teacherSubject, int classId) {
 		
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from teacher where subject_id = " + teacherSubject.getId() + "\r\n" + 
-				"and idteacher in (Select teacher_id from teacher_class where class_id = " + classId + ");";
+		String query = "Select * from teacher t \r\n" + 
+				"inner join teacher_class tc on tc.teacher_id = idteacher\r\n" + 
+				"where subject_id = " + teacherSubject.getId() + " and tc.class_id = " + classId + ";";
+		
+		return (Teacher) session.createSQLQuery(query).addEntity(Teacher.class).uniqueResult();
+	}
+	
+	@Transactional
+	public Teacher getStudentTeacherByStudentIdAndSubjectId(int studentId, int subjectId) {
+		
+		Session session = sessionFactory.getCurrentSession();
+
+		String query = "Select * from teacher t \r\n" + 
+				"inner join teacher_class tc on tc.teacher_id = t.idteacher\r\n" + 
+				"inner join student s on tc.class_id = s.class_id\r\n" + 
+				"where s.idstudent = " + studentId + " and t.subject_id = " + subjectId + ";";
 		
 		return (Teacher) session.createSQLQuery(query).addEntity(Teacher.class).uniqueResult();
 	}

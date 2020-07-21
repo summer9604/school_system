@@ -1,6 +1,6 @@
 package org.ricardo.school_system.assemblers;
 
-public class TeacherToSchoolForm {
+public class TeacherToSchoolForm { //RISCO DE SER APAGADO!
 
 	private String teacherName;
 	private String schoolName;

@@ -21,12 +21,13 @@ public class CourseService {
 	@Autowired
 	private SubjectDao subjectDao;
 
+	// Exception - degree already exists.
 	public ResponseEntity<?> addDegree(HttpServletRequest request, DegreeSubjectBundle degreeSubjectBundle) {
 
 		Degree degree = new Degree(degreeSubjectBundle.getDegreeName());
 
 		for (int subjectId : degreeSubjectBundle.getSubjectIds()) {
-			degree.addSubject(subjectDao.getById(subjectId)); // Exception - degree already exists.
+			degree.addSubject(subjectDao.getById(subjectId));
 		}
 
 		return new ResponseEntity<>(degreeDao.add(degree), HttpStatus.OK);

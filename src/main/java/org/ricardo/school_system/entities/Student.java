@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "student")
@@ -41,8 +42,9 @@ public class Student {
 	@Column(name="email")
 	private String email;
 	
+	@JsonProperty("role") //O postman estava a receber esta propriedade como "teacherRole", entao usei JsonProperty e agora aparecem os 2 xD
 	@Column(name="student_role")
-	private String studentRole;
+	private String role;
 
 	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, 
 				           CascadeType.PERSIST, CascadeType.REFRESH })
@@ -61,7 +63,7 @@ public class Student {
 	public Student() {
 		this.createdAt = LocalDate.now();
 		this.updatedAt = LocalDate.now();
-		this.studentRole = "ROLE_STUDENT";
+		this.role = "ROLE_STUDENT";
 	}
 
 	public Student(String name, String address, int phonenumber, String email, String password) {
@@ -70,7 +72,7 @@ public class Student {
 		this.phonenumber = phonenumber;
 		this.email = email;
 		this.password = password;
-		this.studentRole = "ROLE_STUDENT";
+		this.role = "ROLE_STUDENT";
 		this.createdAt = LocalDate.now();
 		this.updatedAt = LocalDate.now();
 	}
@@ -100,11 +102,11 @@ public class Student {
 	}
 	
 	public String getStudentRole() {
-		return studentRole;
+		return role;
 	}
 
 	public void setStudentRole(String studentRole) {
-		this.studentRole = studentRole;
+		this.role = studentRole;
 	}
 
 	public List<StudentSubject> getSubjects() {

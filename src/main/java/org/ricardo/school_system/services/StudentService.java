@@ -3,6 +3,7 @@ package org.ricardo.school_system.services;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import org.ricardo.school_system.assemblers.EditableUserProfileForm;
 import org.ricardo.school_system.assemblers.RegistrationStudentForm;
 import org.ricardo.school_system.assemblers.StudentGradeForm;
 import org.ricardo.school_system.auth.JwtHandler;
@@ -10,9 +11,11 @@ import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.daos.StudentSubjectDao;
+import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.Student;
 import org.ricardo.school_system.entities.StudentSubject;
+import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.exceptions.GradeNotFoundException;
 import org.ricardo.school_system.exceptions.StudentNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,9 @@ public class StudentService {
 	@Autowired
 	private StudentDao studentDao;
 	
+	@Autowired 
+	private SubjectDao subjectDao;
+	
 	@Autowired
 	private StudentSubjectDao studentSubjectDao;
 	
@@ -50,7 +56,13 @@ public class StudentService {
 		student.setPassword(studentForm.getPassword());
 
 		studentDao.add(student);
-
+		
+		List<Subject> classSubjects = subjectDao.getSubjectsByClassId(studentForm.getClassId());
+		
+		for(Subject subject : classSubjects) {	
+			studentSubjectDao.add(new StudentSubject(student, subject));
+		}
+		
 		return new ResponseEntity<>("Student '" + student.getName() + "' added to class with id " + schoolClass.getId() + ".", HttpStatus.OK);
 	}
 
@@ -90,7 +102,7 @@ public class StudentService {
 			List<Student> students = studentDao.getStudentsBySchoolId(userPermissions.getSchoolId());
 			
 			if (students.isEmpty())
-				throw new StudentNotFoundException("There are no student at school with id " + userPermissions.getSchoolId() + ".");
+				throw new StudentNotFoundException("There are no students at school with id " + userPermissions.getSchoolId() + ".");
 			
 			return new ResponseEntity<>(students, HttpStatus.OK);
 		}
@@ -113,7 +125,6 @@ public class StudentService {
 		return new ResponseEntity<>(studentDao.getById(studentId), HttpStatus.OK);
 	}
 
-	//FOR ADMINS, TEACHERS...
 	@Transactional
 	public ResponseEntity<?> getById(HttpServletRequest request, int studentId) {	
 		
@@ -125,14 +136,15 @@ public class StudentService {
 		return new ResponseEntity<>(student, HttpStatus.OK);
 	}
 
-	//PROFESSORES ONLY
 	@Transactional
 	public ResponseEntity<?> giveGradeToStudent(HttpServletRequest request, StudentGradeForm studentGradeForm) {
 
 		JwtUserPermissions userPermissions = retrievePermissions(request);
+		
+		Subject teacherSubject = subjectDao.getTeacherSubject(userPermissions.getId());
 
-		StudentSubject studentSubject = studentSubjectDao.getByStudentIdAndTeacherId(userPermissions.getId(), studentGradeForm.getStudentId());
-
+		StudentSubject studentSubject = studentSubjectDao.getBySubjectIdAndStudentId(teacherSubject.getId(), studentGradeForm.getStudentId());
+		
 		studentSubject.setGrade(studentGradeForm.getGrade());
 
 		return new ResponseEntity<>(studentSubjectDao.update(studentSubject), HttpStatus.OK);
@@ -169,8 +181,17 @@ public class StudentService {
 	}
 
 	@Transactional
-	public ResponseEntity<?> update(HttpServletRequest request, Student student) {		
-		return new ResponseEntity<>(studentDao.update(student), HttpStatus.OK);
+	public ResponseEntity<?> update(int studentId, EditableUserProfileForm editableUserProfileForm, HttpServletRequest request) {		
+
+		Student student = studentDao.getById(studentId);
+			
+		student.setAddress(editableUserProfileForm.getAddress());
+		student.setEmail(editableUserProfileForm.getEmail());
+		student.setPhonenumber(editableUserProfileForm.getPhonenumber());
+			
+		studentDao.update(student);
+		
+		return new ResponseEntity<>(student, HttpStatus.OK);
 	}
 
 	@Transactional
@@ -194,12 +215,13 @@ public class StudentService {
 		return new ResponseEntity<>("Student with id " + id + " was expelled!", HttpStatus.OK);
 	}
 	
+	@Transactional
+	public ResponseEntity<?> getStudentsByClassId(HttpServletRequest request, int classId) {
+		return new ResponseEntity<>(studentDao.getStudentsByClassId(classId), HttpStatus.OK);
+	}
+	
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
-
-		if (request.getHeader("jwttoken") != null)
-			return jwtHandler.getUserPermissions(request.getHeader("jwttoken"));
-
-		return null;
+		return request.getHeader("jwttoken") != null ? jwtHandler.getUserPermissions(request.getHeader("jwttoken")) : null;
 	}
 
 }

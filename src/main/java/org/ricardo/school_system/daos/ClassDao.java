@@ -58,16 +58,6 @@ public class ClassDao extends GenericDao<Class> {
 		return (Class) query.uniqueResult();
 	}
 
-	@Transactional
-	public int getSchoolIdByClassId(int classId) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		String query = "Select school_id from class where idClass = " + classId;
-
-		return (int) session.createSQLQuery(query).uniqueResult();
-	}
-
 	@Override
 	public List<Class> getByName(String name) {
 		return null;
@@ -94,24 +84,25 @@ public class ClassDao extends GenericDao<Class> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Class> getClassesByTeacherId(int id) {
+	public List<Class> getClassesByTeacherId(int teacherId) {
 
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from class where idClass in (\r\n" + 
-				"Select class_id from teacher_class\r\n" + 
-				"where teacher_id = " + id + ");";
+		String query = "Select * from class c\r\n" + 
+				"inner join teacher_class tc on tc.class_id = c.idClass\r\n" + 
+				"where tc.teacher_id = " + teacherId + ";";
 
 		return (List<Class>) session.createSQLQuery(query).addEntity(Class.class).getResultList();
 	}
 
 	@Transactional
-	public Class getClassByStudentId(int id) {
+	public Class getClassByStudentId(int studentId) {
 
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from class where idClass in (" + 
-				"Select class_id from student where idstudent = " + id + ");";
+		String query = "Select * from class c\r\n" + 
+				"inner join student s on s.class_id = c.idClass\r\n" + 
+				"where s.idstudent = " + studentId + ";";
 
 		return (Class) session.createSQLQuery(query).addEntity(Class.class).uniqueResult();
 	}
@@ -121,9 +112,9 @@ public class ClassDao extends GenericDao<Class> {
 
 		Session session = sessionFactory.getCurrentSession();
 
-		String query = "Select * from class where idClass in (\r\n" + 
-				"Select class_id from teacher_class\r\n" + 
-				"where teacher_id = " + teacherId + " and class_id = " + classId + ");";
+		String query = "Select * from class c \r\n" + 
+				"inner join teacher_class tc on tc.class_id = c.idClass\r\n" + 
+				"where tc.teacher_id = " + teacherId + " and tc.class_id = " + classId + ";";
 
 		return (Class) session.createSQLQuery(query).addEntity(Class.class).uniqueResult();
 	}
@@ -140,7 +131,7 @@ public class ClassDao extends GenericDao<Class> {
 
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public Class getClassIdAndSchoolId(int classId, int schoolId) {
+	public Class getClassByClassAndSchoolRelation(int classId, int schoolId) {
 
 		Session session = sessionFactory.getCurrentSession();
 

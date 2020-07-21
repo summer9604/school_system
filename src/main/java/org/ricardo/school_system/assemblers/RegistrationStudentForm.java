@@ -12,6 +12,10 @@ public class RegistrationStudentForm {
 	private int classId;
 	private String password;
 	
+	public RegistrationStudentForm() {
+		
+	}
+	
 	@JsonCreator
 	public RegistrationStudentForm(@JsonProperty("name") String name, @JsonProperty("address") String address,
 				       @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email,

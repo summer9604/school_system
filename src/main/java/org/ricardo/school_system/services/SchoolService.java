@@ -224,12 +224,18 @@ public class SchoolService {
 		return new ResponseEntity<>(adminDao.getById(id), HttpStatus.OK);
 	}
 	
+	@Transactional
+	public ResponseEntity<?> getAdminProfile(HttpServletRequest request) {
+
+		JwtUserPermissions userPermissions = retrievePermissions(request);
+
+		int adminId = userPermissions.getId();
+
+		return new ResponseEntity<>(adminDao.getById(adminId), HttpStatus.OK);
+	}
+	
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
-
-		if (request.getHeader("jwttoken") != null)
-			return jwtHandler.getUserPermissions(request.getHeader("jwttoken"));
-
-		return null;
+		return request.getHeader("jwttoken") != null ? jwtHandler.getUserPermissions(request.getHeader("jwttoken")) : null;
 	}
 
 }

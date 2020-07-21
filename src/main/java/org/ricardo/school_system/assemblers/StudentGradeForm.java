@@ -8,6 +8,10 @@ public class StudentGradeForm {
 	private int studentId;
 	private int grade;
 	
+	public StudentGradeForm() {
+		
+	}
+	
 	@JsonCreator
 	public StudentGradeForm(@JsonProperty("studentId") int studentId, @JsonProperty("grade") int grade) {
 		this.studentId = studentId;

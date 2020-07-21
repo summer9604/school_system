@@ -27,10 +27,6 @@ public class StudentSubject {
 	@JoinColumn(name="subject_id")
 	private Subject subject;
 
-	@ManyToOne
-	@JoinColumn(name="teacher_id")
-	private Teacher teacher;
-
 	@Column(name="grade")
 	private Integer grade;
 
@@ -44,11 +40,9 @@ public class StudentSubject {
 
 	}
 
-	public StudentSubject(Student student, Subject subject, Teacher teacher, Integer grade) {
+	public StudentSubject(Student student, Subject subject) {
 		this.student = student;
 		this.subject = subject;
-		this.teacher = teacher;
-		this.grade = grade;
 		this.createdAt = LocalDate.now();
 		this.updatedAt = LocalDate.now();
 	}
@@ -77,14 +71,6 @@ public class StudentSubject {
 		this.subject = subject;
 	}
 
-	public Teacher getTeacher() {
-		return teacher;
-	}
-
-	public void setTeacher(Teacher teacher) {
-		this.teacher = teacher;
-	}
-
 	public Integer getGrade() {
 		return grade;
 	}
@@ -111,8 +97,8 @@ public class StudentSubject {
 
 	@Override
 	public String toString() {
-		return "StudentSubject [id=" + id + ", student=" + student + ", subject=" + subject + ", teacher=" + teacher
-				+ ", grade=" + grade + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+		return "StudentSubject [id=" + id + ", student=" + student + ", subject=" + subject + ", grade=" + grade + ","
+				+ " createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
 }

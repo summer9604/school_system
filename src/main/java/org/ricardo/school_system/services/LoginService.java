@@ -3,6 +3,8 @@ package org.ricardo.school_system.services;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+
+import org.ricardo.school_system.assemblers.GreetingsHolder;
 import org.ricardo.school_system.assemblers.LoginForm;
 import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
@@ -46,6 +48,7 @@ public class LoginService {
 	private ResponseEntity<?> generateLoginSession(HttpServletResponse response, LoginForm loginInfo, String role) {
 
 		String generatedToken;
+		String greetings;
 
 		switch (role) {
 
@@ -59,8 +62,10 @@ public class LoginService {
 			generatedToken = jwtHandler.generateJwtToken(teacher.getId(), -1, teacher.getTeacherRole());
 
 			setHeaders(response, generatedToken);
-
-			return new ResponseEntity<>("Hello, teacher '" + teacher.getName() + "'.", HttpStatus.OK);
+			
+			greetings = "Hello, teacher '" + teacher.getName() + "'.";
+			
+			return new ResponseEntity<>(generateGreetings(greetings, teacher.getId(), teacher.getTeacherRole()), HttpStatus.OK);
 
 		case "student":
 
@@ -73,7 +78,9 @@ public class LoginService {
 
 			setHeaders(response, generatedToken);
 
-			return new ResponseEntity<>("Hello, student '" + student.getName() + "'.", HttpStatus.OK);
+			greetings = "Hello, student '" + student.getName() + "'.";
+			
+			return new ResponseEntity<>(generateGreetings(greetings, student.getId(), student.getStudentRole()), HttpStatus.OK);
 
 		default:
 
@@ -93,16 +100,20 @@ public class LoginService {
 				generatedToken = jwtHandler.generateJwtToken(admin.getId(), schoolId, admin.getRole());
 
 				setHeaders(response, generatedToken);
+				
+				greetings = "Hello, Local admin '" + admin.getName() + "'.";
 
-				return new ResponseEntity<>("Hello, Local admin '" + admin.getName() + "'.", HttpStatus.OK);
+				return new ResponseEntity<>(generateGreetings(greetings, admin.getId(), admin.getRole()), HttpStatus.OK);
 
 			default:
 
 				generatedToken = jwtHandler.generateJwtToken(admin.getId(), -1, admin.getRole());
 
 				setHeaders(response, generatedToken);
+				
+				greetings = "Hello, General admin '" + admin.getName() + "'.";
 
-				return new ResponseEntity<>("Hello, General admin '" + admin.getName() + "'.", HttpStatus.OK);
+				return new ResponseEntity<>(generateGreetings(greetings, admin.getId(), admin.getRole()), HttpStatus.OK);
 			}
 		}
 	}
@@ -139,6 +150,10 @@ public class LoginService {
 
 			return new ResponseEntity<>("General admin '" + generalAdmin.getName() + "' logged out.", HttpStatus.OK);
 		}
+	}
+	
+	private GreetingsHolder generateGreetings(String greetings, int userId, String userRole) {
+		return new GreetingsHolder(greetings, userId, userRole);
 	}
 	
 	private void setHeaders(HttpServletResponse response, String generatedToken) {
