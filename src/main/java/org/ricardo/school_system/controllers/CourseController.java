@@ -32,7 +32,7 @@ public class CourseController {
 		return courseService.getSubjectById(request, id);
 	}
 	
-	@PostMapping("/subjects/add")
+	@PostMapping("/subjects")
 	public ResponseEntity<?> adminAddSubject(HttpServletRequest request, @RequestBody String name) {	
 		return courseService.addSubject(name);
 	}
@@ -47,7 +47,7 @@ public class CourseController {
 		return courseService.getDegreeById(request, id);
 	}
 	
-	@PostMapping("/degrees/add")
+	@PostMapping("/degrees")
 	public ResponseEntity<?> adminAddDegree(HttpServletRequest request, @RequestBody DegreeSubjectBundle degreeSubjectBundle) {	
 		return courseService.addDegree(request, degreeSubjectBundle);
 	}

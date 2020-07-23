@@ -3,8 +3,8 @@ package org.ricardo.school_system.aspects;
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.ricardo.school_system.auth.JwtHandler;
-import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.dto.DataAndPermissions;
+import org.ricardo.school_system.dto.JwtUserPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class GenericAspect {

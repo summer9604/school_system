@@ -1,4 +1,4 @@
-package org.ricardo.school_system.auth;
+package org.ricardo.school_system.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -5,11 +5,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.ricardo.school_system.auth.JwtHandler;
-import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.daos.TeacherDao;
 import org.ricardo.school_system.dto.GreetingsHolder;
+import org.ricardo.school_system.dto.JwtUserPermissions;
 import org.ricardo.school_system.dto.LoginForm;
 import org.ricardo.school_system.entities.Admin;
 import org.ricardo.school_system.entities.Student;

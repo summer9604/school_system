@@ -3,7 +3,7 @@ package org.ricardo.school_system.aspects;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.ricardo.school_system.auth.JwtUserPermissions;
+import org.ricardo.school_system.dto.JwtUserPermissions;
 import org.ricardo.school_system.exceptions.OperationNotAuthorizedException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

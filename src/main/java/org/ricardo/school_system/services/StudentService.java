@@ -5,12 +5,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.ricardo.school_system.auth.JwtHandler;
-import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.daos.StudentSubjectDao;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.dto.EditableUserProfileForm;
+import org.ricardo.school_system.dto.JwtUserPermissions;
 import org.ricardo.school_system.dto.RegistrationStudentForm;
 import org.ricardo.school_system.dto.StudentGradeForm;
 import org.ricardo.school_system.entities.Class;
