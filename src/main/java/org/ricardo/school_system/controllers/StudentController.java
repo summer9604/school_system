@@ -2,7 +2,8 @@ package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.ricardo.school_system.assemblers.LoginForm;
+
+import org.ricardo.school_system.dto.LoginForm;
 import org.ricardo.school_system.services.LoginService;
 import org.ricardo.school_system.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;

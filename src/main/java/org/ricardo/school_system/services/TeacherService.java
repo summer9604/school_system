@@ -4,14 +4,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
-import org.ricardo.school_system.assemblers.EditableUserProfileForm;
-import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
-import org.ricardo.school_system.assemblers.TeacherClassForm;
 import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.daos.TeacherDao;
+import org.ricardo.school_system.dto.EditableUserProfileForm;
+import org.ricardo.school_system.dto.RegistrationTeacherForm;
+import org.ricardo.school_system.dto.TeacherClassForm;
 import org.ricardo.school_system.entities.Subject;
 import org.ricardo.school_system.entities.Teacher;
 import org.ricardo.school_system.exceptions.TeacherNotFoundException;

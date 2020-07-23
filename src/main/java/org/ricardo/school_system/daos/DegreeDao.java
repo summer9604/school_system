@@ -8,45 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class DegreeDao extends GenericDao<Degree> {
-
-	@Override
-	public Degree add(Degree degree) {
-		
-		Session session = sessionFactory.getCurrentSession();
-
-		session.save(degree);
-		
-		return degree;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<Degree> getAll() {
-		
-		Session session = sessionFactory.getCurrentSession();
-
-		Query<Degree> query = session.createQuery("from Degree");
-		
-		return (List<Degree>) query.getResultList();
-	}
-
-	@Override
-	public Degree getById(int id) {
-		
-		Session session = sessionFactory.getCurrentSession();
-
-		return session.get(Degree.class, id);
-	}
-
-	@Override
-	public Degree getByEmail(String email) {
-		return null;
-	}
-
-	@Override
-	public List<Degree> getByName(String name) {
-		return null;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public Degree getDegreeByName(String name) {
@@ -58,26 +19,6 @@ public class DegreeDao extends GenericDao<Degree> {
 		query.setParameter("name", name);
 				
 		return (Degree) query.uniqueResult();
-	}
-
-	@Override
-	public void delete(int id) {
-		
-		Session session = sessionFactory.getCurrentSession();
-
-		Degree degree = session.get(Degree.class, id);
-		
-		session.delete(degree);
-	}
-
-	@Override
-	public Degree update(Degree degree) {
-		
-		Session session = sessionFactory.getCurrentSession();
-
-		session.saveOrUpdate(degree);
-
-		return degree;
 	}
 
 	@SuppressWarnings("unchecked")

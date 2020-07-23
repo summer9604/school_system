@@ -1,4 +1,4 @@
-package org.ricardo.school_system.assemblers;
+package org.ricardo.school_system.dto;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;

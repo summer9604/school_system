@@ -4,11 +4,6 @@ import java.util.List;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.ricardo.school_system.assemblers.DataAndPermissions;
-import org.ricardo.school_system.assemblers.RegistrationLocalAdminForm;
-import org.ricardo.school_system.assemblers.RegistrationStudentForm;
-import org.ricardo.school_system.assemblers.StudentGradeForm;
-import org.ricardo.school_system.assemblers.TeacherClassForm;
 import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.ClassDao;
@@ -16,6 +11,11 @@ import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.StudentDao;
 import org.ricardo.school_system.daos.SubjectDao;
 import org.ricardo.school_system.daos.TeacherDao;
+import org.ricardo.school_system.dto.DataAndPermissions;
+import org.ricardo.school_system.dto.RegistrationLocalAdminForm;
+import org.ricardo.school_system.dto.RegistrationStudentForm;
+import org.ricardo.school_system.dto.StudentGradeForm;
+import org.ricardo.school_system.dto.TeacherClassForm;
 import org.ricardo.school_system.entities.Admin;
 import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;
@@ -420,12 +420,12 @@ public class BeforeAspectThirdLayerValidator extends GenericAspect {
 		String emailAlreadyExists = schoolDao.checkEmailAvailability(email);		
 
 		if (emailAlreadyExists != null)
-			throw new OperationNotAuthorizedException("Admin with email '" + email + "' alreadys exists");
+			throw new OperationNotAuthorizedException("Email '" + email + "' alreadys exists");
 
 		Integer phoneNumberAlreadyExists = schoolDao.checkPhoneNumberAvailability(phonenumber);
 
 		if (phoneNumberAlreadyExists != null)
-			throw new OperationNotAuthorizedException("Admin with phonenumber '" + phonenumber + "' alreadys exists");
+			throw new OperationNotAuthorizedException("Phone Number '" + phonenumber + "' alreadys exists");
 	}
 	
 }

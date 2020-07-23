@@ -4,55 +4,12 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.ricardo.school_system.assemblers.LoginForm;
+import org.ricardo.school_system.dto.LoginForm;
 import org.ricardo.school_system.entities.Student;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class StudentDao extends GenericDao<Student> {
-
-	@Override
-	public Student add(Student student) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		session.save(student);
-
-		return student;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<Student> getAll() {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		Query<Student> query = session.createQuery("from Student");
-
-		return (List<Student>) query.getResultList();
-	}
-
-	@Override
-	@Transactional
-	public Student getById(int id) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		return session.get(Student.class, id);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Student getByEmail(String email) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		Query<Student> query = session.createQuery("from Student where email=:email");
-
-		query.setParameter("email", email);
-
-		return (Student) query.uniqueResult();
-	}
 
 	@SuppressWarnings("unchecked")
 	public Student getByEmailAndPassword(LoginForm loginInfo) {
@@ -91,26 +48,6 @@ public class StudentDao extends GenericDao<Student> {
 		query.setParameter("name", name);
 
 		return (List<Student>) query.getResultList();
-	}
-
-	@Override
-	public void delete(int id) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		Student student = session.get(Student.class, id);
-
-		session.delete(student);
-	}
-
-	@Override
-	public Student update(Student student) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		session.saveOrUpdate(student);
-
-		return student;
 	}
 
 	@Transactional

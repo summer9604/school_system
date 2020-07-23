@@ -11,35 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class SubjectDao extends GenericDao<Subject> {
 
-	@Override
-	public Subject add(Subject subject) {
-		
-		Session session = sessionFactory.getCurrentSession();
-		
-		session.save(subject);
-		
-		return subject;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<Subject> getAll() {
-		
-		Session session = sessionFactory.getCurrentSession();
-		
-		Query<Subject> query = session.createQuery("from Subject");
-
-		return (List<Subject>) query.getResultList();
-	}
-
-	@Override
-	public Subject getById(int id) {
-		
-		Session session = sessionFactory.getCurrentSession();
-		
-		return session.get(Subject.class, id);
-	}
-	
 	@Transactional
 	public Subject getTeacherSubject(int teacherId) {
 		
@@ -50,46 +21,16 @@ public class SubjectDao extends GenericDao<Subject> {
 		return teacher.getSubject();
 	}
 
-	@Override
-	public Subject getByEmail(String email) {
-		return null;
-	}
-
-	@Override
-	public List<Subject> getByName(String name) {
-		return null;
-	}
-	
 	@SuppressWarnings("unchecked")
-	public Subject getSubjectByName(String name) {
+	public Subject getIndividualSubjectByName(String name) {
 		
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query<Subject> query = session.createQuery("from Student where name=:name");
+		Query<Subject> query = session.createQuery("from Subject where name=:name");
 		
 		query.setParameter("name", name);
 						
 		return (Subject) query.uniqueResult();
-	}
-
-	@Override
-	public void delete(int id) {
-		
-		Session session = sessionFactory.getCurrentSession();
-
-		Subject subject = session.get(Subject.class, id);
-		
-		session.delete(subject);
-	}
-
-	@Override
-	public Subject update(Subject subject) {
-		
-		Session session = sessionFactory.getCurrentSession();
-
-		session.saveOrUpdate(subject);
-		
-		return subject;
 	}
 
 	@Transactional

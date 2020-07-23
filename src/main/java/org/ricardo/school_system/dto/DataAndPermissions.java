@@ -1,4 +1,4 @@
-package org.ricardo.school_system.assemblers;
+package org.ricardo.school_system.dto;
 
 public class DataAndPermissions<UserPermissions, T> {
 

@@ -1,27 +1,36 @@
-package org.ricardo.school_system.assemblers;
+package org.ricardo.school_system.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RegistrationTeacherForm {
+public class RegistrationLocalAdminForm {
 
 	private String name;
+	
 	private String address;
+	
 	private int phonenumber;
+	
 	private String email;
+	
 	private String password;
-	private int subjectId;
+	
+	private int schoolId;
+
+	public RegistrationLocalAdminForm() {
+		
+	}
 	
 	@JsonCreator
-	public RegistrationTeacherForm(@JsonProperty("name") String name, @JsonProperty("address") String address, 
-					   @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email, 
-					   @JsonProperty("password") String password, @JsonProperty("subjectId") int subjectId) {
+	public RegistrationLocalAdminForm(@JsonProperty("name") String name, @JsonProperty("address") String address, 
+									  @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email, 
+									  @JsonProperty("password") String password, @JsonProperty("schoolId") int schoolId) {
 		this.name = name;
 		this.address = address;
 		this.phonenumber = phonenumber;
 		this.email = email;
 		this.password = password;
-		this.subjectId = subjectId;
+		this.schoolId = schoolId;
 	}
 
 	public String getName() {
@@ -64,18 +73,18 @@ public class RegistrationTeacherForm {
 		this.password = password;
 	}
 
-	public int getSubjectId() {
-		return subjectId;
+	public int getSchoolId() {
+		return schoolId;
 	}
 
-	public void setSubjectId(int subjectId) {
-		this.subjectId = subjectId;
+	public void setSchoolId(int schoolId) {
+		this.schoolId = schoolId;
 	}
 
 	@Override
 	public String toString() {
-		return "TeacherInfo [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber + ", email="
-				+ email + ", subjectId=" + subjectId + "]";
+		return "RegistrationLocalAdminForm [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
+				+ ", email=" + email + ", password=" + password + ", schoolId=" + schoolId + "]";
 	}
 	
 }

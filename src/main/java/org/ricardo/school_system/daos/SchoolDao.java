@@ -1,6 +1,5 @@
 package org.ricardo.school_system.daos;
 
-import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -9,54 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class SchoolDao extends GenericDao<School> {
-
-	@Override
-	public School add(School school) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		session.saveOrUpdate(school);
-
-		return school;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<School> getAll() {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		Query<School> query = session.createQuery("from School");
-
-		return (List<School>) query.getResultList();
-	}
-
-	@Override
-	@Transactional
-	public School getById(int id) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		return session.get(School.class, id);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public School getByEmail(String email) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		Query<School> query = session.createQuery("from School where email=:email");
-
-		query.setParameter("email", email);
-
-		return (School) query.uniqueResult();
-	}
-
-	@Override
-	public List<School> getByName(String name) {
-		return null;
-	}
 
 	@SuppressWarnings("unchecked")
 	public School getSchoolByName(String name) {
@@ -80,26 +31,6 @@ public class SchoolDao extends GenericDao<School> {
 				"where c.idClass = " + classId + ";";
 
 		return (School) session.createSQLQuery(query).addEntity(School.class).uniqueResult();	
-	}
-
-	@Override
-	public void delete(int id) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		School school = session.get(School.class, id);
-
-		session.delete(school);
-	}
-
-	@Override
-	public School update(School school) {
-
-		Session session = sessionFactory.getCurrentSession();
-
-		session.saveOrUpdate(school);
-
-		return school;
 	}
 
 	@Transactional
@@ -151,8 +82,8 @@ public class SchoolDao extends GenericDao<School> {
 				"(Select phonenumber from student s\r\n" + 
 				"where s.phonenumber = " + phonenumber + ")\r\n" + 
 				"union\r\n" + 
-				"(Select phonenumber from teacher t\r\n" + 
-				"where t.phonenumber = " + phonenumber + ")";
+				"(Select phonenumber from admin a\r\n" + 
+				"where a.phonenumber = " + phonenumber + ")";
 
 		return (Integer) session.createSQLQuery(query).uniqueResult();
 	}
@@ -168,8 +99,8 @@ public class SchoolDao extends GenericDao<School> {
 				"(Select email from student s\r\n" + 
 				"where s.email = '" + email + "')\r\n" + 
 				"union\r\n" + 
-				"(Select email from teacher t\r\n" + 
-				"where t.email = '" + email + "')";
+				"(Select email from admin a\r\n" + 
+				"where a.email = '" + email + "')";
 
 		return (String) session.createSQLQuery(query).uniqueResult();
 	}

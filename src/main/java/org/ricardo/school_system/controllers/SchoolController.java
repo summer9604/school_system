@@ -3,12 +3,12 @@ package org.ricardo.school_system.controllers;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ricardo.school_system.assemblers.EditableUserProfileForm;
-import org.ricardo.school_system.assemblers.LoginForm;
-import org.ricardo.school_system.assemblers.RegistrationLocalAdminForm;
-import org.ricardo.school_system.assemblers.RegistrationStudentForm;
-import org.ricardo.school_system.assemblers.RegistrationTeacherForm;
-import org.ricardo.school_system.assemblers.TeacherClassForm;
+import org.ricardo.school_system.dto.EditableUserProfileForm;
+import org.ricardo.school_system.dto.LoginForm;
+import org.ricardo.school_system.dto.RegistrationLocalAdminForm;
+import org.ricardo.school_system.dto.RegistrationStudentForm;
+import org.ricardo.school_system.dto.RegistrationTeacherForm;
+import org.ricardo.school_system.dto.TeacherClassForm;
 import org.ricardo.school_system.services.CourseService;
 import org.ricardo.school_system.services.LoginService;
 import org.ricardo.school_system.services.SchoolService;

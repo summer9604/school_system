@@ -1,7 +1,8 @@
 package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
-import org.ricardo.school_system.assemblers.DegreeSubjectBundle;
+
+import org.ricardo.school_system.dto.DegreeSubjectBundle;
 import org.ricardo.school_system.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

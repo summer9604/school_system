@@ -3,13 +3,14 @@ package org.ricardo.school_system.services;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import org.ricardo.school_system.assemblers.RegistrationLocalAdminForm;
+
 import org.ricardo.school_system.auth.JwtHandler;
 import org.ricardo.school_system.auth.JwtUserPermissions;
 import org.ricardo.school_system.daos.AdminDao;
 import org.ricardo.school_system.daos.ClassDao;
 import org.ricardo.school_system.daos.SchoolDao;
 import org.ricardo.school_system.daos.TeacherDao;
+import org.ricardo.school_system.dto.RegistrationLocalAdminForm;
 import org.ricardo.school_system.entities.Admin;
 import org.ricardo.school_system.entities.Class;
 import org.ricardo.school_system.entities.School;

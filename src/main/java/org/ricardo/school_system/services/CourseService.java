@@ -2,9 +2,10 @@ package org.ricardo.school_system.services;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import org.ricardo.school_system.assemblers.DegreeSubjectBundle;
+
 import org.ricardo.school_system.daos.DegreeDao;
 import org.ricardo.school_system.daos.SubjectDao;
+import org.ricardo.school_system.dto.DegreeSubjectBundle;
 import org.ricardo.school_system.entities.Degree;
 import org.ricardo.school_system.entities.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
