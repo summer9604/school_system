@@ -63,17 +63,3 @@ public class TeacherDao extends GenericDao<Teacher> {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

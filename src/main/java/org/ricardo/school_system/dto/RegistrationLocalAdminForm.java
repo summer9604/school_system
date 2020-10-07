@@ -6,15 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class RegistrationLocalAdminForm {
 
 	private String name;
-	
 	private String address;
-	
 	private int phonenumber;
-	
 	private String email;
-	
 	private String password;
-	
 	private int schoolId;
 
 	public RegistrationLocalAdminForm() {

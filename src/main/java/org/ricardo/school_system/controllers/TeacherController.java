@@ -81,23 +81,4 @@ public class TeacherController {
 		return studentService.giveGradeToStudent(request, studentGradeForm);
 	}
 	
-	//GET LOCALADMINS (OF THEIR SCHOOL ONLY) AND ADD TO STUDENTS( GET TEACHERS ASWELL).
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

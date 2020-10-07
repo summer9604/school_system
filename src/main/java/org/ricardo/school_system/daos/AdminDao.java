@@ -58,16 +58,3 @@ public class AdminDao extends GenericDao<Admin> {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

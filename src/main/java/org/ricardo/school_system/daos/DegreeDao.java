@@ -33,18 +33,3 @@ public class DegreeDao extends GenericDao<Degree> {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

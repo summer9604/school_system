@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class EditableUserProfileForm {
 
 	private String address;
-	
 	private int phonenumber;
-	
 	private String email;
 	
 	@JsonCreator

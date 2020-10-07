@@ -98,10 +98,3 @@ public abstract class GenericDao<T> {
 	}
 
 }
-
-
-
-
-
-
-

@@ -209,7 +209,7 @@ public class SchoolService {
 
 		adminDao.add(admin);
 
-		return new ResponseEntity<>("Local admin ´" + admin.getName() + "' added.", HttpStatus.OK);
+		return new ResponseEntity<>(admin, HttpStatus.OK);
 	}
 	
 	@Transactional
@@ -240,23 +240,3 @@ public class SchoolService {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

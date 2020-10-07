@@ -106,20 +106,3 @@ public class SchoolDao extends GenericDao<School> {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
