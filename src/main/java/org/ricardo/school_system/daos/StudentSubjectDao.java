@@ -35,24 +35,3 @@ public class StudentSubjectDao extends GenericDao<StudentSubject> {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

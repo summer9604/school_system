@@ -60,17 +60,3 @@ public class SubjectDao extends GenericDao<Subject> {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

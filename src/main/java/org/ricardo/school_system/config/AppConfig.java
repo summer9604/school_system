@@ -28,7 +28,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @PropertySource("classpath:persistence-mysql.properties")
 public class AppConfig {
 
-
 	@Autowired
 	private Environment env;
 

@@ -71,21 +71,3 @@ public class ClassDao extends GenericDao<Class> {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
