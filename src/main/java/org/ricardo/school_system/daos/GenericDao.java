@@ -19,7 +19,6 @@ public abstract class GenericDao<T> {
 	private String genericTypeClassName;
 	
 	@PostConstruct
-	@SuppressWarnings("unchecked")
 	private void initializeVariables() {
 		this.genericTypeClass = (Class<T>) GenericTypeResolver.resolveTypeArgument(getClass(), GenericDao.class);
 		this.genericTypeClassName = genericTypeClass.getSimpleName();
@@ -96,5 +95,4 @@ public abstract class GenericDao<T> {
 		
 		return t;
 	}
-
 }

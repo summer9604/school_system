@@ -81,5 +81,4 @@ public class RegistrationLocalAdminForm {
 		return "RegistrationLocalAdminForm [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
 				+ ", email=" + email + ", password=" + password + ", schoolId=" + schoolId + "]";
 	}
-	
 }

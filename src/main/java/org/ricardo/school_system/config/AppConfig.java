@@ -54,11 +54,11 @@ public class AppConfig {
 			e.printStackTrace();
 		}
 
-		securityDataSource.setJdbcUrl(env.getProperty("jdbc.url"));
+		securityDataSource.setJdbcUrl(env.getProperty("jdbc.url.laptop"));
 		securityDataSource.setUser(env.getProperty("jdbc.user"));
 		securityDataSource.setPassword(env.getProperty("jdbc.password"));
 
-		System.out.println("\nJDBC URL: " + env.getProperty("jdbc.url"));
+		System.out.println("\nJDBC URL: " + env.getProperty("jdbc.url.laptop"));
 		System.out.println("\nUSER: " + env.getProperty("jdbc.user"));
 		System.out.println("\nPASSWORD: " + env.getProperty("jdbc.password"));
 

@@ -205,5 +205,4 @@ public class School {
 		return "School [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
 				+ ", email=" + email + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-
 }

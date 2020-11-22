@@ -44,5 +44,4 @@ public class ErrorResponse {
 	public String toString() {
 		return "ErrorResponse [status=" + status + ", message=" + message + ", timeStamp=" + timeStamp + "]";
 	}
-
 }

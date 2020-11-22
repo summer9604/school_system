@@ -36,7 +36,7 @@ public class Teacher {
 	private String address;
 
 	@Column(name="phonenumber")
-	private int phonenumber;
+	private int phoneNumber;
 
 	@Column(name="email")
 	private String email;
@@ -44,7 +44,8 @@ public class Teacher {
 	@Column(name="password")
 	private String password;
 
-	@JsonProperty("role") //O postman estava a receber esta propriedade como "teacherRole", entao usei JsonProperty e agora aparecem os 2 xD
+	//O postman estava a receber esta propriedade como "teacherRole", entao usei JsonProperty e agora aparecem os 2 xD
+	@JsonProperty("role")
 	@Column(name="teacher_role")
 	private String role;
 
@@ -79,10 +80,10 @@ public class Teacher {
 
 	}
 
-	public Teacher(String name, String address, int phonenumber, String email, String password, Subject subject) {
+	public Teacher(String name, String address, int phoneNumber, String email, String password, Subject subject) {
 		this.name = name;
 		this.address = address;
-		this.phonenumber = phonenumber;
+		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.password = password;
 		this.subject = subject;
@@ -90,7 +91,6 @@ public class Teacher {
 		this.createdAt = LocalDate.now();
 		this.updatedAt = LocalDate.now();
 	}
-
 
 	public void addClass(Class schoolClass) {
 
@@ -151,12 +151,12 @@ public class Teacher {
 		this.classes = classes;
 	}
 
-	public int getPhonenumber() {
-		return phonenumber;
+	public int getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhonenumber(int phonenumber) {
-		this.phonenumber = phonenumber;
+	public void setPhoneNumber(int phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getEmail() {
@@ -205,10 +205,9 @@ public class Teacher {
 
 	@Override
 	public String toString() {
-		return "Teacher [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
+		return "Teacher [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phoneNumber
 				+ ", email=" + email + ", password=" + password + ", teacherRole=" + role + ", createdAt="
 				+ createdAt + ", updatedAt=" + updatedAt + ", retiredAt=" + retiredAt + "]";
 	}
-
 }
 

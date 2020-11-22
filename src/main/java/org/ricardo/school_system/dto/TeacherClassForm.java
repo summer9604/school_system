@@ -39,5 +39,4 @@ public class TeacherClassForm {
 	public String toString() {
 		return "TeacherClassForm [teacherId=" + teacherId + ", classesId=" + classesId + "]";
 	}
-
 }

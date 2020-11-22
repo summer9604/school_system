@@ -31,5 +31,4 @@ public class DegreeDao extends GenericDao<Degree> {
 
 		return session.createSQLQuery(query).addEntity(Degree.class).getResultList();
 	}
-	
 }

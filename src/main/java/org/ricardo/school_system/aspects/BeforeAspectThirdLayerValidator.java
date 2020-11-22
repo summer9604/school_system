@@ -427,7 +427,6 @@ public class BeforeAspectThirdLayerValidator extends GenericAspect {
 		if (phoneNumberAlreadyExists != null)
 			throw new OperationNotAuthorizedException("Phone Number '" + phonenumber + "' alreadys exists");
 	}
-	
 }
 
 

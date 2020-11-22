@@ -34,5 +34,4 @@ public class TeacherToSchoolForm { //RISCO DE SER APAGADO!
 	public String toString() {
 		return "TeacherSchool [teacherName=" + teacherName + ", schoolName=" + schoolName + "]";
 	}
-	
 }

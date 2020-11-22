@@ -124,5 +124,4 @@ public class ExceptionHandlerController {
 
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
-	
 }

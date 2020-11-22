@@ -100,5 +100,4 @@ public class StudentSubject {
 		return "StudentSubject [id=" + id + ", student=" + student + ", subject=" + subject + ", grade=" + grade + ","
 				+ " createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-
 }

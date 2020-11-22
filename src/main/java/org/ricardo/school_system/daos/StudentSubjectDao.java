@@ -33,5 +33,4 @@ public class StudentSubjectDao extends GenericDao<StudentSubject> {
 
 		return (List<StudentSubject>) query.getResultList();
 	}
-	
 }

@@ -65,7 +65,6 @@ public class BeforeAspectFourthLayerValidator extends GenericAspect {
 		if (schoolTeacher.getId() > 0) 
 			throw new OperationNotAuthorizedException("Teacher is currently employed.");
 	}
-
 }
 
 

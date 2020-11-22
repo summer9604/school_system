@@ -69,5 +69,4 @@ public class ClassDao extends GenericDao<Class> {
 
 		return (Class) query.uniqueResult();
 	}
-
 }

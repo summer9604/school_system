@@ -24,5 +24,4 @@ public class RegistrationSchoolForm {
 	public String toString() {
 		return "SchoolInfo [name=" + name + "]";
 	}
-	
 }

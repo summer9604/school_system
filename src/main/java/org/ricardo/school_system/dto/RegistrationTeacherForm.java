@@ -7,18 +7,18 @@ public class RegistrationTeacherForm {
 
 	private String name;
 	private String address;
-	private int phonenumber;
+	private int phoneNumber;
 	private String email;
 	private String password;
 	private int subjectId;
 	
 	@JsonCreator
 	public RegistrationTeacherForm(@JsonProperty("name") String name, @JsonProperty("address") String address, 
-					   @JsonProperty("phonenumber") int phonenumber, @JsonProperty("email") String email, 
+					   @JsonProperty("phoneNumber") int phoneNumber, @JsonProperty("email") String email, 
 					   @JsonProperty("password") String password, @JsonProperty("subjectId") int subjectId) {
 		this.name = name;
 		this.address = address;
-		this.phonenumber = phonenumber;
+		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.password = password;
 		this.subjectId = subjectId;
@@ -40,12 +40,12 @@ public class RegistrationTeacherForm {
 		this.address = address;
 	}
 
-	public int getPhonenumber() {
-		return phonenumber;
+	public int getphoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhonenumber(int phonenumber) {
-		this.phonenumber = phonenumber;
+	public void setphoneNumber(int phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getEmail() {
@@ -74,8 +74,7 @@ public class RegistrationTeacherForm {
 
 	@Override
 	public String toString() {
-		return "TeacherInfo [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber + ", email="
+		return "TeacherInfo [name=" + name + ", address=" + address + ", phoneNumber=" + phoneNumber + ", email="
 				+ email + ", subjectId=" + subjectId + "]";
 	}
-	
 }

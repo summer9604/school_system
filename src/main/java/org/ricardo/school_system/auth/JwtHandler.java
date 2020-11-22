@@ -8,7 +8,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import java.time.temporal.ChronoUnit;
 import io.jsonwebtoken.security.Keys;
-
 import org.ricardo.school_system.dto.JwtUserPermissions;
 import org.springframework.stereotype.Component;
 
@@ -49,5 +48,4 @@ public class JwtHandler {
 
 		return new JwtUserPermissions(id, userPermissions, schoolId);
 	}
-	
 }

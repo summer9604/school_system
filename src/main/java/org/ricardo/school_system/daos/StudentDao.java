@@ -52,13 +52,13 @@ public class StudentDao extends GenericDao<Student> {
 
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public Student getByPhonenumber(int studentPhonenumber) {
+	public Student getByPhoneNumber(int studentPhoneNumber) {
 
 		Session session = sessionFactory.getCurrentSession();
 
 		Query<Student> query = session.createQuery("from Student where phonenumber=:phonenumber");
 
-		query.setParameter("phonenumber", studentPhonenumber);
+		query.setParameter("phonenumber", studentPhoneNumber);
 
 		return (Student) query.uniqueResult();
 	}
@@ -94,7 +94,6 @@ public class StudentDao extends GenericDao<Student> {
 		
 		String query = "Update student set class_id = null where idstudent = " + id;
 
-		 session.createSQLQuery(query).executeUpdate();
+		session.createSQLQuery(query).executeUpdate();
 	}
-
 }

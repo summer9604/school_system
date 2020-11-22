@@ -61,5 +61,4 @@ public class TeacherDao extends GenericDao<Teacher> {
 		
 		return (Teacher) session.createSQLQuery(query).addEntity(Teacher.class).uniqueResult();
 	}
-
 }
