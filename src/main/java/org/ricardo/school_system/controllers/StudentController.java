@@ -40,5 +40,4 @@ public class StudentController {
 	public ResponseEntity<?> getGrades(HttpServletRequest request){
 		return studentService.getGradesByStudentId(request);
 	}
-	
 }

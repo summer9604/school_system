@@ -81,5 +81,4 @@ public class RegistrationStudentForm {
 		return "RegistrationStudentForm [name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
 				+ ", email=" + email + ", classId=" + classId + ", password=" + password + "]";
 	}
-	
 }

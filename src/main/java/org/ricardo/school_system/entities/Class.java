@@ -160,5 +160,4 @@ public class Class {
 		return "Class [id=" + id + ", schoolYear=" + schoolYear + ", email=" + email + ", createdAt=" + createdAt
 				+ ", updatedAt=" + updatedAt + "]";
 	}
-	
 }

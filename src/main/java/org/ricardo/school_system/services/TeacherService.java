@@ -45,7 +45,7 @@ public class TeacherService {
 
 		teacher.setName(teacherInfo.getName());
 		teacher.setAddress(teacherInfo.getAddress());
-		teacher.setPhonenumber(teacherInfo.getPhonenumber());
+		teacher.setPhoneNumber(teacherInfo.getPhonenumber());
 		teacher.setEmail(teacherInfo.getEmail());
 		teacher.setPassword(teacherInfo.getPassword());
 		teacher.setSubject(subject);
@@ -136,7 +136,7 @@ public class TeacherService {
 			
 		teacher.setAddress(editableUserProfileForm.getAddress());
 		teacher.setEmail(editableUserProfileForm.getEmail());
-		teacher.setPhonenumber(editableUserProfileForm.getPhonenumber());
+		teacher.setPhoneNumber(editableUserProfileForm.getPhonenumber());
 			
 		teacherDao.update(teacher);
 		
@@ -162,5 +162,4 @@ public class TeacherService {
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
 		return request.getHeader("jwttoken") != null ? jwtHandler.getUserPermissions(request.getHeader("jwttoken")) : null;
 	}
-
 }

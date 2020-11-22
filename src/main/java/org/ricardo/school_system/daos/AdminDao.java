@@ -56,5 +56,4 @@ public class AdminDao extends GenericDao<Admin> {
 
 		return (Admin) query.uniqueResult();
 	}
-
 }

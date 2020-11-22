@@ -238,5 +238,4 @@ public class SchoolService {
 	private JwtUserPermissions retrievePermissions(HttpServletRequest request) {
 		return request.getHeader("jwttoken") != null ? jwtHandler.getUserPermissions(request.getHeader("jwttoken")) : null;
 	}
-
 }

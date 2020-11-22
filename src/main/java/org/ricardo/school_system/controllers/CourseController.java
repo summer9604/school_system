@@ -1,7 +1,6 @@
 package org.ricardo.school_system.controllers;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.ricardo.school_system.dto.DegreeSubjectBundle;
 import org.ricardo.school_system.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +50,4 @@ public class CourseController {
 	public ResponseEntity<?> adminAddDegree(HttpServletRequest request, @RequestBody DegreeSubjectBundle degreeSubjectBundle) {	
 		return courseService.addDegree(request, degreeSubjectBundle);
 	}
-	
 }

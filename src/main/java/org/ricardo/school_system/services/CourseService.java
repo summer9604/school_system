@@ -88,5 +88,4 @@ public class CourseService {
 	public ResponseEntity<?> updateSubject(Subject subject) {
 		return new ResponseEntity<>(subjectDao.update(subject), HttpStatus.OK);
 	}
-
 }

@@ -29,8 +29,8 @@ public class Admin {
 	@Column(name="address")
 	private String address;
 	
-	@Column(name="phonenumber")
-	private int phonenumber;
+	@Column(name="phoneNumber")
+	private int phoneNumber;
 	
 	@Column(name="email")
 	private String email;
@@ -57,10 +57,10 @@ public class Admin {
 		this.updatedAt = LocalDate.now();
 	}
 
-	public Admin(String name, String address, int phonenumber, String email, String password, String role) {
+	public Admin(String name, String address, int phoneNumber, String email, String password, String role) {
 		this.name = name;
 		this.address = address;
-		this.phonenumber = phonenumber;
+		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.password = password;
 		this.role = role;
@@ -92,12 +92,12 @@ public class Admin {
 		this.address = address;
 	}
 
-	public int getPhonenumber() {
-		return phonenumber;
+	public int getphoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhonenumber(int phonenumber) {
-		this.phonenumber = phonenumber;
+	public void setphoneNumber(int phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getEmail() {
@@ -150,9 +150,8 @@ public class Admin {
 
 	@Override
 	public String toString() {
-		return "Admin [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
+		return "Admin [id=" + id + ", name=" + name + ", address=" + address + ", phoneNumber=" + phoneNumber
 				+ ", email=" + email + ", password=" + password + ", role=" + role + ", createdAt=" + createdAt
 				+ ", updatedAt=" + updatedAt + "]";
 	}
-
 }

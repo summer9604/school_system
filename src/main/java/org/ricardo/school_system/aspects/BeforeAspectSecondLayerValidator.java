@@ -39,5 +39,4 @@ public class BeforeAspectSecondLayerValidator extends GenericAspect {
 		if (!userPermissions.getPermissions().equals("ROLE_STUDENT"))
 			throw new OperationNotAuthorizedException("Access denied. You are not a student.");
 	}
-	
 }

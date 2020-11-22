@@ -80,5 +80,4 @@ public class TeacherController {
 	public ResponseEntity<?> giveStudentsGrades(HttpServletRequest request, @RequestBody StudentGradeForm studentGradeForm) {
 		return studentService.giveGradeToStudent(request, studentGradeForm);
 	}
-	
 }

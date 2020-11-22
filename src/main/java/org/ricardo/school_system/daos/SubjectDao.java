@@ -58,5 +58,4 @@ public class SubjectDao extends GenericDao<Subject> {
 		
 		return (List<Subject>) session.createSQLQuery(query).addEntity(Subject.class).getResultList();
 	}
-	
 }

@@ -33,7 +33,6 @@ public class BeforeAspectFirstLayerValidator extends GenericAspect {
 		if (jwtHandler.getUserPermissions(token) != null)
 			throw new OperationNotAuthorizedException("You have a session already.");
 	}
-
 }
 
 

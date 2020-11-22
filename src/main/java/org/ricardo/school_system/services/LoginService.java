@@ -162,5 +162,4 @@ public class LoginService {
 		response.addHeader("Authorization", generatedToken);
 		response.addHeader("Access-Control-Expose-Headers", "*");
 	}
-
 }

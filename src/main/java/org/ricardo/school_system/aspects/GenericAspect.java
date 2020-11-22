@@ -48,5 +48,4 @@ public abstract class GenericAspect {
 
 		return new DataAndPermissions(userPermissions, obj);
 	}
-	
 }

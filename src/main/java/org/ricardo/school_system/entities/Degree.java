@@ -143,5 +143,4 @@ public class Degree {
 	public String toString() {
 		return "Degree [id=" + id + ", name=" + name + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-
 }

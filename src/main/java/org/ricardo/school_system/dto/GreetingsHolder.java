@@ -46,5 +46,4 @@ public class GreetingsHolder {
 	public String toString() {
 		return "GreetingsHolder [greet=" + greet + ", userId=" + userId + ", userRole=" + userRole + "]";
 	}
-	
 }

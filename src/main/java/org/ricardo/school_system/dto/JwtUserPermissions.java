@@ -45,5 +45,4 @@ public class JwtUserPermissions {
 	public String toString() {
 		return "JwtUserPermissions [id=" + id + ", permissions=" + permissions + ", schoolId=" + schoolId + "]";
 	}
-
 }

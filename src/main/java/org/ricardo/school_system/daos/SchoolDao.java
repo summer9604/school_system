@@ -104,5 +104,4 @@ public class SchoolDao extends GenericDao<School> {
 
 		return (String) session.createSQLQuery(query).uniqueResult();
 	}
-
 }

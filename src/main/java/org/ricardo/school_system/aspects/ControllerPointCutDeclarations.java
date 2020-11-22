@@ -36,7 +36,6 @@ public class ControllerPointCutDeclarations {
 	
 	@Pointcut("getControllerPackage() && !(getEntryPoint() || loginEndPoint() || getExceptionHandlerControllerClass())")
 	public void validateSession() {}
-	
 }
 
 

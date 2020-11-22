@@ -48,7 +48,6 @@ public class ServicePointCutDeclarations {
 	
 	@Pointcut("execution(* org.ricardo.school_system.services.StudentService.getGradesByStudentId(*, *))")
 	public void checkGetGradesByStudentId() {}
-	
 }
 
 

@@ -170,5 +170,4 @@ public class Student {
 		return "Student [id=" + id + ", name=" + name + ", address=" + address + ", phonenumber=" + phonenumber
 				+ ", email=" + email + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-	
 }

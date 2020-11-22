@@ -35,5 +35,4 @@ public class LoginForm {
 	public String toString() {
 		return "LoginInfo [email=" + email + ", password=" + password + "]";
 	}
-	
 }

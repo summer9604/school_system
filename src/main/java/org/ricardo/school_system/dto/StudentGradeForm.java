@@ -38,5 +38,4 @@ public class StudentGradeForm {
 	public String toString() {
 		return "StudentGradeForm [studentId=" + studentId + ", grade=" + grade + "]";
 	}
-	
 }

@@ -30,5 +30,4 @@ public class DataAndPermissions<UserPermissions, T> {
 	public String toString() {
 		return "DataAndPermissions [userPermissions=" + userPermissions + ", data=" + data + "]";
 	}
-	
 }

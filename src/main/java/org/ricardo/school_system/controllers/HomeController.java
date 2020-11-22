@@ -26,5 +26,4 @@ public class HomeController {
 	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
 		return loginService.logout(request, response);
 	}
-	
 }
