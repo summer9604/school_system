@@ -40,11 +40,11 @@ public class RegistrationTeacherForm {
 		this.address = address;
 	}
 
-	public int getphoneNumber() {
+	public int getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setphoneNumber(int phoneNumber) {
+	public void setPhoneNumber(int phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 

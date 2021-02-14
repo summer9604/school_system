@@ -201,7 +201,7 @@ public class SchoolService {
 
 		admin.setName(registrationLocalAdminForm.getName());
 		admin.setAddress(registrationLocalAdminForm.getAddress());
-		admin.setPhonenumber(registrationLocalAdminForm.getPhonenumber());
+		admin.setPhoneNumber(registrationLocalAdminForm.getPhonenumber());
 		admin.setSchool(school);
 		admin.setEmail(registrationLocalAdminForm.getEmail());
 		admin.setPassword(registrationLocalAdminForm.getPassword());

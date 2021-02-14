@@ -96,7 +96,7 @@ public class Admin {
 		return phoneNumber;
 	}
 
-	public void setphoneNumber(int phoneNumber) {
+	public void setPhoneNumber(int phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 

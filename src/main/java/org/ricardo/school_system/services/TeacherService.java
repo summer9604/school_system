@@ -45,7 +45,7 @@ public class TeacherService {
 
 		teacher.setName(teacherInfo.getName());
 		teacher.setAddress(teacherInfo.getAddress());
-		teacher.setPhoneNumber(teacherInfo.getPhonenumber());
+		teacher.setPhoneNumber(teacherInfo.getPhoneNumber());
 		teacher.setEmail(teacherInfo.getEmail());
 		teacher.setPassword(teacherInfo.getPassword());
 		teacher.setSubject(subject);
